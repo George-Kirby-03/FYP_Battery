@@ -13,5 +13,5 @@ if (-not (Test-Path "$venvPath\Scripts\Activate.ps1")) {
 
 # Move to parent directory of script (FYP)
 Set-Location -Path (Split-Path -Parent $PSScriptRoot)
-& "$venvPath\Scripts\python.exe" -m jupyter notebook --no-browser --NotebookApp.password='' --NotebookApp.token='' --ip=0.0.0.0 --port=8888
+& "$venvPath\Scripts\python.exe" -m jupyter notebook --no-browser --NotebookApp.password='' --NotebookApp.token='' --ip=0.0.0.0 --port=8888 --NotebookApp.allow_origin='*'
 
