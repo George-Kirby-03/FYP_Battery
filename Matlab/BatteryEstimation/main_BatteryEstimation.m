@@ -24,8 +24,9 @@ options= problem.settings(50);                  % Get options and solver setting
 tt=solution.T;
 x1=speval(solution,'X',1,tt);
 x2=speval(solution,'X',2,tt);
+x3=speval(solution,'X',3,tt);
 u1=problem.data.InputCurrent(tt);
-y=solution.p(1)+solution.p(2).*x1+solution.p(3).*x1.^2+solution.p(4).*x1.^3+x2+solution.p(7).*u1;
+y=solution.p(1)+solution.p(2).*x1+solution.p(3).*x1.^2+solution.p(4).*x1.^3+x2+x3+solution.p(7).*u1;
 
 figure
 subplot(2,2,1)

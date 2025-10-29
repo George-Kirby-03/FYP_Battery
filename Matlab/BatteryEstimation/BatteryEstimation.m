@@ -20,7 +20,7 @@ function [problem,guess] = BatteryEstimation
 % iclocs@imperial.ac.uk
 
 % Load the measurement from Data
-load("Data/Setup1.mat")
+load("Data/cycle_1.mat")
 problem.data.OutputVoltage=griddedInterpolant(tt,y,"pchip");
 problem.data.InputCurrent=griddedInterpolant(tt,u1,"pchip");
 
@@ -50,38 +50,39 @@ guess.tf=tt(end);
 
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
-% p=[V_OCV0 V_OCV1 V_OCV2 V_OCV3 Q C1 R0 R1]
-problem.parameters.pl=[0 -1 -1 -1 0 6000 0 0];
-problem.parameters.pu=[10 1 1 1 25*3600 10000 0.01 0.01];
-guess.parameters=[4 0.5 0.5 0.5 15*60*60 8000 0.005 0.005];
+% p=[V_OCV0 V_OCV1 V_OCV2 V_OCV3 Q C1 R0 R1 C12 R12]
+problem.parameters.pl=[0 -1 -1 -1 0 6000 0 0 30 0];
+problem.parameters.pu=[10 1 1 1 25*3600 10000 0.01 0.01 2000 0.01];
+guess.parameters=[4 0.5 0.5 0.5 15*60*60 8000 0.005 0.005 90 0.05];
 
 
 % Initial conditions for system.
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0 0]; 
-problem.states.x0u=[0 0]; 
+problem.states.x0l=[0.99 0 0]; 
+problem.states.x0u=[1 0 0]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 -inf ];
-problem.states.xu=[1 inf ];
+problem.states.xl=[0 -0.5 -0.5 ];
+problem.states.xu=[1 0.5 0.5];
 
 % State error bounds
-problem.states.xErrorTol_local=[1e-6 1e-6 ];
-problem.states.xErrorTol_integral=[1e-6 1e-6 ];
+problem.states.xErrorTol_local=[1e-6 1e-6 1e-6];
+problem.states.xErrorTol_integral=[1e-6 1e-6 1e-6];
 
 
 % State constraint error bounds
-problem.states.xConstraintTol=[1e-4 1e-4 ];
+problem.states.xConstraintTol=[1e-4 1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[1 -inf ];
-problem.states.xfu=[1 inf ];
+problem.states.xfl=[0.95 -0.5 -0.5];
+problem.states.xfu=[1 0.5 0.5 ];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[1 0];
-guess.states(:,2)=[-0.25 -0.25];
+guess.states(:,1)=[1 1];
+guess.states(:,2)=[-0.1 0];
+guess.states(:,3)=[-0.05 0];
 
 % Number of control actions N 
 % Set problem.inputs.N=0 if N is equal to the number of integration steps.  
@@ -174,7 +175,7 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %------------- BEGIN CODE --------------
 
-x1=x(:,1);x2=x(:,2);R0=p(:,7);
+x1=x(:,1);x2=x(:,2);R0=p(:,7);x3=x(:,3);
 
 % Obtain the measured input from the Lookup Table
 u1=vdat.InputCurrent(t);
@@ -183,7 +184,7 @@ u1=vdat.InputCurrent(t);
 voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
-voltage_model=p(:,1)+p(:,2).*x1+p(:,3).*x1.^2+p(:,4).*x1.^3+x2+R0.*u1;
+voltage_model=p(:,1)+p(:,2).*x1+p(:,3).*x1.^2+p(:,4).*x1.^3+x2 + x3 +R0.*u1;
 
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
