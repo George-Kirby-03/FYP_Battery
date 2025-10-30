@@ -1,5 +1,5 @@
 # Fdb version 4
-["bibtex main"] 0 "main.aux" "main.bbl" "main" 0 0
+["bibtex main"] 0 "main.aux" "main.bbl" "main" 1761758658.53883 0
   "/Users/georgekirby/Library/TinyTeX/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
   "main.aux" 0 -1 0 "pdflatex"
   "references.bib" 0 -1 0 ""
@@ -7,8 +7,8 @@
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1761559568.9462 "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/main.tex" "main.pdf" "main" 1761559569.19659 0
-  "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/main.tex" 1761559532.85901 647 454524227c9881dc84822276d6d66f83 ""
+["pdflatex"] 1761758658.3042 "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/main.tex" "main.pdf" "main" 1761758658.53896 0
+  "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/main.tex" 1761758657.60915 782 b63c766305b7518c46c287452a1c03bf ""
   "/Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmex10.tfm" 1136768653 992 662f679a0b3d2d53c1b94050fdaa3f50 ""
@@ -66,11 +66,11 @@
   "/Users/georgekirby/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1761449356 92935 ab22f987f93038b61e05dc32d7c07157 ""
   "/Users/georgekirby/Library/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1761449371 2228196 610f0c34bb44aab2c823b80871778971 ""
   "/Users/georgekirby/Library/TinyTeX/texmf.cnf" 1761449319 637 edd806fb06a89761a6034e1968af9017 ""
-  "main.aux" 1761559569.15645 735 672b89198623ac4c530243a0124a693f "pdflatex"
+  "main.aux" 1761758658.50066 733 680cb376f77f284dde39bffffe1172ab "pdflatex"
   "main.bbl" 0 -1 0 "bibtex main"
-  "main.out" 1761559569.15696 465 4908ec1c50f96b5f24e893253c15327c "pdflatex"
-  "main.tex" 1761559532.85901 647 454524227c9881dc84822276d6d66f83 ""
-  "main.toc" 1761559569.1572 330 0b7b5c6a5cd86b6098338412aa05a300 "pdflatex"
+  "main.out" 1761758658.50101 455 f260950bca75f071ebdd2187e9c5d464 "pdflatex"
+  "main.tex" 1761758657.60915 782 b63c766305b7518c46c287452a1c03bf ""
+  "main.toc" 1761758658.50118 328 da5b52c48f820d76fcc4beed7bf8f691 "pdflatex"
   (generated)
   "main.aux"
   "main.log"
