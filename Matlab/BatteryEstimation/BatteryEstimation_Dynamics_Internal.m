@@ -31,7 +31,7 @@ function [dx] = BatteryEstimation_Dynamics_Internal(x,u,p,t,vdat)
 %
 %------------- BEGIN CODE --------------
 
-SOC = x(:,1);V_OC = x(:,2);
+SOC = x(:,1);V_RC1 = x(:,2); V_RC2 = x(:,3);
 
 % Take input measurement directly from Lookup table
 current_bat = vdat.InputCurrent(t);
@@ -42,9 +42,9 @@ Q=p(:,5); C1=p(:,6); R0=p(:,7); R1=p(:,8); C12=p(:,9); R12=p(:,10);
 
 dx(:,1) = current_bat./Q;
 
-dx(:,2) = -V_OC./(R1.*C1)+current_bat./C1;
+dx(:,2) = -V_RC1./(R1.*C1) + current_bat./C1;
 
-dx(:,3) = -V_OC./(R12.*C12)+current_bat./C12;
+dx(:,3) = -V_RC2./(R12.*C12) + current_bat./C12;
 
 
-%------------- END OF CODE --------------
+%------------- END OF CODE --------------%

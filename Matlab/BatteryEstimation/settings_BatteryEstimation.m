@@ -81,7 +81,7 @@ options.discretization='hermite';
 % Representation by integrated residual minimization       ('res_min')
 % Final representation by integrated residual minimization, with intermediate mesh refinement itrations represented with default method     ('res_min_final_default')      Note: only when error criteria is set to 'both' and the local error tolerance has been fulfilled
 % Final representation by integrated residual minimization, with intermediate mesh refinement itrations represented with the manually selected method    ('res_min_final_manual')      Note: only when error criteria is set to 'both' and the local error tolerance has been fulfilled
-options.resultRep='default';
+options.resultRep='default';%
 
 % Specify the representation method when 'manual' method is selected
 %---------------------------------------

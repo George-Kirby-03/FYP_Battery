@@ -15,10 +15,10 @@
 clear all;close all;format compact;
 
 [problem,guess]=BatteryEstimation;          % Fetch the problem definition
-options= problem.settings(50);                  % Get options and solver settings 
+options= problem.settings(150);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
-%% figure
+%% figure%
 
 %% figure
 tt=solution.T;
@@ -26,7 +26,9 @@ x1=speval(solution,'X',1,tt);
 x2=speval(solution,'X',2,tt);
 x3=speval(solution,'X',3,tt);
 u1=problem.data.InputCurrent(tt);
-y=solution.p(1)+solution.p(2).*x1+solution.p(3).*x1.^2+solution.p(4).*x1.^3+x2+x3+solution.p(7).*u1;
+soc = linspace(0,1,50);
+OCV_SOC = solution.p(1)+solution.p(2).*soc+solution.p(3).*soc.^2+solution.p(4).*soc.^3;
+y=solution.p(1)+solution.p(2).*x1+solution.p(3).*x1.^2+solution.p(4).*x1.^3+ x2 + x3 + solution.p(7).*u1;
 
 figure
 subplot(2,2,1)
@@ -40,9 +42,7 @@ grid on
 
 subplot(2,2,2)
 hold on
-plot(tt,x2,'b-' ,'LineWidth',2)
-plot([solution.T(1,1); solution.tf],[problem.states.xl(2), problem.states.xl(2)],'r-' )
-plot([solution.T(1,1); solution.tf],[problem.states.xu(2), problem.states.xu(2)],'r-' )
+plot(soc,OCV_SOC,'b-' ,'LineWidth',2)
 xlabel('Time [s]')
 ylabel('States: RC Voltage [V]')
 grid on
