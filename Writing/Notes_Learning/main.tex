@@ -66,7 +66,6 @@ then an optimal charging method can be found for a given battery at a given time
         Loose sei material can also float in the electrolyte, causing further issues.
         \item Electrolyte decomposition
     \end{itemize}
-\item 
 \end{itemize}
 
 Superlinear battery degredadion known as "Knee" is where degredation drops rappidly over later cycles. 
@@ -84,8 +83,10 @@ applied at lower states of charge, where the battery is less prone to lithium pl
  \begin{itemize}
         \item Look at existing charging methods, including the complex ones and continous ones (explain complexity and non generalisability). 
         \item Look at the different SOC estimation methods, since the cc high current section works good for 20-60 \% soc \cite{khan_multistage_2016}
+        This could, and hopefully so, be a chance to use NN to predict soc quickly and something that can be implamented on hardware. Could also give chace to
+        be compared against paings offline parameterisation solver
         \item If this is adaptive over the ageing, since R and C values change, need to look at maybe live cc tuning methods, maybe a form of MPC? , see the feasability
-        of implamenting on actual hardware.
+        of implamenting on actual hardware, explicit MPC could be a possability, but not sure yet how recomputing QP (or probably nonlinear) with changing dynamics is done
         \item Run the experiment against standard cc-cv methods, look at temp, internal resistance and capacity over time.
     \end{itemize}
 
