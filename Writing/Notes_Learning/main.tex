@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+
+\title{
+    \textbf{Notes FYP} \\[2em]
+}
+\author{George W. Kirby \\[2em] \textit{200328186} \\[2em] }
+\date{\today}
+
+\begin{document}
+\maketitle
+\vfill 
+\begin{center}
+    \textbf{Supervisor:} Dr. Ross Drummond 
+\end{center}
+\newpage
+
+\section{Constraining the research}
+Instead of a \textit{black box battery} model, the goal is now to focus on the actuall optimal charging method themselfs, to reduce degredation. Specifically the
+constant current stage of the charging cycle, as this is where most of the heat is generated, research shows this to be a large factor of degredatdion alongside instantatious
+applied voltages. 
+
+\section{Data Analysis on Dans Data}
+Gave a good insight to the degredation patterns on an array of lithium batterys, data was analysed and plotted on jypter notebook.
+Despite not complete draining ect, resting points, internal resistance and \textit{importantly} temperature were able to be extracted from the data too
+
+\section{Lithium Battery Modelling}
+Starting off, only knowing the basics of batteries, i.e the resistance increases over time, capacity drops ect. I'm continuing learning the various
+battery models, behaviours ect.
+
+\begin{itemize}
+  \item For the most part, atleast within the context of the problem, the dynamics of the battery can be modelled with an equivalent circuit model (ECM). Subject to 
+vary between cycles
+\item Looking at dans data, parameters will be different between cells, as well as cycle degredation, but if the degredation can be modelled based off initial parameters, 
+then an optimal charging method can be found for a given battery at a given time.
+\item Degredation causes:
+    \begin{itemize}
+        \item SEI layer growth via pores $ \approx $ not really solvable, grows square root over time and cycle number
+        \item Lithium plating \\
+        Causes increased ageing and seftey risks, its the deposition of metallic lithoum on the anote surface, happens at high charging currents and low temperature.
+        Since during charging, the lithium ions move , through the sei into the anode, if the ions cannot intercalate fast enough, they deposit and can become metallic lithium. 
+        Especially ehrn chargis is forces, local overpotential can causes the lithium plating, can cause dentrites
+        \textbf{this is one of the main constraints for the chargings profile}
+        \item Active material loss (from parts mentiones above)
+        \item SEI Brakeages \\
+        Charging too \textbf{high} of a temperatures causes mechanical stress on the sei layer, causing it to crack and reform, consuming more lithium ions in the process. 
+        Loose sei material can also float in the electrolyte, causing further issues.
+        \item Electrolyte decomposition
+    \end{itemize}
+\item 
+\end{itemize}
+
+
+
+Superlinear battery degredadion known as "Knee" is where degredation drops rappidly over later cycles. 
+\section{Machine learning techniques}
+Spent a fair amount of time learning about the basic machine learning techniques, then NN methods, then applying with pytorch. Managed to get a basic 
+raw NN to work for fashion sets, then began looking at CNNS and LSTMS for learning data, in the hopes it could predict battery degredation over time. However,
+given the sheer data needed, as well as a very large possible set of outputs and too many inputs to consider, it did not look feasable to continue down this route.
+Atleast for a black box approach, to parameterise the current state of health, perhaps this could be used to live tune the current profile.
+
+
+
+\section{Current work and Results}
+
+
+\section{Current plan}
+
+
+
+\section{Self Assessment}
+
+
+\newpage
+\nocite{*}
+\bibliographystyle{../IEEEtran/IEEEtran}
+\bibliography{../Interim_Report/My_Library}
+
+\end{document}

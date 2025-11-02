@@ -1,8 +1,8 @@
-PWD /Users/georgekirby/Documents/GitHub/FYP_Battery/Writing
+PWD /Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/Interim_Report
 INPUT /Users/georgekirby/Library/TinyTeX/texmf.cnf
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/web2c/texmf.cnf
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/main.tex
+INPUT /Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/Interim_Report/main.tex
 OUTPUT main.log
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
@@ -110,6 +110,11 @@ INPUT ./main.out
 INPUT ./main.out
 OUTPUT main.out
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
+INPUT ./UOS.png
+INPUT ./UOS.png
+INPUT ./UOS.png
+INPUT ./UOS.png
+INPUT ./UOS.png
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
