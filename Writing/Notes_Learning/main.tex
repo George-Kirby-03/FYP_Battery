@@ -21,9 +21,23 @@
 \newpage
 
 \section{Constraining the research}
+Spent a fair amount of time learning about the basic machine learning techniques, then NN methods, then applying with pytorch. Managed to get a basic 
+raw NN to work for fashion sets, then began looking at CNNS and LSTMS for learning data, in the hopes it could predict battery degredation over time. However,
+given the sheer data needed, as well as a very large possible set of outputs and too many inputs to consider, it did not look feasable to continue down this route.
+Atleast for a black box approach, to parameterise the current state of health, perhaps this could be used to live tune the current profile.
+
+It was also found \cite{chinnam_fast-charging_2021} that differences of only 2\% can have large effects in the degredation states over time, 
+meaning the ability for a NN to generalise well enough and capture these differences would be hard and more specifically, beyond the ability of the autor of this paper.
+
 Instead of a \textit{black box battery} model, the goal is now to focus on the actuall optimal charging method themselfs, to reduce degredation. Specifically the
 constant current stage of the charging cycle, as this is where most of the heat is generated, research shows this to be a large factor of degredatdion alongside instantatious
 applied voltages. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../nn_battery.png}
+    \caption{Original end objective: Black Box Battery to allow for discorvery \& testing of optimal charging profiles}
+\end{figure}
 
 \section{Data Analysis on Dans Data}
 Gave a good insight to the degredation patterns on an array of lithium batterys, data was analysed and plotted on jypter notebook.
@@ -55,14 +69,10 @@ then an optimal charging method can be found for a given battery at a given time
 \item 
 \end{itemize}
 
-
-
 Superlinear battery degredadion known as "Knee" is where degredation drops rappidly over later cycles. 
-\section{Machine learning techniques}
-Spent a fair amount of time learning about the basic machine learning techniques, then NN methods, then applying with pytorch. Managed to get a basic 
-raw NN to work for fashion sets, then began looking at CNNS and LSTMS for learning data, in the hopes it could predict battery degredation over time. However,
-given the sheer data needed, as well as a very large possible set of outputs and too many inputs to consider, it did not look feasable to continue down this route.
-Atleast for a black box approach, to parameterise the current state of health, perhaps this could be used to live tune the current profile.
+
+Appears the multistage cc is advantaguous for keeping charge time down, yet reducing degredation by ensuring most of the current is
+applied at lower states of charge, where the battery is less prone to lithium plating and high internal resistance heating.
 
 
 
@@ -70,8 +80,26 @@ Atleast for a black box approach, to parameterise the current state of health, p
 
 
 \section{Current plan}
-Look at existing charging methods, including the complex ones and continous ones (explain complexity and non generalisability). 
-\newpage
+
+ \begin{itemize}
+        \item Look at existing charging methods, including the complex ones and continous ones (explain complexity and non generalisability). 
+        \item Look at the different SOC estimation methods, since the cc high current section works good for 20-60 \% soc \cite{khan_multistage_2016}
+        \item If this is adaptive over the ageing, since R and C values change, need to look at maybe live cc tuning methods, maybe a form of MPC? , see the feasability
+        of implamenting on actual hardware.
+        \item Run the experiment against standard cc-cv methods, look at temp, internal resistance and capacity over time.
+    \end{itemize}
+
+
+\section{Questions }
+
+ \begin{itemize}
+        \item Deciding on the constraints, besides the total charge volume, does the charge time need to be minimised also? Or keeping that constant 
+        and purrley investigating the degredation effects compared to standard cc-cv method
+        \item Enquire about dans temperature controll side, is the abient area controlled, can the temp be controlled?
+        \item General guidance on the controll method, is this entire plan okay, any suggested reading? Some of the heavy matrices are a bit over my head. 
+        (Happy with the idea of matracies transforming vectors, some basic forms of matrices w properties ect)
+    \end{itemize}
+
 \nocite{*}
 \bibliographystyle{../IEEEtran/IEEEtran}
 \bibliography{../Interim_Report/My_Library}

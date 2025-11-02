@@ -1,14 +1,15 @@
 # Fdb version 4
-["bibtex main"] 1762110348.21953 "main.aux" "main.bbl" "main" 1762110348.61593 0
+["bibtex main"] 1762115352.87675 "main.aux" "main.bbl" "main" 1762115353.21007 0
   "../IEEEtran/IEEEtran.bst" 1761930265.89553 59214 a90e64071cc7185c225b4d6ec93de903 ""
-  "../Interim_Report/My_Library.bib" 1761930265.8959 17505 b9bc4347c8f5a4fae36ce15d0c4425df ""
-  "main.aux" 1762110348.54596 1227 857ad4fa2904b147442bf4285723d36d "pdflatex"
+  "../Interim_Report/My_Library.bib" 1762110577.34418 31810 2225ed31597cd6d17a3a50567f1e818d ""
+  "main.aux" 1762115353.15606 1752 e5e85ad0dbad56e6d9600149f758a662 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1762110348.24233 "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex" "main.pdf" "main" 1762110348.61611 0
-  "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex" 1762110347.56817 4015 f5138cf90e0c54f559a990fb599566bd ""
+["pdflatex"] 1762115352.89797 "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex" "main.pdf" "main" 1762115353.21021 0
+  "../nn_battery.png" 1762110409.43196 40818 6b90a95e699f4c02221a0ea80e9ea795 ""
+  "/Users/georgekirby/Documents/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex" 1762115352.23511 5988 343bea077e9435da714ce12517953e71 ""
   "/Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -82,10 +83,10 @@
   "/Users/georgekirby/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1762016962.79478 11524 e5e26699ce4d2f360810ccdb44729916 ""
   "/Users/georgekirby/Library/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1761449371 2228196 610f0c34bb44aab2c823b80871778971 ""
   "/Users/georgekirby/Library/TinyTeX/texmf.cnf" 1761449319 637 edd806fb06a89761a6034e1968af9017 ""
-  "main.aux" 1762110348.54596 1227 857ad4fa2904b147442bf4285723d36d "pdflatex"
-  "main.bbl" 1762110348.24064 4183 8a397d5429faffa371b7f5f7b358c12a "bibtex main"
-  "main.out" 1762110348.54646 995 85a27fc87818eecbfe3491508c7755f3 "pdflatex"
-  "main.tex" 1762110347.56817 4015 f5138cf90e0c54f559a990fb599566bd ""
+  "main.aux" 1762115353.15606 1752 e5e85ad0dbad56e6d9600149f758a662 "pdflatex"
+  "main.bbl" 1762115352.89629 7318 15a6ca8d60e4790d9a2775b0037434d9 "bibtex main"
+  "main.out" 1762115353.15657 907 8d54eaf46814273895169ca76bd03170 "pdflatex"
+  "main.tex" 1762115352.23511 5988 343bea077e9435da714ce12517953e71 ""
   (generated)
   "main.aux"
   "main.log"

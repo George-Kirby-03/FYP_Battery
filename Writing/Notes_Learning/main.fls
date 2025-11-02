@@ -129,6 +129,11 @@ INPUT /Users/georgekirby/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdfte
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
+INPUT ../nn_battery.png
+INPUT ../nn_battery.png
+INPUT ../nn_battery.png
+INPUT ../nn_battery.png
+INPUT ../nn_battery.png
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /Users/georgekirby/Library/TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
