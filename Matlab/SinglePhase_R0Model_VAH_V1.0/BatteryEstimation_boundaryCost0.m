@@ -1,0 +1,1 @@
+boundaryCost=0;
