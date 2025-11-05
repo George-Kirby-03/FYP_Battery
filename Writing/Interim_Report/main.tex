@@ -4,7 +4,8 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{hyperref}
-
+\setlength{\parskip}{0.8em plus 0.2em minus 0.1em}
+\setlength{\parindent}{0pt}
 
 \title{
     
@@ -14,31 +15,61 @@
 }
 \author{George W. Kirby \\[2em] \textit{200328186} \\[2em] }
 \date{\today}
-
+\linespread{1.5}
 \begin{document}
 \maketitle
 \vfill 
 \begin{center}
-    \textbf{Supervisor:} Dr. Ross Drummond YYY
+    \textbf{Supervisor:} Dr. Ross Drummond 
 \end{center}
-
 \newpage
+{
+  \setlength{\parskip}{0pt}
   \tableofcontents
-\newpage
-\begin{figure}[h]
+  \newpage
+}
+
+\section{Introduction}
+There are cuurently over 7 billion people with acess to electricity \cite{chen_physics-informed_2025}, the global consuption of energy is rising by $4.5\times10^{16}$ Joules every year; 77\% of which is from utilising non-renewable sources.
+With the affects of non-renwables on the environment still not fully realised, coupled wit the concern of their finitie-life nature, poses a constant need to increase usage of renewables. However, a large set of renwable generation methods
+fall under the category of veriable renewable energy (VRE) sources \cite{guo_effects_2024}, thus requring a robust form of energy storage to solve the itermitten availability of these energy sources - methods of storage do exist and suitable solutions do 
+depend on the specifics, as battery techonolgy increases, the use of battery in the feild are ever more increasing.  
+There is also the rapid increase in elecrict vehicle production, with a push to increase the adoption of EV's, 17.3 million cars were produced in 2024 \cite{li_evolution_2024} with a recent 20\% average year-on increase. Lithium Ion batterys (LIB) are the most common batterys used in 
+modern day due to their desirbale characyeristics in energy density, aging properties and more.
+
+
+EV's and the energy sector account now account for 90\% of the total lithium ion battery demand since 2016, the total lithium-ion battery demand is 10-times larger \cite{guo_effects_2024} since 2016. Different resources predict different forcasts of total battery growth \cite{chinnam_fast-charging_2021,lucu_data-driven_2020},
+yet it appears the rate of demand wil not be decreasing in the near future. 
+
+
+LIB's as an energy storage medium age over time, and decrease untill deemed 'dead'. This means that all lIB;s currently in use will eventually be either repurposed 
+
+
+Breifly discuss efforts \& applications to mitigate
+
+
+What is this project? the general apprach
+
+\subsection{Project Aims}
+
+\subsubsection{Objectives}
+\begin{itemize}
+    
+    \item rrre
+\end{itemize}
+% \includegraphics[width=0.25\textwidth]{../nn_battery.png.png}\\[3cm]
+\section{Project progress}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{../nn_battery.png}
     \caption{Inital end objective: Black Box Battery}
 \end{figure}
-\section{Introduction}
-This project investigates to use of machiddne learning techniques to model battery degredation over its lifetime; unlitmately throught model parameterisation and raw data regression.
-\cite{tran_comprehensive_2021}
-Due to dealings with large datasets, saved data has been stored locally on a home server, with code being run remotely via SSH.
-% \includegraphics[width=0.25\textwidth]{../nn_battery.png.png}\\[3cm]
-\section{Project progress}
 
 \section{Literature Review}
-
+\subsection{Lithium based batterys}
+Whiney well \footnote{Yep soooo}
+\subsection{Neural networking}
+\subsection{Optimal controll}
 \section{Plans for Remaining Work}
 
 \section{Self Review}

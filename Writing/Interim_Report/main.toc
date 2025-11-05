@@ -1,5 +1,10 @@
 \contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
-\contentsline {section}{\numberline {2}Project progress}{3}{section.2}%
-\contentsline {section}{\numberline {3}Literature Review}{3}{section.3}%
-\contentsline {section}{\numberline {4}Plans for Remaining Work}{3}{section.4}%
-\contentsline {section}{\numberline {5}Self Review}{3}{section.5}%
+\contentsline {subsection}{\numberline {1.1}Project Aims}{3}{subsection.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.1}Objectives}{3}{subsubsection.1.1.1}%
+\contentsline {section}{\numberline {2}Project progress}{4}{section.2}%
+\contentsline {section}{\numberline {3}Literature Review}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Lithium based batterys}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Neural networking}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Optimal controll}{4}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Plans for Remaining Work}{4}{section.4}%
+\contentsline {section}{\numberline {5}Self Review}{4}{section.5}%
