@@ -20,30 +20,28 @@ function [problem,guess,phaseoptions] = BatteryEstimation
 % 1 Aug 2019
 % iclocs@imperial.ac.uk
 
-load("Data\VAH_Seg1_charging.mat")
+load("Learning\DS_DATA.mat")
+tt = C01_Discharge(:,3)./1000;
+u1 = 1.5*0.1*ones(78,1);
+y = C01_Discharge(:,2);
 tf_1=tt(end);
-load("Data\VAH_Seg2_TO.mat")
-tf_2=tt(end);
-load("Data\VAH_Seg3_CRZ.mat")
-tf_3=tt(end);
-load("Data\VAH_Seg4_LAND.mat")
-tf_4=tt(end);
-load("Data\VAH_Seg5_rest.mat")
-tf_5=tt(end);
-% Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
-problem.mp.time.t_min=[0 tf_1 tf_2 tf_3 tf_4 tf_5];     
-problem.mp.time.t_max=[0 tf_1 tf_2 tf_3 tf_4 tf_5]; 
-guess.mp.time=[0 tf_1 tf_2 tf_3 tf_4 tf_5];
 
-% Parameters bounds. pl=< p <=pu
-problem.mp.parameters.pl=[2.5 -10 -50 20 -200 20 -40  0.001 -10 -10  -10             2.5*3600  6000  0 1000]; % p7 Q C1 R0 R1 Cp -100 -200 -100 -100
-problem.mp.parameters.pu=[4 10 -10 120 -20 120 0      0.1  10 10 10               3.5*3600 10000  0.01 4000]; %300 300 100 100
-guess.mp.parameters=[2.5 7.6 -26 50 -43 14  0         0.005 0 0 0              3*3600 8000 0.003  2025.737]; %0 0 0 0
-problem.mp.data.OCV_Np=7;
-problem.mp.data.R0_SOC_Np=3;
+% Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
+problem.mp.time.t_min=[0 tf_1 ];     
+problem.mp.time.t_max=[0 tf_1 ]; 
+guess.mp.time=[0 tf_1 ];
+
+% No. of parameters and decision variables
+problem.mp.data.DecVar_Np=4;   % no, of Decision variables #Note that this wont affect the codes if the bounds need to be specific
+problem.mp.data.OCV_Np=7;      % no. of polynomials
+problem.mp.data.R0_SOC_Np=3;   
 problem.mp.data.R0_i_Np=1;
 
 problem.mp.data.Np_poly=problem.mp.data.OCV_Np+problem.mp.data.R0_SOC_Np+problem.mp.data.R0_i_Np;
+
+% Parameters bounds. pl=< p <=pu
+% Define Bounds of the parameters and Decision Variables
+[problem.mp.parameters.pl, problem.mp.parameters.pu, guess.mp.parameters]=ParametersBounds(-200, 200, 0, 12000,problem.mp.data);
 
 syms SOC current
 syms p [1 problem.mp.data.OCV_Np+problem.mp.data.R0_SOC_Np+problem.mp.data.R0_i_Np] 
@@ -69,9 +67,9 @@ end
 matlabFunction(R0Model,"File","R0Model","Vars",{p,SOC,current});
 
 % Bounds for linkage boundary constraints bll =< bclink(x0,xf,u0,uf,p,t0,tf,vdat) =< blu
-problem.mp.constraints.bll.linear=[zeros(1,3*5)];
-problem.mp.constraints.blu.linear=[zeros(1,3*1)];
-problem.mp.constraints.blTol.linear=[0.01*ones(1,3*1)];
+problem.mp.constraints.bll.linear=[];
+problem.mp.constraints.blu.linear=[];
+problem.mp.constraints.blTol.linear=[];
 
 problem.mp.constraints.bll.nonlinear=[];
 problem.mp.constraints.blu.nonlinear=[];
@@ -102,20 +100,14 @@ problem.mp.data.batt_m=46.8e-03;         %39e-03;
 % problem.mp.data.batt_Cp=2025.737; 
 problem.mp.data.batt_h=43.061;
 problem.mp.data.batt_A=1.206e-03;        %3.714e-03;
-problem.mp.data.TempAmb=23;
+problem.mp.data.TempAmb=25;
 
 % Define different phases of OCP
 [problem.phases{1},guess.phases{1}] = BatteryEstimation_Phase1_Charging(problem.mp, guess.mp);
-[problem.phases{2},guess.phases{2}] = BatteryEstimation_Phase2_TO(problem.mp, guess.mp);
-[problem.phases{3},guess.phases{3}] = BatteryEstimation_Phase3_CRZ(problem.mp, guess.mp);
-[problem.phases{4},guess.phases{4}] = BatteryEstimation_Phase4_LAND(problem.mp, guess.mp);
-[problem.phases{5},guess.phases{5}] = BatteryEstimation_Phase5_rest(problem.mp, guess.mp);
 
-phaseoptions{1}=problem.phases{1}.settings(20);
-phaseoptions{2}=problem.phases{2}.settings(50);
-phaseoptions{3}=problem.phases{3}.settings(20);
-phaseoptions{4}=problem.phases{4}.settings(50);
-phaseoptions{5}=problem.phases{5}.settings(20);
+
+phaseoptions{1}=problem.phases{1}.settings(80);
+
 
 %------------- END OF CODE --------------
 
@@ -143,6 +135,6 @@ function [blc_linear, blc_nonlinear]=bclink(x0,xf,u0,uf,p,t0,tf,vdat)
 %
 %------------- BEGIN CODE --------------
 
-blc_linear=[xf{1}(1:3)-x0{2}(1:3);xf{2}(1:3)-x0{3}(1:3);xf{3}(1:3)-x0{4}(1:3);xf{4}(1:3)-x0{5}(1:3)];
+blc_linear=[];
 blc_nonlinear=[];
 %------------- END OF CODE --------------

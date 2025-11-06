@@ -47,7 +47,11 @@ colorlist = [
     0.4000 0.4000 0.4000   % Gray
 ];
 
-measurementData=load("Data\JGNE26_Cycle_1.mat");
+
+load("Learning\DS_DATA.mat")
+measurementData.tt = C01_Discharge(:,3)./1000;
+measurementData.u1 = 1.5*0.1*ones(78,1);
+measurementData.y = C01_Discharge(:,2);
 for i=1:length(solution.phaseSol)
     sol=solution.phaseSol{i};
     tt=sol.T;

@@ -20,9 +20,22 @@ function [problem,guess] = BatteryEstimation
 % iclocs@imperial.ac.uk
 
 % Load the measurement from Data
-load("Data/cycle_1.mat")
-problem.data.OutputVoltage=griddedInterpolant(tt,y,"pchip");
-problem.data.InputCurrent=griddedInterpolant(tt,u1,"pchip");
+% Load data
+load('Learning/DS_DATA.mat')
+
+% Extract columns
+tt = C01_Discharge(:,3)./1000;
+u1 = 1.5 * 0.1 * ones(size(tt));  
+y  = C01_Discharge(:,2);
+[tt, ia] = unique(tt, 'stable');
+y  = y(ia);
+u1 = u1(ia);
+[tt, sortIdx] = sort(tt);
+y  = y(sortIdx);
+u1 = u1(sortIdx);
+problem.data.OutputVoltage = griddedInterpolant(tt, y, 'pchip');
+problem.data.InputCurrent  = griddedInterpolant(tt, u1, 'pchip');
+
 
 %------------- BEGIN CODE --------------
 % Plant model name, used for Adigator
@@ -51,9 +64,9 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[V_OCV0 V_OCV1 V_OCV2 V_OCV3 Q C1 R0 R1 C12 R12]
-problem.parameters.pl=[2 0 0 0 1000 5000 0.001 0.001 30 0.001];
-problem.parameters.pu=[5 1 1 1 35*3600 50000 0.02 0.02 7000 0.05];
-guess.parameters=[4 0.5 0.3 0.4 15*60*60 8000 0.005 0.005 90 0.01];
+problem.parameters.pl=[2 0 0 0 1*3600 90 0.001 0.001 30 0.001];
+problem.parameters.pu=[5 1 1 1 3*3600 5000 0.1 0.02 7000 0.05];
+guess.parameters=[4 0.5 0.3 0.4 1.5*60*60 600 0.085 0.005 90 0.01];
 
 
 % Initial conditions for system.
@@ -64,7 +77,7 @@ problem.states.x0l=[0.99 -0.01 -0.01];
 problem.states.x0u=[1 0.2 0.2]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[00 -0.5 -0.5 ];
+problem.states.xl=[0 -0.5 -0.5 ];
 problem.states.xu=[1 0.5 0.5];
 
 % State error bounds
@@ -76,13 +89,13 @@ problem.states.xErrorTol_integral=[1e-6 1e-6 1e-6];
 problem.states.xConstraintTol=[1e-4 1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.95 -0.5 -0.5];
-problem.states.xfu=[1.1 0.5 0.5 ];
+problem.states.xfl=[0 -0.5 -0.5];
+problem.states.xfu=[0.1 0.5 0.5 ];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[1 1];
-guess.states(:,2)=[-0.01 0];
-guess.states(:,3)=[-0.05 0];
+guess.states(:,1)=[1 0];
+guess.states(:,2)=[-0.01 -0.01];
+guess.states(:,3)=[-0.05 -0.05];
 
 % Number of control actions N 
 % Set problem.inputs.N=0 if N is equal to the number of integration steps.  

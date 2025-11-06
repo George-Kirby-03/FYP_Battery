@@ -20,7 +20,10 @@ function [problem,guess,phaseoptions] = BatteryEstimation
 % 1 Aug 2019
 % iclocs@imperial.ac.uk
 
-load("Data\JGNE26_Cycle_1.mat")
+load("Learning\DS_DATA.mat")
+tt = C01_Discharge(:,3)
+u1 = C01_Discharge()
+y
 tf_1=tt(end);
 
 % Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
