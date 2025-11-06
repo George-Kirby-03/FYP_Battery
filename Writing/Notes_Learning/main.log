@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.24)  6 NOV 2025 11:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.4)  6 NOV 2025 16:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**c:/Users/jekir/Documents/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex
-(c:/Users/jekir/Documents/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex
-LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-10-09>
+**c:/Users/jekir/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex
+(c:/Users/jekir/GitHub/FYP_Battery/Writing/Notes_Learning/main.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-10-24>
 (c:/texlive/2025/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
 (c:/texlive/2025/texmf-dist/tex/latex/base/size10.clo
@@ -65,7 +65,7 @@ Package: iftex 2024/12/12 v1.0g TeX engine tests
 \Gm@layoutvoffset=\dimen158
 \Gm@dimlist=\toks20
 ) (c:/texlive/2025/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2025/06/16 v2.17y AMS math features
+Package: amsmath 2025/07/09 v2.17z AMS math features
 \@mathmargin=\skip51
 
 For additional information on amsmath, use the `?' option.
@@ -126,8 +126,8 @@ LaTeX Info: Redefining \Relbar on input line 970.
 \multlinegap=\skip52
 \multlinetaggap=\skip53
 \mathdisplay@stack=\toks25
-LaTeX Info: Redefining \[ on input line 2949.
-LaTeX Info: Redefining \] on input line 2950.
+LaTeX Info: Redefining \[ on input line 2950.
+LaTeX Info: Redefining \] on input line 2951.
 ) (c:/texlive/2025/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
  (c:/texlive/2025/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
@@ -308,9 +308,7 @@ Package hyperref Info: Link coloring OFF on input line 15.
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
-
-
-[1
+ [1
 
 {c:/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 <../Images/nn_battery.png, id=39, 494.2214pt x 153.95015pt>
@@ -318,11 +316,7 @@ File: ../Images/nn_battery.png Graphic file (type png)
 <use ../Images/nn_battery.png>
 Package pdftex.def Info: ../Images/nn_battery.png  used on input line 38.
 (pdftex.def)             Requested size: 234.8775pt x 73.16231pt.
-
-
-[2{c:/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <../Images/nn_battery.png>] (./main.bbl
-
-[3]
+ [2{c:/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <../Images/nn_battery.png>] (./main.bbl [3]
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
 ** loaded for the language `en'. Using the pattern for
 ** the default language instead.
@@ -335,26 +329,22 @@ Package pdftex.def Info: ../Images/nn_battery.png  used on input line 38.
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
 ** loaded for the language `en'. Using the pattern for
 ** the default language instead.
-
-
-[4])
-
-[5] (./main.aux)
+[4]) [5] (./main.aux)
  ***********
-LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-10-09>
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-10-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 8D54EAF46814273895169CA76BD03170;907.
  ) 
 Here is how much of TeX's memory you used:
- 9675 strings out of 468871
- 147612 string characters out of 5451959
- 573540 words of memory out of 5000000
- 38071 multiletter control sequences out of 15000+600000
+ 9684 strings out of 468702
+ 147744 string characters out of 5445578
+ 576528 words of memory out of 5000000
+ 38248 multiletter control sequences out of 15000+600000
  634132 words of font info for 62 fonts, out of 8000000 for 9000
  430 hyphenation exceptions out of 8191
- 75i,6n,79p,630b,579s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,6n,79p,620b,583s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
 Output written on main.pdf (5 pages, 152561 bytes).
 PDF statistics:
