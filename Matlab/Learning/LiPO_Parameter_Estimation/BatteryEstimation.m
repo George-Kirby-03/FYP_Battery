@@ -31,7 +31,7 @@ load('Learning/DS_DATA.mat')
 padding = linspace(0,1000,45)'
 [padding_size, ~] = size(padding)
 tt = [padding; (C01_Discharge(:,3))./1000 + 1001];
-u1 = [zeros(padding_size,1); 1.5 * 0.1 * ones(size(tt))];  
+u1 = [zeros(padding_size,1); -1.5 * 0.1 * ones(size(tt))];  
 y  = [ones(padding_size,1).*C01_Discharge(1,2); C01_Discharge(:,2)];
 [tt, ia] = unique(tt, 'stable');
 y  = y(ia);
@@ -70,21 +70,21 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[V_OCV0 V_OCV1 V_OCV2 V_OCV3 Q C1 R0 R1 V_OCV4 V_OCV5]
-problem.parameters.pl=[2.4 -8 -8 -6 1.4*3600 300 0.004 0.001 -8 -8];
-problem.parameters.pu=[2.9 8 8 8 1.8*3600 5000 0.1 0.05 8 8];
-guess.parameters=[2.6 0.5 0.3 0.4 1.5*3600 3000 0.09 0.005 0.4 0.3];
+problem.parameters.pl=[2.4 -10 -10 -10 1.4*3600 300 0.004 0.001 -10 -10 -10];
+problem.parameters.pu=[2.9 10 10 10 1.8*3600 5000 0.1 0.05 10 10 10];
+guess.parameters=[2.6 0.5 0.3 0.4 1.5*3600 900 0.09 0.005 2 2 2];
 
 
 % Initial conditions for system.
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.99 -0.01]; 
-problem.states.x0u=[1.1 0.01]; 
+problem.states.x0l=[0.99 0]; 
+problem.states.x0u=[1.1 0]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 -0.09];
-problem.states.xu=[1 0.01];
+problem.states.xl=[0 -0.02];
+problem.states.xu=[1 0];
 
 % State error bounds
 problem.states.xErrorTol_local=[1e-6 1e-6];
@@ -95,12 +95,12 @@ problem.states.xErrorTol_integral=[1e-6 1e-6];
 problem.states.xConstraintTol=[1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0 -0.07];
-problem.states.xfu=[0.2 -0.06];
+problem.states.xfl=[0 -0.02];
+problem.states.xfu=[0.2 -0.005];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[1 0.1];
-guess.states(:,2)=[0 -0.02];
+guess.states(:,1)=[1 0.05];
+guess.states(:,2)=[0 -0.01];
 
 
 % Number of control actions N 
@@ -122,7 +122,7 @@ problem.inputs.u0u=0;
 problem.inputs.uConstraintTol=[0.1];
 
 % Guess the input sequences with [u0 uf]
-guess.inputs(:,1)=[0.15 0.15];
+guess.inputs(:,1)=[0 -0.15];
 
 
 
@@ -203,7 +203,7 @@ u1=vdat.InputCurrent(t);
 voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
-voltage_model=p(:,1)+p(:,2).*x1+p(:,3).*x1.^2+p(:,4).*x1.^3 + p(:,9).*x1.^4 + p(:,10).*x1.^5 + x2+ R0.*u1;
+voltage_model=p(:,1)+p(:,2).*x1+p(:,3).*x1.^2+p(:,4).*x1.^3 + p(:,9).*x1.^4 + p(:,10).*x1.^5 +  p(:,11).*x1.^6+ x2 + R0.*u1;
 
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
