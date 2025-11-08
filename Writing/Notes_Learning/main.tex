@@ -6,6 +6,11 @@
 \usepackage{hyperref}
 \setlength{\parskip}{0.8em plus 0.2em minus 0.1em}
 \setlength{\parindent}{0pt}
+\usepackage{booktabs}
+
+\renewcommand{\arraystretch}{1.2}
+
+
 
 \linespread{1.5}
 \title{
@@ -119,6 +124,39 @@ Entry 1: Terrible, a such fruitfull datasheet has made extracting parameters a b
 other modules, its so nice not to have to do anything
 
 I definitley did not need to spend hours getting nowhere
+
+
+Going to try to find a ocv cuve to help with the ICLOCS2 model, ittertive type method. I also know R1+R0.
+Okay, so some okay progress been made, was really stuggling with nopthing giving to it, hard part is the graph isnt even complete!
+So using this ocv curvce with a poly count of 10 seemed okay and a setting of 120
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{../../Matlab/Figures/Fixed_ocv_curve.jpg}
+    \caption{Fixed OCV curve from paper ... }
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Case} & $\mathbf{Q\ (As)}$ & $\mathbf{C\ (F)}$ & $\mathbf{R_0\ (\Omega)}$ & $\mathbf{R_1\ (\Omega)}$ & $\mathbf{MSE}$ \\
+\midrule
+Baseline      & 5400  &  900  & 0.008  & 0.004 & 0.2 \\
+Cold Test     & 5200  & 1100  & 0.010  & 0.006  \\
+High Load     & 4800  &  700  & 0.012  & 0.008  \\
+Optimized Fit & 5500  &  950  & 0.007  & 0.003  \\
+\bottomrule
+\end{tabular}
+\vspace{3pt}
+\caption{Parameter values}
+\label{tab:battery_params}
+\end{table}
+
+
+On the thermal note, maybe see if it does affect a single cycle path for even more accuracy
+
+
 \nocite{*}
 \bibliographystyle{../IEEEtran/IEEEtran}
 \bibliography{../Interim_Report/My_Library}

@@ -20,22 +20,27 @@ function [problem,guess] = BatteryEstimation
 % iclocs@imperial.ac.uk
 
 % Load the measurement from Data (George Kirby FYP)
-load('Learning/DS_DATA.mat')
+cd(fileparts(which('main_BatteryEstimation.m')))
+load("DS_DATA.mat")
 
-% OCV Poly values to help ICLOCS fitting
+p_res = 10;
+coef = polyfit(Base_OCV.x, Base_OCV.y, p_res);
+coef = fliplr(coef);
+syms x1 
 
-ocv_poly = polyfit(Base_OCV.x,Base_OCV.y,poly_length);
+ocv_func = 0;
+for i = 1:p_res+1
+    ocv_func = ocv_func + coef(i) * x1.^(i-1);
+end
+matlabFunction(ocv_func, 'File', 'OCVModel', 'Vars', {x1});
 
-
-
-% Extract columns
 
 %adding initial resting condition fudge to maybe help paramtereisation
-padding = linspace(0,(C01_Discharge(1,3))./1000,45)'
+padding = linspace(0,1000,45)'
 [padding_size, ~] = size(padding)
-tt = [padding; (C01_Discharge(:,3))./1000];
+tt = [padding; C01_Discharge.("time") + 1001];
 u1 = [zeros(padding_size,1); -1.5 * 0.1 * ones(size(tt))];  
-y  = [ones(padding_size,1).*C01_Discharge(1,2); C01_Discharge(:,2)];
+y  = [ones(padding_size,1).*C01_Discharge.volts(1); C01_Discharge.volts];
 [tt, ia] = unique(tt, 'stable');
 y  = y(ia);
 u1 = u1(ia);
@@ -72,18 +77,18 @@ guess.tf=tt(end);
 
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
-% p=[V_OCV0 V_OCV1 V_OCV2 V_OCV3 Q C1 R0 R1 V_OCV4 V_OCV5]
-problem.parameters.pl=[2.4 -10 -10 -10 1.4*3600 300 0.004 0.001 -10 -10 -10];
-problem.parameters.pu=[2.9 10 10 10 1.8*3600 5000 0.1 0.05 10 10 10];
-guess.parameters=[2.6 0.5 0.3 0.4 1.5*3600 900 0.09 0.005 2 2 2];
+% p=[Q C1 R0 R1]
+problem.parameters.pl=[1.4*3600 700 0.001 0.001 ];
+problem.parameters.pu=[9*3600 30000 0.1 0.1];
+guess.parameters=[1.5*3600 9000 0.02 0.02];
 
 
 % Initial conditions for system.
-problem.states.x0=[];
+problem.states.x0=[1 0];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.99 0]; 
-problem.states.x0u=[1.1 0]; 
+problem.states.x0l=[0.9 0]; 
+problem.states.x0u=[1 0]; 
 
 % State bounds. xl=< x <=xu
 problem.states.xl=[0 -0.02];
@@ -95,14 +100,14 @@ problem.states.xErrorTol_integral=[1e-6 1e-6];
 
 
 % State constraint error bounds
-problem.states.xConstraintTol=[1e-4 1e-4];
+problem.states.xConstraintTol=[1e-5 1e-5];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0 -0.02];
-problem.states.xfu=[0.2 -0.005];
+problem.states.xfl=[0 -0.1];
+problem.states.xfu=[0.01 -0.005];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[1 0.05];
+guess.states(:,1)=[1 0];
 guess.states(:,2)=[0 -0.01];
 
 
@@ -122,10 +127,10 @@ problem.inputs.u0l=0;
 problem.inputs.u0u=0;
 
 % Input constraint error bounds
-problem.inputs.uConstraintTol=[0.1];
+problem.inputs.uConstraintTol=[0.01];
 
 % Guess the input sequences with [u0 uf]
-guess.inputs(:,1)=[0 -0.15];
+guess.inputs(:,1)=[-0.15 -0.15];
 
 
 
@@ -152,7 +157,7 @@ problem.constraints.bTol=[];
 % store the necessary problem parameters used in the functions
 
 %Some known parameters
-problem.data.batt_m=39e-03;
+problem.data.batt_m=15e-03;
 
 % Get function handles and return to Main.m
 problem.data.InternalDynamics=InternalDynamics;
@@ -197,7 +202,7 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %------------- BEGIN CODE --------------
 
-x1=x(:,1);x2=x(:,2);R0=p(:,7);
+x1=x(:,1);x2=x(:,2);R0=p(:,3);
 
 % Obtain the measured input from the Lookup Table
 u1=vdat.InputCurrent(t);
@@ -206,8 +211,8 @@ u1=vdat.InputCurrent(t);
 voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
-voltage_model=p(:,1)+p(:,2).*x1+p(:,3).*x1.^2+p(:,4).*x1.^3 + p(:,9).*x1.^4 + p(:,10).*x1.^5 +  p(:,11).*x1.^6+ x2 + R0.*u1;
-
+voltage_model= OCVModel(x1) + x2 + R0.*u1;
+% voltage_model=poly
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
 stageCost = (voltage_model-voltage_measured).^2;

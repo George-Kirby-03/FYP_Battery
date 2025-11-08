@@ -12,14 +12,14 @@
 % voltage=3.64+0.55.*x1-0.72.*x1.^2+0.75*x1.^3+x2+vdat.R0*u1;
 %--------------------------------------------------------
 
-clear all;close all;format compact;
+clear all;close all;format compact;    
 
 
-poly_length = 6;
+% OCV Poly values to help ICLOCS fitting
 
 
 [problem,guess]=BatteryEstimation;          % Fetch the problem definition
-options= problem.settings(150);                  % Get options and solver settings 
+options= problem.settings(160);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
 %% figure%
@@ -31,8 +31,8 @@ x2=speval(solution,'X',2,tt);
 
 u1=problem.data.InputCurrent(tt);
 soc = linspace(0,1,50);
-OCV_SOC = solution.p(1)+solution.p(2).*soc+solution.p(3).*soc.^2+solution.p(4).*soc.^3+solution.p(9).*soc.^4+solution.p(10).*soc.^5;
-y=solution.p(1)+solution.p(2).*x1+solution.p(3).*x1.^2+ solution.p(4).*x1.^3 + solution.p(9).*x1.^4 + solution.p(10).*x1.^5 + solution.p(11).*x1.^6 + x2 + solution.p(7).*u1;
+OCV_SOC = OCVModel(soc);
+y=OCVModel(x1) + x2 + solution.p(3).*u1;
 
 figure
 subplot(2,2,1)
