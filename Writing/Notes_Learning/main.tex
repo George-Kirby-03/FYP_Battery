@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage[margin=1in]{geometry}
@@ -40,7 +40,7 @@ Instead of a \textit{black box battery} model, the goal is now to focus on the a
 constant current stage of the charging cycle, as this is where most of the heat is generated, research shows this to be a large factor of degredatdion alongside instantatious
 applied voltages. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{../Images/nn_battery.png}
     \caption{Original end objective: Black Box Battery to allow for discorvery \& testing of optimal charging profiles}
@@ -129,13 +129,13 @@ I definitley did not need to spend hours getting nowhere
 Going to try to find a ocv cuve to help with the ICLOCS2 model, ittertive type method. I also know R1+R0.
 Okay, so some okay progress been made, was really stuggling with nopthing giving to it, hard part is the graph isnt even complete!
 So using this ocv curvce with a poly count of 10 seemed okay and a setting of 120
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1\textwidth]{../../Matlab/Figures/Fixed_ocv_curve.jpg}
     \caption{Fixed OCV curve from paper ... }
 \end{figure}
 
-\begin{table}[htbp]
+\begin{table}[ht]
 \centering
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{lccccc}
@@ -160,6 +160,7 @@ cold temperatures too. (Cold temperatures are not looked at in this scope, mainl
 
 
 \nocite{*}
+\newpage
 \bibliographystyle{../IEEEtran/IEEEtran}
 \bibliography{../Interim_Report/My_Library}
 
