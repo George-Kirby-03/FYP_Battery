@@ -80,7 +80,7 @@ guess.tf=tt(end);
 % p=[Q C1 R1]
 problem.parameters.pl=[1.4*3600 100 0.01];
 problem.parameters.pu=[2*3600 30000 0.04];
-guess.parameters=[1.5*3600 700 0.02];
+guess.parameters=[1.5*3600 700 0.03];
 
 
 % Initial conditions for system.
