@@ -187,7 +187,7 @@ options.fmincon.hessian_approximation='exact';
 % - fixed mesh ('fixed')
 % - with local refinement of mesh ('mesh_refinement')
 % - flexible mesh with adaptively spaced segments, ONLY AVAILABLE FOR hpLGR Discretization with Direct Collocation Method ('hp_flexible')
-options.meshstrategy='mesh_refinement';
+options.meshstrategy='fixed';
 
 % Mesh Refinement Method
 %---------------------------------------

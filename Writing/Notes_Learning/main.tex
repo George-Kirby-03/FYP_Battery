@@ -128,12 +128,34 @@ I definitley did not need to spend hours getting nowhere
 
 Going to try to find a ocv cuve to help with the ICLOCS2 model, ittertive type method. I also know R1+R0.
 Okay, so some okay progress been made, was really stuggling with nopthing giving to it, hard part is the graph isnt even complete!
-So using this ocv curvce with a poly count of 10 seemed okay and a setting of 120
+So using this ocv curvce with a poly count of 12 seemed okay and a setting of 130
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1\textwidth]{../../Matlab/Figures/Fixed_ocv_curve.jpg}
     \caption{Fixed OCV curve from paper ... }
 \end{figure}
+
+The problem risided in the Resistance chosen, since ICLOCS is wanting to match the output, since the output during the middle of the SOC
+can only be modified by the resistances (since the OCV curve is only generic, a large R was calculated to try fit). This meant that when 
+the resistance was unbound, it made it look as if the parametes allowed a nice fit, but they were fitting an incorrect ocv curve. Thus,
+one apprach was to atleast bound one resistance by being a function of the sumed resistance. This was possible since the datasheet gave a
+discharge curve for various currents, thus, for the center soc section (where the graph wasnt cut off), the difference between the curves
+should equal to the the resistiver drop across R1+R0. This allowed a decent estimate of R1+R0, and then R0 was bounded to be less than this value.
+
+
+Between 0.1C and 3C dishcarge (at SOC 50\%), the voltage difference was 0.287, thus R1+R0 = 0.287/ (2.9C rate current) = 0.287/ (2.9*1.5A) = 0.066 Ohms.
+Thus $R0 + R1 < 0.066 \Omega$. The initial drop in voltage would have allowed R1 to be estimated, however the graph is cut off too early to see this,
+when taking the litteral values from the table, R1 is shown to be $0.09 \Omega$ which is not possible since R1 + R0 must be less than 0.066 Ohms.
+
+
+Thus, the next approach was to parametrise only R0, and set R1 to be 0.066 - R0. Before attempting this, its expected a fair offset from the actual oputput
+given the ocv curve discrepencies. Nevertheless, this was attempted. In order to implament this in iclocs, R1 was taken out of the parameterisation and refomrulated
+as 0.066 - R0. It was discovered that then applying bounds on R0 caused larghe changes in the capaicty values, i.e a $10 \Omega$ change in R0 caused a near $1000F$ change in capaicty - 
+its assumed this is due to the small available transients in the limited data, so a sensible bound of 0.01 to 0.04 Ohms was chosen, based on most ECM's showing similar R0 \& R1 values.
+From this, atleast a Capaictance can be narrowred to a true value of 1500F +- 500F.
+
+Now, the bounds sensiblys taken from the above results should hopefuuly allow the true ocv curve to be estimated, a 10th order polynomial was chosen to give enough flexability.
+
 
 \begin{table}[ht]
 \centering
@@ -142,21 +164,24 @@ So using this ocv curvce with a poly count of 10 seemed okay and a setting of 12
 \toprule
 \textbf{Case} & $\mathbf{Q\ (As)}$ & $\mathbf{C\ (F)}$ & $\mathbf{R_0\ (\Omega)}$ & $\mathbf{R_1\ (\Omega)}$ & $\mathbf{MSE}$ \\
 \midrule
-Baseline      & 5400  &  900  & 0.008  & 0.004 & 0.2 \\
-Cold Test     & 5200  & 1100  & 0.010  & 0.006  \\
-High Load     & 4800  &  700  & 0.012  & 0.008  \\
-Optimized Fit & 5500  &  950  & 0.007  & 0.003  \\
+Fixed\_OCV\_0.1          & 5675 & \text{min bound} & 0.1   & 0.1   & 0.2 \\
+Fixed\_OCV\_Unbound      & 5684 & 6085             & 0.24  & 0.133 & \text{d} \\
+Fixed\_OCV\_R0\_Fix      & 4800 & 1024             & 0.012 & 0.008 & \text{d} \\
+Fixed\_OCV\_R1\_Fix      & 5684 & 2841             & 0.007 & 0.003 & \text{d} \\
+Fixed\_OCV\_Symetric     & 5685 & 1632             & 0.026 & 0.004 & \text{d} \\
 \bottomrule
 \end{tabular}
 \vspace{3pt}
-\caption{Parameter values}
+\caption{Parameter values for different estimation configurations.}
 \label{tab:battery_params}
 \end{table}
 
 
+
 On the thermal note, maybe see if it does affect a single cycle path for even more accuracy. From paper ... it shows that temperture dosent really affect the ocv cuve, mainly the internal resistance and maybe the ecm capaicotr.
-Its a misconseption that the charge (capaicty) changes with temperature, its the ability to deliver that changes, i.e energy extraction, directly related to internal resistance increase and limilts on max current draw for sei for the 
-cold temperatures too. (Cold temperatures are not looked at in this scope, mainly high temp effects during charge)
+Its a misconeption that the charge (capaicty) changes with temperature, its the ability to deliver that changes, i.e energy extraction, directly related to internal resistance increase and limilts on max current draw for sei for the 
+cold temperatures too. (Cold temperatures are not looked at in this scope, mainly high temp effects during charge). Infact, this phenominan can be shoiwn on the discharge graph for the LiPo datasheet, higher current draw is causing a larger 
+voltage drop, thus without risking damage to the cell, the 2.6V limit is reached sooner, showing less capacity effecitively drained.
 
 
 \nocite{*}

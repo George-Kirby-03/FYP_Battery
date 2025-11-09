@@ -15,7 +15,6 @@
 clear all;close all;format compact;
 
 
-poly_length = 6;
 
 
 [problem,guess]=BatteryEstimation;          % Fetch the problem definition

@@ -19,7 +19,7 @@ clear all;close all;format compact;
 
 
 [problem,guess]=BatteryEstimation;          % Fetch the problem definition
-options= problem.settings(160);                  % Get options and solver settings 
+options= problem.settings(130);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
 %% figure%
@@ -32,7 +32,7 @@ x2=speval(solution,'X',2,tt);
 u1=problem.data.InputCurrent(tt);
 soc = linspace(0,1,50);
 OCV_SOC = OCVModel(soc);
-y=OCVModel(x1) + x2 + solution.p(3).*u1;
+y=OCVModel(x1) + x2 + (0.066-solution.p(3)).*u1;
 
 figure
 subplot(2,2,1)

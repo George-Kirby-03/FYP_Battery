@@ -20,14 +20,14 @@ function [problem,guess] = BatteryEstimation
 % iclocs@imperial.ac.uk
 
 % Load the measurement from Data (George Kirby FYP)
-cd(fileparts(which('main_BatteryEstimation.m')))
+cd(fileparts(which('BatteryEstimation.m')))
 load("DS_DATA.mat")
 
-p_res = 10;
+p_res = 13;
 coef = polyfit(Base_OCV.x, Base_OCV.y, p_res);
 coef = fliplr(coef);
-syms x1 
 
+syms x1 
 ocv_func = 0;
 for i = 1:p_res+1
     ocv_func = ocv_func + coef(i) * x1.^(i-1);
@@ -77,10 +77,10 @@ guess.tf=tt(end);
 
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
-% p=[Q C1 R0 R1]
-problem.parameters.pl=[1.4*3600 700 0.001 0.001 ];
-problem.parameters.pu=[9*3600 30000 0.1 0.1];
-guess.parameters=[1.5*3600 9000 0.02 0.02];
+% p=[Q C1 R1]
+problem.parameters.pl=[1.4*3600 100 0.01];
+problem.parameters.pu=[2*3600 30000 0.04];
+guess.parameters=[1.5*3600 700 0.02];
 
 
 % Initial conditions for system.
@@ -202,8 +202,8 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %------------- BEGIN CODE --------------
 
-x1=x(:,1);x2=x(:,2);R0=p(:,3);
-
+x1=x(:,1);x2=x(:,2);R1=p(:,3);
+R0 = 0.065-R1;
 % Obtain the measured input from the Lookup Table
 u1=vdat.InputCurrent(t);
 

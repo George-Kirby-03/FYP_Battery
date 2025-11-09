@@ -27,7 +27,11 @@ load('..\Fixed_Poly\DS_DATA.mat')
 % OCV Poly values
 
 polycount = 13;
-problem.data.poly = polymaker(polycount,20,2.6);
+poly = polymaker(polycount,20,2.6)
+
+
+
+
 
 % Extract columns
 
@@ -73,10 +77,10 @@ guess.tf=tt(end);
 
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
-% p=[poly Q C1 R0 R1 V_OCV4 V_OCV5]
-problem.parameters.pl=[problem.data.poly.xl 1.4*3600 1200 0.0025 0.0025];
-problem.parameters.pu=[problem.data.poly.xu 1.8*3600 2100 0.003 0.0026];
-guess.parameters=[problem.data.poly.xe 1.5*3600 1300 0.0026 0.002];
+% p=[V_OCV0 V_OCV1 V_OCV2 V_OCV3 Q C1 R0 R1 V_OCV4 V_OCV5]
+problem.parameters.pl=[2.4 -10 -10 -10 1.4*3600 1200 0.0025 0.0025 -10 -10 -10];
+problem.parameters.pu=[2.9 10 10 10 1.8*3600 2100 0.003 0.0026 10 10 10];
+guess.parameters=[2.6 0.5 0.3 0.4 1.5*3600 1300 0.0026 0.002 2 2 2];
 
 
 % Initial conditions for system.
@@ -198,7 +202,7 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %------------- BEGIN CODE --------------
 
-x1=x(:,1);x2=x(:,2);R0 = p(:,vdat.poly.R0)
+x1=x(:,1);x2=x(:,2);R0=p(:,7);
 
 % Obtain the measured input from the Lookup Table
 u1=vdat.InputCurrent(t);
@@ -207,7 +211,7 @@ u1=vdat.InputCurrent(t);
 voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
-voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
+voltage_model=polymodel(p,x1) + x2 + R0.*u1;
 
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
