@@ -1,6 +1,5 @@
 function dx = dynamics(t, y, solution, current_fun)
 R1 = solution(end);
-R0 = solution(end-1);
 C = solution(end-2);
 Q = solution(end-3);
 current = current_fun(t);
