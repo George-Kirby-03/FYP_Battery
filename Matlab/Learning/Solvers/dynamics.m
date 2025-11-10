@@ -1,7 +1,10 @@
-function dx = dynamics(t, y, solution, current)
+function dx = dynamics(t, y, solution, current_fun)
 R1 = solution(end);
 R0 = solution(end-1);
 C = solution(end-2);
 Q = solution(end-3);
-    dx = (1/(R1*C)) * (Vin - y*(1 + R1/R2)) ;
+current = current_fun(t);
+dx = zeros(2,1);
+dx(1) = current./Q;
+dx(2) = -y(2)./(R1.*C) + current./C;
 end

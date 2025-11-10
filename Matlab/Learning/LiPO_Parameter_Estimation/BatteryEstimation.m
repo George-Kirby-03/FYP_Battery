@@ -26,8 +26,8 @@ load('..\Fixed_Poly\DS_DATA.mat')
 
 % OCV Poly values
 
-polycount = 10;
-problem.data.poly = polymaker(polycount,150,2.6);
+polycount = 11;
+problem.data.poly = polymaker(polycount,250,2.6);
 % Extract columns
 
 %adding initial resting condition fudge to maybe help paramtereisation
@@ -73,8 +73,8 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.45*3600 1200 0.028 0.02];
-problem.parameters.pu=[problem.data.poly.xu 1.6*3600 2000 0.04 0.04];
+problem.parameters.pl=[problem.data.poly.xl 1.45*3600 6000 0.02 0.02];
+problem.parameters.pu=[problem.data.poly.xu 1.61*3600 10000 0.03 0.04];
 guess.parameters=[problem.data.poly.xe 1.57*3600 1570 0.026 0.04];
 
 

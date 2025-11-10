@@ -1,0 +1,24 @@
+cd(fileparts(which('Solving.m')))
+pwd
+load('..\Fixed_Poly\DS_DATA.mat')
+load('..\LiPO_Parameter_Estimation\Data\cycle_1.mat')
+time_vec = tt; % Assuming 'data' contains time vector in the first column
+current_vec = u1; % Assuming 'data' contains current vector in the second column
+current_lut = @(t) interp1(time_vec, current_vec, t, 'linear', 'extrap');
+
+[t, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0; 1]);
+
+x1=y(1);x2=y(2); R0 = p(end-2);
+
+u1=vdat.InputCurrent(t);
+
+% Obtain the measured output voltage from the Lookup Table
+voltage_measured=vdat.OutputVoltage(t);
+
+% Compute the output voltage of the Model
+voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
+
+
+
+figure
+plot(t,y)

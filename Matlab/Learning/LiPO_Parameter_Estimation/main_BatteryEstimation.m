@@ -18,7 +18,7 @@ clear all;close all;format compact;
 
 
 [problem,guess]=BatteryEstimation;          % Fetch the problem definition
-options= problem.settings(130);                  % Get options and solver settings 
+options= problem.settings(120);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
 %% figure%
