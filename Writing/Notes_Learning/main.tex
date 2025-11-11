@@ -183,6 +183,25 @@ Its a misconeption that the charge (capaicty) changes with temperature, its the 
 cold temperatures too. (Cold temperatures are not looked at in this scope, mainly high temp effects during charge). Infact, this phenominan can be shoiwn on the discharge graph for the LiPo datasheet, higher current draw is causing a larger 
 voltage drop, thus without risking damage to the cell, the 2.6V limit is reached sooner, showing less capacity effecitively drained.
 
+\textbf{NOTE:} The ocv curve does indeded change during degredation and has been reported to significantly change esitmation models \cite{schmitt_capacity_2023}, will mean unfortunatley this cant be fixed (but we can atleast try)
+
+So, next step is to just get the parameterised model to run better duriing current inputs via ode45 first.
+
+\subsection{Thermal}
+
+Since BIOT number is very small, we can assume the temp within the cell is uniform, thus a lumped model can be used \cite{wang_critical_2016}. Heat itself if formed by the following:
+\begin{equation}
+    Q_{gen} = I^2 R + I \left( \frac{\partial U}{\partial T} \right)_{soc}
+\end{equation}
+\begin{equation}
+    Q_{gen} = I(Uoc - V) - I  \left(T \frac{dUoc}{dT}\right)
+\end{equation}
+\begin{itemize}
+    \item Joule Heating: $I^2 R$ : Resistive heating from internal resistance
+    \item Entropc (reversable) heating: $I \left( \frac{\partial U}{\partial T} \right)_{soc}$ : Caused by the entropy change during the electrochemical reactions,
+    \item 
+\end{itemize}
+
 
 \nocite{*}
 \newpage
