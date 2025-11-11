@@ -22,26 +22,15 @@ function [problem,guess] = BatteryEstimation
 % Load the measurement from Data (George Kirby FYP)
 cd(fileparts(which('BatteryEstimation.m')))
 pwd
-load('..\Fixed_Poly\DS_DATA.mat')
+load(['..\..\..\cycle_exports\MOLI_cycle_1.mat'])
 
 % OCV Poly values
-
 polycount = 11;
-problem.data.poly = polymaker(polycount,250,2.6);
+problem.data.poly = polymaker(polycount,250,2.4);
 % Extract columns
 
 %adding initial resting condition fudge to maybe help paramtereisation
-padding = linspace(0,1000,45)'
-[padding_size, ~] = size(padding)
-tt = [padding; C01_Discharge.("time") + 1001];
-u1 = [zeros(padding_size,1); -1.5 * 0.1 * ones(size(tt))];  
-y  = [ones(padding_size,1).*C01_Discharge.volts(1); C01_Discharge.volts];
-[tt, ia] = unique(tt, 'stable');
-y  = y(ia);
-u1 = u1(ia);
-[tt, sortIdx] = sort(tt);
-y  = y(sortIdx);
-u1 = u1(sortIdx);
+
 problem.data.OutputVoltage = griddedInterpolant(tt, y, 'pchip');
 problem.data.InputCurrent  = griddedInterpolant(tt, u1, 'pchip');
 
@@ -73,8 +62,8 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.45*3600 6000 0.02 0.02];
-problem.parameters.pu=[problem.data.poly.xu 1.61*3600 10000 0.03 0.04];
+problem.parameters.pl=[problem.data.poly.xl 1.45*3600 6000 0.005 0.005];
+problem.parameters.pu=[problem.data.poly.xu 3*3600 10000 0.05 0.05];
 guess.parameters=[problem.data.poly.xe 1.57*3600 1570 0.026 0.04];
 
 
@@ -82,12 +71,12 @@ guess.parameters=[problem.data.poly.xe 1.57*3600 1570 0.026 0.04];
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.99 0]; 
-problem.states.x0u=[1.1 0]; 
+problem.states.x0l=[0.99 -0.5]; 
+problem.states.x0u=[1.1 -0.01]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 -0.02];
-problem.states.xu=[1 0];
+problem.states.xl=[0 -0.4];
+problem.states.xu=[1 1];
 
 % State error bounds
 problem.states.xErrorTol_local=[1e-6 1e-6];
@@ -98,12 +87,12 @@ problem.states.xErrorTol_integral=[1e-6 1e-6];
 problem.states.xConstraintTol=[1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0 -0.02];
-problem.states.xfu=[0.2 -0.005];
+problem.states.xfl=[0.99 -0.03];
+problem.states.xfu=[1.01 0.03];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[1 0.05];
-guess.states(:,2)=[0 -0.01];
+guess.states(:,1)=[1 -0.05];
+guess.states(:,2)=[1 0.01];
 
 
 % Number of control actions N 

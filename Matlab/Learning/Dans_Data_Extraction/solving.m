@@ -1,0 +1,66 @@
+cd(fileparts(which('Solving.m')))
+pwd
+load(['..\..\..\cycle_exports\MOLI_cycle_1.mat'])
+load(".\Data\MOLI.mat")
+
+
+%% Using parameters extracted from ICLOC's, the state and outputs are simulated here %%
+
+current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
+[t, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; -0.05]);
+x1=y(:,1);x2=y(:,2); R0 = p(end-1);
+u2=current_lut(t);
+polyss = flip(p(1:end-4));
+OCV_x = polyval(polyss,x1);
+voltage_model=OCV_x + x2 + R0.*u2;
+figure
+plot(t,voltage_model)
+hold on
+
+%Heat generation is approxomated as the Vout-Ocv * I, which can be
+%numerically found from the combination of states and input. The power out
+%over time is as follows:
+%dT = Q_heat/mCp - hA/mCp * (T - T_amb)
+%dT = Q_heat/mCp - hA/mCp * (T - T_amb)
+
+%Creatingh the table entry for the iddata for the model
+
+Q_heat = (voltage_model - OCV_x).*current_lut(t);
+Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
+temp_lut = @(tn) interp1(tt, tp, tn, 'linear', 'extrap');
+
+greyest_time_sampling = linspace(t(1),t(end),2000);
+
+% Sample the heat generation data for the specified time points
+U_sampled = Q_lut(greyest_time_sampling);
+%Current_sampled = current_lut(greyest_time_sampling);
+Temp_sampled = temp_lut(greyest_time_sampling);
+
+
+Data = array2table([U_sampled', Temp_sampled'],"VariableNames",["u1","y"]);
+Data_ts = table2timetable(Data,"RowTimes",seconds(greyest_time_sampling));
+smodle = iddata(Data_ts,'Name','Temperature Generation')
+
+plot(greyest_time_sampling,Temp_sampled)
+
+mCp = 0.2;
+hA = 0.2;
+parameters = {'specificheat*mass',mCp;'conduction*length',hA};
+init_sys = idgrey(@TempFnc,parameters,'c');
+
+opt = greyestOptions('Focus','simulation');
+sys = greyest(smodle,init_sys, opt)
+getpvec(sys)
+
+
+sim(sys, Q_lut(greyest_time_sampling)');
+
+
+function [A,B,C,D] = TempFnc(mCp,hA,Ts,aux)
+% ODE function for computing state-space matrices as functions of parameters
+A = [-hA/mCp];
+B = [1/mCp];
+C = eye(1);
+D = [0];
+end
+
