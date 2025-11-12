@@ -53,8 +53,8 @@ sys = greyest(smodle,init_sys, opt)
 getpvec(sys)
 
 
-sim(sys, Q_lut(greyest_time_sampling)');
-
+simulated_temp = lsim(sys, Q_lut(greyest_time_sampling)',greyest_time_sampling);
+plot(greyest_time_sampling,simulated_temp)
 
 function [A,B,C,D] = TempFnc(mCp,hA,Ts,aux)
 % ODE function for computing state-space matrices as functions of parameters
