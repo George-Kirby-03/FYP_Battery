@@ -5,9 +5,10 @@ load(".\Data\MOLI.mat")
 
 
 %% Using parameters extracted from ICLOC's, the state and outputs are simulated here %%
+
 yactual_lut = @(t) interp1(tt, y, t, 'linear', 'extrap');
 current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
-[t, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; -0.05]);
+[t, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0; -0.05]);
 x1=y_sim(:,1);x2=y_sim(:,2); R0 = p(end-1);
 u2=current_lut(t);
 polyss = flip(p(1:end-4));
@@ -17,6 +18,9 @@ figure
 plot(t,voltage_model)
 hold on
 plot(t,yactual_lut(t))
+plot(t,current_lut(t))
+title("Simulated & Actual Voltage response")
+xlabel("Time(s)")
 
 
 
