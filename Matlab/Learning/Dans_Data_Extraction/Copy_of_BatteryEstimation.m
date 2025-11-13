@@ -22,10 +22,10 @@ function [problem,guess] = BatteryEstimation
 % Load the measurement from Data (George Kirby FYP)
 cd(fileparts(which('BatteryEstimation.m')))
 pwd
-load(['..\..\..\cycle_exports\MOLI_cycle_1710.mat'])
+load(['..\..\..\cycle_exports\MOLI_cycle_1.mat'])
 
 % OCV Poly values
-polycount = 9;
+polycount = 11;
 problem.data.poly = polymaker(polycount,250,2.4);
 % Extract columns
 
@@ -62,9 +62,9 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.45*3600 6000 0.005 0.005];
-problem.parameters.pu=[problem.data.poly.xu 3*3600 10000 0.08 0.08];
-guess.parameters=[problem.data.poly.xe 1.57*3600 1570 0.026 0.04];
+problem.parameters.pl=[problem.data.poly.xl 1*3600 6000 0.005 0.005];
+problem.parameters.pu=[problem.data.poly.xu 2.5*3600 10000 0.05 0.05];
+guess.parameters=[problem.data.poly.xe 2*3600 1570 0.026 0.04];
 
 
 % Initial conditions for system.
@@ -76,7 +76,7 @@ problem.states.x0u=[1.1 -0.01];
 
 % State bounds. xl=< x <=xu
 problem.states.xl=[0 -0.4];
-problem.states.xu=[1 1];
+problem.states.xu=[1 0.9];
 
 % State error bounds
 problem.states.xErrorTol_local=[1e-6 1e-6];
@@ -91,8 +91,8 @@ problem.states.xfl=[0.99 -0.03];
 problem.states.xfu=[1.01 0.03];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[1 1];
-guess.states(:,2)=[-0.05 0.01];
+guess.states(:,1)=[1 -0.05];
+guess.states(:,2)=[1 0.01];
 
 
 % Number of control actions N 
@@ -141,7 +141,8 @@ problem.constraints.bTol=[];
 % store the necessary problem parameters used in the functions
 
 %Some known parameters
-problem.data.batt_m=39e-03;
+problem.data.batt_SA=3.71e-03;
+problem.data.bass_mkg=4.2e-02;
 
 % Get function handles and return to Main.m
 problem.data.InternalDynamics=InternalDynamics;

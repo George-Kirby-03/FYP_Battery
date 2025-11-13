@@ -21,16 +21,21 @@ function [problem,guess] = BatteryEstimation
 
 % Load the measurement from Data (George Kirby FYP)
 cd(fileparts(which('BatteryEstimation.m')))
-pwd
-load(['..\..\..\cycle_exports\MOLI_cycle_1710.mat'])
+load("..\..\Fixed_Poly\DS_DATA.mat")
 
-% OCV Poly values
-polycount = 9;
-problem.data.poly = polymaker(polycount,250,2.4);
-% Extract columns
+p_res = 13;
+coef = polyfit(Base_OCV.x, Base_OCV.y, p_res);
+coef = fliplr(coef);
 
-%adding initial resting condition fudge to maybe help paramtereisation
+syms x1 
+ocv_func = 0;
+for i = 1:p_res+1
+    ocv_func = ocv_func + coef(i) * x1.^(i-1);
+end
+matlabFunction(ocv_func, 'File', 'OCVModel', 'Vars', {x1});
 
+
+load(['..\..\..\..\cycle_exports\MOLI_cycle_1.mat'])
 problem.data.OutputVoltage = griddedInterpolant(tt, y, 'pchip');
 problem.data.InputCurrent  = griddedInterpolant(tt, u1, 'pchip');
 
@@ -61,22 +66,22 @@ guess.tf=tt(end);
 
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
-% p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.45*3600 6000 0.005 0.005];
-problem.parameters.pu=[problem.data.poly.xu 3*3600 10000 0.08 0.08];
-guess.parameters=[problem.data.poly.xe 1.57*3600 1570 0.026 0.04];
+% p=[Q C1 R1]
+problem.parameters.pl=[1.4*3600 100 0.01];
+problem.parameters.pu=[5*3600 30000 0.05];
+guess.parameters=[4*3600 700 0.03];
 
 
 % Initial conditions for system.
-problem.states.x0=[];
+problem.states.x0=[1 0];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.99 -0.5]; 
-problem.states.x0u=[1.1 -0.01]; 
+problem.states.x0l=[0.9 -0.6]; 
+problem.states.x0u=[1 -0.01]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 -0.4];
-problem.states.xu=[1 1];
+problem.states.xl=[0 -0.1];
+problem.states.xu=[1 0.8];
 
 % State error bounds
 problem.states.xErrorTol_local=[1e-6 1e-6];
@@ -84,15 +89,15 @@ problem.states.xErrorTol_integral=[1e-6 1e-6];
 
 
 % State constraint error bounds
-problem.states.xConstraintTol=[1e-4 1e-4];
+problem.states.xConstraintTol=[1e-5 1e-5];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.99 -0.03];
-problem.states.xfu=[1.01 0.03];
+problem.states.xfl=[0.99 0];
+problem.states.xfu=[1 0.05];
 
 % Guess the state trajectories with [x0 xf]
 guess.states(:,1)=[1 1];
-guess.states(:,2)=[-0.05 0.01];
+guess.states(:,2)=[-0.08 0.01];
 
 
 % Number of control actions N 
@@ -111,10 +116,10 @@ problem.inputs.u0l=0;
 problem.inputs.u0u=0;
 
 % Input constraint error bounds
-problem.inputs.uConstraintTol=[0.1];
+problem.inputs.uConstraintTol=[0.01];
 
 % Guess the input sequences with [u0 uf]
-guess.inputs(:,1)=[0 -0.15];
+guess.inputs(:,1)=[-0.15 -0.15];
 
 
 
@@ -141,7 +146,7 @@ problem.constraints.bTol=[];
 % store the necessary problem parameters used in the functions
 
 %Some known parameters
-problem.data.batt_m=39e-03;
+problem.data.batt_m=15e-03;
 
 % Get function handles and return to Main.m
 problem.data.InternalDynamics=InternalDynamics;
@@ -186,8 +191,8 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %------------- BEGIN CODE --------------
 
-x1=x(:,1);x2=x(:,2); R0 = p(:,vdat.poly.R0);
-
+x1=x(:,1);x2=x(:,2);R1=p(:,3);
+R0 = 0.055-R1;
 % Obtain the measured input from the Lookup Table
 u1=vdat.InputCurrent(t);
 
@@ -195,8 +200,8 @@ u1=vdat.InputCurrent(t);
 voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
-voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
-
+voltage_model= OCVModel(x1) + x2 + R0.*u1;
+% voltage_model=poly
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
 stageCost = (voltage_model-voltage_measured).^2;
