@@ -38,7 +38,9 @@ current_bat = vdat.InputCurrent(t);
 
 % Note the battery parameters are no longer saved in vdat, but as static
 % decision variables of the optimisation solution
-Q=p(:,vdat.poly.Q); C1=p(:,vdat.poly.C); R0=p(:,vdat.poly.R0); R1=p(:,vdat.poly.R1); 
+Q=p(:,vdat.poly.Q); 
+%Q=2*3600;
+C1=p(:,vdat.poly.C); R0=p(:,vdat.poly.R0); R1=p(:,vdat.poly.R1); 
 
 dx(:,1) = current_bat./Q;
 

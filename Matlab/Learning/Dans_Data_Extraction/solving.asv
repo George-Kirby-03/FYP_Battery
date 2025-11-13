@@ -32,13 +32,13 @@ Q_heat = (voltage_model - OCV_x).*current_lut(t);
 Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
 temp_lut = @(tn) interp1(tt, tp, tn, 'linear', 'extrap');
 
-greyest_time_sampling = linspace(t(1),t(end),1500);
-
+greyest_time_sampling = linspace(t(1),t(end),2000);
 
 % Sample the heat generation data for the specified time points
 U_sampled = Q_lut(greyest_time_sampling);
 %Current_sampled = current_lut(greyest_time_sampling);
 Temp_sampled = temp_lut(greyest_time_sampling);
+
 
 Data = array2table([U_sampled', Temp_sampled'],"VariableNames",["u1","y"]);
 Data_ts = table2timetable(Data,"RowTimes",seconds(greyest_time_sampling));

@@ -1,0 +1,4 @@
+function [outputArg1,outputArg2] = cc3(solution_struct,problem_struct,c1,c2,c3,t_vec)
+%CC3 Creates the 3 custom chargin segments, done to reach 80% soc
+stage1_time = 
+end
