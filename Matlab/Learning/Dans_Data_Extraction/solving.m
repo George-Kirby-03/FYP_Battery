@@ -2,13 +2,12 @@ cd(fileparts(which('Solving.m')))
 pwd
 load(['..\..\..\cycle_exports\MOLI_cycle_1.mat'])
 load(".\Data\MOLI.mat")
-
+p = solution_unbound.p;
 
 %% Using parameters extracted from ICLOC's, the state and outputs are simulated here %%
-
 yactual_lut = @(t) interp1(tt, y, t, 'linear', 'extrap');
 current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
-[t, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0; -0.05]);
+[t, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; 0.05]);
 x1=y_sim(:,1);x2=y_sim(:,2); R0 = p(end-1);
 u2=current_lut(t);
 polyss = flip(p(1:end-4));
@@ -18,10 +17,7 @@ figure
 plot(t,voltage_model)
 hold on
 plot(t,yactual_lut(t))
-plot(t,current_lut(t))
-title("Simulated & Actual Voltage response")
-xlabel("Time(s)")
-
+title("Sim vs Real Voltage response")
 
 
 %Heat generation is approxomated as the Vout-Ocv * I, which can be
@@ -37,7 +33,6 @@ Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
 temp_lut = @(tn) interp1(tt, tp, tn, 'linear', 'extrap');
 
 greyest_time_sampling = linspace(t(1),t(end),1500);
-
 
 % Sample the heat generation data for the specified time points
 U_sampled = Q_lut(greyest_time_sampling);
@@ -59,9 +54,40 @@ opt = greyestOptions('Focus','simulation');
 sys = greyest(smodle,init_sys, opt)
 getpvec(sys)
 
+simulated_temp = lsim(sys, Q_lut(greyest_time_sampling)',greyest_time_sampling);
+plot(greyest_time_sampling,simulated_temp)
+hold on
+
+
+u1=cc3(p,6,10,10,tt);
+
+
+yactual_lut = @(t) interp1(tt, y, t, 'linear', 'extrap');
+current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
+[t, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0; 0.05]);
+x1=y_sim(:,1);x2=y_sim(:,2); R0 = p(end-1);
+u2=current_lut(t);
+polyss = flip(p(1:end-4));
+OCV_x = polyval(polyss,x1);
+voltage_model=OCV_x + x2 + R0.*u2;
+figure
+plot(t,voltage_model)
+hold on
+
+
+Q_heat = (voltage_model - OCV_x).*current_lut(t);
+Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
+
+greyest_time_sampling = linspace(t(1),t(end),1500);
 
 simulated_temp = lsim(sys, Q_lut(greyest_time_sampling)',greyest_time_sampling);
 plot(greyest_time_sampling,simulated_temp)
+hold on
+
+
+
+
+
 
 function [A,B,C,D] = TempFnc(mCp,hA,Ts,aux)
 % ODE function for computing state-space matrices as functions of parameters
