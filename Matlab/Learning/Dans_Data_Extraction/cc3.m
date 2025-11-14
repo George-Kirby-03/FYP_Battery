@@ -1,7 +1,8 @@
 function [tout_vec] = cc3(solution,c1,c2,c3,t_vec)
-% Use tt iclocs timing 
-%CC3 Creates the 3 custom chargin segments, done to reach 80% soc
-length(t_vec);
+%% Use time based vector (seconds)
+%CC3 Creates the 3 custom charging segments till 80% (20% each)
+%Starts from t_vec(0)
+
 Q = solution(end-3);
 stage1_time = 0.2*Q/c1;
 [~, stage1_rel] = min(abs(t_vec-stage1_time));

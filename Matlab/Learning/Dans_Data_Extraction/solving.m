@@ -1,7 +1,6 @@
 cd(fileparts(which('Solving.m')))
 pwd
-load(['..\..\..\cycle_exports\MOLI_cycle_2234.mat'])
-load(".\Data\MOLI.mat")
+load("..\..\..\cycle_exports\MOLI_cycle_2234.mat")
 p = solution_unbound.p;
 
 %% Using parameters extracted from ICLOC's, the state and outputs are simulated here %%
