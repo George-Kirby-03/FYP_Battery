@@ -1,0 +1,25 @@
+function batch = Batch_Setup(battery_Type,solver)
+file_loc = "..\..\..\cycle_exports\";
+battery_type = "MOLI";
+cycles = dir(fullfile(file_loc, battery_type, '*.mat'));
+numCycles = length(cycles);
+
+if solver == 1
+    structs = 'solution_unbound';
+else
+    structs = 'solution_temp';
+end
+
+for k = 1:numCycles
+    filePath = fullfile(file_loc, battery_type, cycles(randi([1,numCycles])).name);
+    tmp = load(filePath);
+    if isfield(tmp, 'solution_unbound')
+       if solver == 1 && ~isfield(tmp, 'solution_temp')
+            batch = filePath;
+       end
+    elseif solver == 0
+        batch = filePath; 
+    end
+end
+
+end

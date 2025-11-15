@@ -1,0 +1,9 @@
+function xn = discrit(u,xk,params,Ts)
+size = length(params);
+R1 = params(size);
+R0 = params(size-1);
+C = params(size-2);
+Q = params(size-3);
+l1 = 1/(R1*C);
+l1 = =
+end

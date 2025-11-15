@@ -22,7 +22,7 @@ function [problem,guess] = Copy_2_of_BatteryEstimation(cycle_file)
 % Load the measurement from Data (George Kirby FYP)
 cd(fileparts(which('BatteryEstimation.m')))
 pwd
-load([cycle_file])
+load(cycle_file)
 
 % OCV Poly values
 polycount = 9;
