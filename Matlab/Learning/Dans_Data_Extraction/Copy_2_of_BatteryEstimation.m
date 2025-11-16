@@ -63,7 +63,7 @@ guess.tf=tt(end);
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
 problem.parameters.pl=[problem.data.poly.xl 1*3600 2000 0.001 0.001];
-problem.parameters.pu=[problem.data.poly.xu 3*3600 90000 0.1 0.1];
+problem.parameters.pu=[problem.data.poly.xu 3.6*3600 90000 0.1 0.1];
 guess.parameters=[problem.data.poly.xe 2*3600 1570 0.026 0.04];
 
 
