@@ -62,8 +62,8 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1*3600 2000 0.001 0.001 50 -2];
-problem.parameters.pu=[problem.data.poly.xu 3.6*3600 90000 0.1 0.1 200 3];
+problem.parameters.pl=[problem.data.poly.xl 1*3600 2000 0.001 0.001 0.01 40];
+problem.parameters.pu=[problem.data.poly.xu 3.6*3600 90000 0.1 0.1 5 200];
 guess.parameters=[problem.data.poly.xe 2*3600 1570 0.026 0.04 88 0.09];
 
 
@@ -72,7 +72,7 @@ problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
 problem.states.x0l=[0.99 -1 0]; 
-problem.states.x0u=[1 -0.01 0]; 
+problem.states.x0u=[1 -0.01 1]; 
 
 % State bounds. xl=< x <=xu
 problem.states.xl=[0 -1 0];
@@ -88,7 +88,7 @@ problem.states.xConstraintTol=[1e-4 1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
 problem.states.xfl=[0.96 -0.03 0];
-problem.states.xfu=[1 0.08 6];
+problem.states.xfu=[1 0.08 16];
 
 % Guess the state trajectories with [x0 xf]
 guess.states(:,1)=[1 1];
@@ -199,7 +199,7 @@ temp_measured=vdat.OutputTemp(t);
 voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
-stageCost = 0.9*(voltage_model-voltage_measured).^2 + 0.1*(temp_model-temp_measured).^2;
+stageCost = 0.7*(voltage_model-voltage_measured).^2 + 0.3*(temp_model-temp_measured).^2;
 
 %------------- END OF CODE --------------
 

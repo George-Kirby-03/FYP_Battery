@@ -47,7 +47,7 @@ dx(:,1) = current_bat./Q;
 
 dx(:,2) = -V_RC1./(R1.*C1) + current_bat./C1;
 
-dx(:,3) = -(hA./mCp).*(T) + (R0./mCp).*(current_bat).^2 + 1./(mCp).*V_RC1.*current_bat;
+dx(:,3) = -(hA./mCp).*(T) + (R0./mCp).*(current_bat).^2 + (1./(mCp)).*V_RC1.*current_bat;
 
 
 %------------- END OF CODE --------------%

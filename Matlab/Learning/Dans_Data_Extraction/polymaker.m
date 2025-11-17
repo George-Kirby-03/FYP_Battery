@@ -29,10 +29,10 @@ poly.R1 = polycount+3;
 poly.C  = polycount+1;
 end
 if temp == 1
-poly.R0 = polycount+2;
-poly.R1 = polycount+3;
-poly.C  = polycount+1;
-poly.CP = polycount+4;
+poly.R0 = polycount+3;
+poly.R1 = polycount+4;
+poly.C  = polycount+2;
+poly.CP = polycount+6;
 poly.A = polycount+5;
 end
 end

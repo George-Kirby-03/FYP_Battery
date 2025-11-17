@@ -17,7 +17,7 @@ clear all;close all;format compact;
 
 
 
-[problem,guess]=BatteryEstimation_temp('..\..\..\cycle_exports\MOLI_cycle_1710.mat');          % Fetch the problem definition
+[problem,guess]=BatteryEstimation_temp('..\..\..\cycle_exports\MOLI_28\MOLI_cycle_2.mat');          % Fetch the problem definition
 options= problem.settings(130);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
@@ -27,14 +27,14 @@ options= problem.settings(130);                  % Get options and solver settin
 tt=solution.T;
 x1=speval(solution,'X',1,tt);
 x2=speval(solution,'X',2,tt);
-
+x3=speval(solution,'X',3,tt);
 u1=problem.data.InputCurrent(tt);
 soc = linspace(0,1,50);
 OCV_SOC = polymodel(problem.data,solution.p,soc,1);
 y=polymodel(problem.data,solution.p,x1,1) + x2 + solution.p(problem.data.poly.R0).*u1;
-
+temp = x3;
 figure
-subplot(2,2,1)
+subplot(2,3,1)
 hold on
 plot(tt,x1,'b-' ,'LineWidth',2)
 plot([solution.T(1,1); solution.tf],[problem.states.xl(1), problem.states.xl(1)],'r-' )
@@ -43,14 +43,14 @@ xlabel('Time [s]')
 ylabel('States: State-of-Charge')
 grid on
 
-subplot(2,2,2)
+subplot(2,3,2)
 hold on
 plot(soc,OCV_SOC,'b-' ,'LineWidth',2)
 xlabel('SOC')
 ylabel('OCV')
 grid on
 
-subplot(2,2,3)
+subplot(2,3,3)
 hold on
 plot(tt,u1,'k-' ,'LineWidth',2)
 plot([solution.T(1,1); solution.tf],[problem.inputs.ul, problem.inputs.ul],'r-' )
@@ -60,7 +60,16 @@ xlabel('Time [s]')
 grid on
 ylabel('Control Input: Current [A]')
  
-subplot(2,2,4)
+subplot(2,3,4)
+hold on
+plot(tt,temp,'b-' ,'LineWidth',2)
+plot(tt,problem.data.OutputTemp(tt),'k-' ,'LineWidth',2)
+xlabel('Time [s]')
+ylabel('Output: temperature [DT]')
+legend('Model Output', 'Measured')
+grid on
+
+subplot(2,3,5)
 hold on
 plot(tt,y,'b-' ,'LineWidth',2)
 plot(tt,problem.data.OutputVoltage(tt),'k-' ,'LineWidth',2)
@@ -68,5 +77,3 @@ xlabel('Time [s]')
 ylabel('Output: voltage [V]')
 legend('Model Output', 'Measured')
 grid on
-
-
