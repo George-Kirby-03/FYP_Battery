@@ -1,4 +1,4 @@
-function [problem,guess] = Copy_2_of_BatteryEstimation(cycle_file)
+function [problem,guess] = BatteryEstimation_temp(cycle_file)
 %DoubleIntergratorTracking - Double Integrator Tracking Problem
 %
 % Syntax:  [problem,guess] = DoubleIntergratorTracking
