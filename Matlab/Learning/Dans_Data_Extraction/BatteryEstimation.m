@@ -1,4 +1,4 @@
-function [problem,guess] = BatteryEstimation
+function [problem,guess] = BatteryEstimation(cycle_file)
 %DoubleIntergratorTracking - Double Integrator Tracking Problem
 %
 % Syntax:  [problem,guess] = DoubleIntergratorTracking
@@ -22,11 +22,11 @@ function [problem,guess] = BatteryEstimation
 % Load the measurement from Data (George Kirby FYP)
 cd(fileparts(which('BatteryEstimation.m')))
 pwd
-load(['..\..\..\cycle_exports\MOLI_cycle_1710.mat'])
+load(cycle_file)
 
 % OCV Poly values
 polycount = 9;
-problem.data.poly = polymaker(polycount,250,2.4);
+problem.data.poly = polymaker(polycount,550,2.4,0,1);
 % Extract columns
 
 %adding initial resting condition fudge to maybe help paramtereisation
@@ -62,20 +62,20 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.45*3600 6000 0.005 0.005];
-problem.parameters.pu=[problem.data.poly.xu 3*3600 10000 0.08 0.08];
-guess.parameters=[problem.data.poly.xe 1.57*3600 1570 0.026 0.04];
+problem.parameters.pl=[problem.data.poly.xl 1*3600 2000 0.001 0.001];
+problem.parameters.pu=[problem.data.poly.xu 3.6*3600 90000 0.1 0.1];
+guess.parameters=[problem.data.poly.xe 2*3600 1570 0.026 0.04];
 
 
 % Initial conditions for system.
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.99 -0.5]; 
-problem.states.x0u=[1.1 -0.01]; 
+problem.states.x0l=[0.99 -1]; 
+problem.states.x0u=[1 -0.01]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 -0.4];
+problem.states.xl=[0 -1];
 problem.states.xu=[1 1];
 
 % State error bounds
@@ -87,8 +87,8 @@ problem.states.xErrorTol_integral=[1e-6 1e-6];
 problem.states.xConstraintTol=[1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.99 -0.03];
-problem.states.xfu=[1.01 0.03];
+problem.states.xfl=[0.96 -0.03];
+problem.states.xfu=[1 0.08];
 
 % Guess the state trajectories with [x0 xf]
 guess.states(:,1)=[1 1];
