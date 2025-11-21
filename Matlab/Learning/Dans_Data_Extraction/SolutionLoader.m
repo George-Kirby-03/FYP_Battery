@@ -12,24 +12,20 @@ file_loc = "..\..\..\cycle_exports\";
 cycles = dir(fullfile(file_loc, battery_type, '*.mat'));
 numCycles = length(cycles);
 if ~strcmp(cycle,'NaN')
-requested_cycle = num2str(cycle);
 
-% Extract cycle numbers from each filename
 cycle_nums = zeros(numCycles,1);
 for i = 1:numCycles
     token = regexp(cycles(i).name, '_(\d+)\.mat', 'tokens', 'once');
     if ~isempty(token)
         cycle_nums(i) = str2double(token{1});
     else
-        cycle_nums(i) = NaN; % file doesn't follow pattern
+        cycle_nums(i) = NaN; 
     end
 end
 
-% Find matching cycle
 idx = find(cycle_nums == cycle, 1);
-
 if isempty(idx)
-    error("No file exists containing _%d.mat", cycle);
+    error("No file exists for cycle _%d.mat", cycle);
 end
 
 filePath = fullfile(file_loc, battery_type, cycles(idx).name);

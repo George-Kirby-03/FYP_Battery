@@ -10,12 +10,12 @@ end
 file_loc = "..\..\..\cycle_exports\";
 cycles = dir(fullfile(file_loc, battery_type, '*.mat'));
 numCycles = length(cycles);
-batch = [""];
+batch = zeros(1,size);
 
 is_set = 0;
 if ~strcmp(cycle,'NaN')
 cycle_nums = zeros(numCycles,1);
-is_set = 1
+is_set = 1;
 for i = 1:numCycles
     token = regexp(cycles(i).name, '_(\d+)\.mat', 'tokens', 'once');
     if ~isempty(token)
@@ -28,7 +28,7 @@ idx = find(cycle_nums == cycle, 1);
 if isempty(idx)
     error("No file exists for cycle _%d.mat", cycle);
 end
-filePath = fullfile(file_loc, battery_type, cycles(idx).name)
+filePath = fullfile(file_loc, battery_type, cycles(idx).name);
 numCycles = 1;
 size = 1;
 end
@@ -41,16 +41,16 @@ for k = 1:numCycles
     tmp = load(filePath);
     %%Only gives file to use to iclocs if its not been ran before
     if ~isfield(tmp, 'solution_unbound') && solver == 0
-             batch(i) = filePath;
-              break
+            batch(i) = filePath;
+            break
     %%Only gives file to use to temp_param if its been iclocs ran &
     %%not_temp ran before
     elseif solver == 1 && isfield(tmp, 'solution_unbound') && ~isfield(tmp, 'greyest')
-             batch(i) = filePath;
-               break
+             batch(i) = filePath; 
+             break
     elseif solver == 2 && ~isfield(tmp,'solution_temp')
              batch(i) = filePath; 
-               break
+             break
     end
     if k == numCycles
             if i>1

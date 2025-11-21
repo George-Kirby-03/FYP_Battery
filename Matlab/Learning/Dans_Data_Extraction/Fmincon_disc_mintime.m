@@ -18,7 +18,7 @@
 % dT[k+1] = alpha*dT[K] + beta3*i[k]^2 + beta4*i[k]*v[k]
 %% Load solution 
 load(SolutionLoader("MOLI_28\",0))
-
+solution = solution_unbound;
 %% Define parameters
 % Changeable parameters
 tmax = 600; %If you change this remember to change nonlcon
@@ -46,19 +46,19 @@ p.b2 = 1/p.CellCap;
 
 A = [exp(-p.lambda1*p.dt) 0; 0 1];
 B = [p.b1/p.lambda1*(1-exp(-p.lambda1*p.dt)); p.b2*p.dt];
-
+Ts = p.dt;
 
 %% Get A & B from discritisation function
 %G.K
 [A, B] = discrit(solution.p,Ts);
 A = A(1:2,1:2);
 B = B(1:2,1);
-
+R0 = solution.p(end-4);
 syms x1 
 coef_length = length(solution.p) - 6;
 ocv_func = 0;
 for i = 1:coef_length
-    ocv_func = ocv_func + coef(i) * x1.^(i-1);
+    ocv_func = ocv_func + solution.p(i) * x1.^(i-1);
 end
 matlabFunction(ocv_func, 'File', 'OCVModel_Fmin', 'Vars', {x1});
 
@@ -140,9 +140,9 @@ fun = @(x)C'*x;
 
 %% Optimise
 options = optimoptions('fmincon','MaxFunctionEvaluations',1e10,'MaxIterations',1e10,'StepTolerance',1e-12);
-
+[A, B] = discrit(solution.p,Ts);
 tic
-x = fmincon(fun,x0,P,Q,Peq,Qeq,[],[],@nonlconT,options);
+x = fmincon(fun,x0,P,Q,Peq,Qeq,[],[],@(x) nonlconT(x,A,B,R0),options);
 toc
 
 %% Extract i, v and z from x

@@ -1,4 +1,4 @@
-function [c,ceq] = nonlconT(x, A, B, R0, tmax)
+function [c,ceq] = nonlconT(x, A, B, R0)
 %Same as before but also constraint on the output voltage the instant
 %before hand (V1[k] + OCV(z[k]) + R0*I[k-1] =< 3.6)
 
@@ -14,8 +14,8 @@ p.dt = tmax/kmax;
 p.R0 = R0;
 
 alpha = A(end,end);
-beta3 = B(3,3);
-beta4 = B(3,4);
+beta3 = B(3,2);
+beta4 = B(3,3);
 
 %% c(x) <= 0 for all entries of c.
 c1 = zeros(kmax+1,1);
