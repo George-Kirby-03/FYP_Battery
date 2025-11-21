@@ -16,8 +16,7 @@
 % Vmin<Vout<Vmax
 % x[k+1] = Ax[k] + Bi[k] (x = [v1,z]')
 % dT[k+1] = alpha*dT[K] + beta3*i[k]^2 + beta4*i[k]*v[k]
-%% Load solution 
-load(SolutionLoader("MOLI_28\",0))
+%% L
 
 %% Define parameters
 % Changeable parameters

@@ -20,10 +20,10 @@ beta4 = B(3,4);
 %% c(x) <= 0 for all entries of c.
 c1 = zeros(kmax+1,1);
 c1(1,1) = p.R0*x(1);
-c1(kmax+1,1) = x(4*kmax-2) + OCVModel_Fmin(x(4*kmax-1));
+c1(kmax+1,1) = x(4*kmax-2) + polymodel(fix,solution_unbound.p,x(4*kmax-1),1);
 
 for i = 2:kmax
-    c1(i,1) = x(4*i-6) + OCVModel_Fmin(x(4*i-5)) + p.R0*x(4*i-3);
+    c1(i,1) = x(4*i-6) + OCV_Func2(x(4*i-5)) + p.R0*x(4*i-3);
 end
 
 c2 = -c1;
@@ -33,7 +33,7 @@ c1 = c1 - Voutmax;
 % Instant before constraint
 c3 = zeros(kmax,1);
 for i = 1:kmax
-    c3(i,1) = p.R0*x(4*i-3) + x(4*i-2) + OCVModel_Fmin(x(4*i-1));
+    c3(i,1) = p.R0*x(4*i-3) + x(4*i-2) + OCVModel_Fmin(fix,solution_unbound.p,x(4*i-1),1);
 end
 
 c4 = -c3;
