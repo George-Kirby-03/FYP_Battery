@@ -151,7 +151,7 @@ v1_optimal = [0;x(2:4:(4*kmax-2),1)];
 z_optimal = [0;x(3:4:(4*kmax-1),1)];
 dT_optimal = [0;x(4:4:(4*kmax),1)];
 T_optimal = dT_optimal + p.Tamb;
-fix.poly.xe = zeros(params - 6,1);
+% fix.poly.xe = zeros(params - 6,1);
 Vout_optimal = v1_optimal + OCVModel_Fmin(z_optimal) + p.R0*i_optimal;
 
 t = 0:p.dt:kmax*p.dt;
@@ -160,11 +160,11 @@ t = 0:p.dt:kmax*p.dt;
 % writematrix(x,'x_latest.csv')
 
 %% Simulate the current profile at a finer time step
-[tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.001,tmax);
+[tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.001,tmax, solution.p);
 
 %% Plot graphs
 % Plot Voltage graphs
-VIplot(tsim,Vsim,isim)
+plot(tsim,Vsim)
 yyaxis left
 plot([0,tmax],[3.6,3.6],'--','Color','#0072BD','linewidth',1.5)
 axis([0,tmax,2.2,3.65])
