@@ -10,7 +10,7 @@ arguments
     cycle = 'NaN'
 end
 
-file_loc = "../../../cycle_exports/";
+file_loc = "..\..\..\cycle_exports\";
 cycles = dir(fullfile(file_loc, battery_type, '*.mat'));
 numCycles = length(cycles);
 
@@ -19,33 +19,48 @@ if numCycles == 0
 end
 batch = strings(size,1);
 
+%% ------------------------------------------------------------------------
+%  CASE 1: SPECIFIC CYCLE NUMBER REQUESTED
+%% ------------------------------------------------------------------------
 if ~strcmp(cycle,'NaN')
+
+    % Extract cycle numbers from filenames
     cycle_nums = nan(numCycles,1);
     for i = 1:numCycles
-        cyc = regexp(cycles(i).name, '_(\d+)\.mat', 'tokens', 'once');
-        if ~isempty(cyc)
-            cycle_nums(i) = str2double(cyc{1});
+        tok = regexp(cycles(i).name, '_(\d+)\.mat', 'tokens', 'once');
+        if ~isempty(tok)
+            cycle_nums(i) = str2double(tok{1});
         end
     end
 
+    % Find match
     idx = find(cycle_nums == cycle, 1);
 
     if isempty(idx)
         error("No file exists matching cycle _%d.mat", cycle);
     end
+
+    % Use ONLY this cycle, return exactly one file
     batch(1) = fullfile(file_loc, battery_type, cycles(idx).name);
     return;
 end
 
+%% ------------------------------------------------------------------------
+%  CASE 2: RANDOMLY CHOOSE FILES THAT MATCH SOLVER CRITERIA
+%% ------------------------------------------------------------------------
+
 for i = 1:size
 
-    random_idx = randperm(numCycles); %randomperm is like python itterable
+    % random order each time (prevents getting stuck on same file)
+    random_idx = randperm(numCycles);
+
     found = false;
 
     for k = random_idx
         filePath = fullfile(file_loc, battery_type, cycles(k).name);
         tmp = load(filePath);
 
+        % Solver-based selection
         switch solver
             case 0
                 ok = ~isfield(tmp,'solution_unbound');
