@@ -108,29 +108,31 @@ Just say, that theres models for overpotnetial which can cause the dendrite form
 
 Polynomial fit ....
 \begin{equation}
-    mCp\frac{d T}{dt} = \underbrace{I^{2}R_{ecm}}_{irreversable} - \underbrace{IT\frac{\partial U}{\partial T}}_{reversable} - \underbrace{hAT}_{dissipation}
+    mCp\frac{d T}{dt} = \underbrace{I^{2}R_{0} + IV_{1}}_{irreversable} - \underbrace{IT\frac{\partial U}{\partial T}}_{reversable} - \underbrace{hAT}_{dissipation}
 \end{equation}
 \begin{equation}
-    \frac{\partial U}{\partial T} \approx f(SoC) = f(z,z_{0})
+    \frac{\partial U}{\partial T} \approx f(SoC) = f(z)
 \end{equation}
 \begin{equation}
-    mCp\frac{d T}{dt} = I^{2}R_{ecm} - ITf(z,z_{0}) - hAT
+    mCp\frac{d T}{dt} = I^{2}R_{ecm} - ITf(z) - hAT
 \end{equation}
 \begin{equation}
 f(z,z_{0}) \sim c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}
 \end{equation}
 \begin{equation}
-    mCp\frac{d T}{dt} = I^{2}R_{ecm} - IT(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT
+    mCp\frac{d T}{dt} = I^{2}R_{0} + IV_{1} - IT(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT
 \end{equation}
 \begin{equation}
 \begin{bmatrix}
 \dot{T} \\[4pt]
-\dot{z}
+\dot{z} \\[4pt]
+\dot{V_{1}}
 \end{bmatrix}
 =
 \begin{bmatrix}
-I^{2}R_{ecm}\frac{1}{mCp} - IT\frac{1}{mCp}(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT\frac{1}{mCp} \\[4pt]
-I
+I^{2}R_{0} + IV_{1} - IT\frac{1}{mCp}(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT\frac{1}{mCp} \\[4pt]
+I/Q \\[4pt]
+I/C- V_{1}/R_{1}C
 \end{bmatrix}
 \end{equation} 
 
