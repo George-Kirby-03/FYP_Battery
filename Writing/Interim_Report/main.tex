@@ -86,17 +86,30 @@ Lithium batteries all follow the the same basic pricipble of operation, as show 
 \end{align}
 
 
-The electrolite is a medium in which the lithium ions can be transported via diffison to the electrodes, the electolite does not however allow electrons to flow, only via an extranl circuit can they flow, . The seperator acts as a structiral barrier to prevent the opoosite electrodes from toutching, which would allow both electrons and ions to flow, causing major fire risks from the uncotnrolled reactions. During the discharging process, a path is provided externally across the current collectors, (these collecors are not part of the reactions and are just a means to electrically connect the eleoctrolites to a usefull surface for soldering) the lithium stored within the negative electrode deintercalates, released as the posotive lithium ion, whilst the electron leaves the electrode, traveling acros the external circuit to the posotive electrode. 
-
-
-\subsubsection*{Discharging Degredation}
-\subsubsection*{Charging Degredation}
-Since the applied voltage is above the difference of the electrode potentials, the lithium ions within the posotive electrode deintercalate, traveling across the electrolite to the negative electrode, where they intercalate within the graphine structure. However, severe problems can occur when 
+The electrolite is a medium in which the lithium ions can be transported via diffison to the electrodes, the electolite does not however allow electrons to flow, only via an extranl circuit can they flow, . The seperator acts as a structiral barrier to prevent the opoosite electrodes from toutching, which would allow both electrons and ions to flow, causing major fire risks from the uncotnrolled reactions. During the discharging process, a path for electrons is provided externally across the current collectors, (these collecors are not part of the reactions and are just a means to electrically connect the eleoctrolites to a usefull surface for soldering) the lithium stored within the negative electrode deintercalates, released as the posotive lithium ion, whilst the electron leaves the electrode, traveling acros the external circuit to the posotive electrode, whereby the lithium ions meet the electrons. During charging, the applied voltage at the terminals will be  above the difference of the electrode potentials, this applied overpotential causes the lithium ions within the posotive electrode to deintercalate, traveling across the electrolite to the negative electrode, where they intercalate within the graphine structure as the ions combine with electrons. The speed at which the ions flow is far slower than the electron transfer (cite greg), which contributes to the behaviour of lithium batteries.
 
 Mention diffusion differences between charge and discharge (cite micheal j lain) 
-Whiney well \footnote{Yep soooo}
+Whiney well 
 \subsubsection{Degredation methods}
 
+\textbf{Lithium plating} - During discharge, the lithium ions intercolate into the posotive electrode. Under certian conditions, 
+
+Causes increased ageing and seftey risks, its the deposition of metallic lithoum on the anote surface, happens at high charging currents and low temperature. Since during charging, the lithium ions move , through the sei into the anode, if the ions cannot intercalate fast enough, they deposit and can become metallic lithium. Especially ehrn chargis is forces, local overpotential can causes the lithium plating, can cause dentrites
+
+
+ \begin{itemize}
+        \item SEI layer growth via pores $ \approx $ not really solvable, grows square root over time and cycle number
+        \item Lithium plating \\
+        Causes increased ageing and seftey risks, its the deposition of metallic lithoum on the anote surface, happens at high charging currents and low temperature.
+        Since during charging, the lithium ions move , through the sei into the anode, if the ions cannot intercalate fast enough, they deposit and can become metallic lithium. 
+        Especially ehrn chargis is forces, local overpotential can causes the lithium plating, can cause dentrites
+        \textbf{this is one of the main constraints for the chargings profile}
+        \item Active material loss (from parts mentiones above)
+        \item SEI Brakeages \\
+        Charging too \textbf{high} of a temperatures causes mechanical stress on the sei layer, causing it to crack and reform, consuming more lithium ions in the process. 
+        Loose sei material can also float in the electrolyte, causing further issues.
+        \item Electrolyte decomposition
+    \end{itemize}
 \subsection{Equivalent Circuit Model}
 This S2352152X2400584X nicley shows the overpotential of the battery relating to the differend of the output of the battery to the equlibrium potnetial of the battery. Shown as the summation of eletrolyte opverpotential, Li concentration overportnetial, kenetic overpotential .Attempts to estimate the anode voltage based off reduced order elkectrochemical models and by use of a state estimator. In the electrocemical models, the anode potential is equal to the kenetic overpotential, anode equilibrium potential and the electolite potebtial, (cite) shows the solid-phase electrode potnetial is equal to $U_{eq} + \mu _{ct} + \Phi _{electroylite}$ th(cite). 
 
@@ -110,31 +123,6 @@ Polynomial fit ....
 \begin{equation}
     mCp\frac{d T}{dt} = \underbrace{I^{2}R_{0} + IV_{1}}_{irreversable} - \underbrace{IT\frac{\partial U}{\partial T}}_{reversable} - \underbrace{hAT}_{dissipation}
 \end{equation}
-\begin{equation}
-    \frac{\partial U}{\partial T} \approx f(SoC) = f(z)
-\end{equation}
-\begin{equation}
-    mCp\frac{d T}{dt} = I^{2}R_{ecm} - ITf(z) - hAT
-\end{equation}
-\begin{equation}
-f(z,z_{0}) \sim c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}
-\end{equation}
-\begin{equation}
-    mCp\frac{d T}{dt} = I^{2}R_{0} + IV_{1} - IT(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT
-\end{equation}
-\begin{equation}
-\begin{bmatrix}
-\dot{T} \\[4pt]
-\dot{z} \\[4pt]
-\dot{V_{1}}
-\end{bmatrix}
-=
-\begin{bmatrix}
-I^{2}R_{0} + IV_{1} - IT\frac{1}{mCp}(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT\frac{1}{mCp} \\[4pt]
-I/Q \\[4pt]
-I/C- V_{1}/R_{1}C
-\end{bmatrix}
-\end{equation} 
 
 
 \subsection{Charging methods}
