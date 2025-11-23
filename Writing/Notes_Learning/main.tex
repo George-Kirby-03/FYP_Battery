@@ -7,7 +7,7 @@
 \setlength{\parskip}{0.8em plus 0.2em minus 0.1em}
 \setlength{\parindent}{0pt}
 \usepackage{booktabs}
-
+\usepackage{chemformula}
 \renewcommand{\arraystretch}{1.2}
 
 
@@ -216,6 +216,31 @@ Show current sim results
 Show stages of charging simed ode45
 Discriticisation 
 (Explain working on mpc)
+\begin{equation}
+    \frac{\partial U}{\partial T} \approx f(SoC) = f(z)
+\end{equation}
+\begin{equation}
+    mCp\frac{d T}{dt} = I^{2}R_{ecm} - ITf(z) - hAT
+\end{equation}
+\begin{equation}
+f(z,z_{0}) \sim c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}
+\end{equation}
+\begin{equation}
+    mCp\frac{d T}{dt} = I^{2}R_{0} + IV_{1} - IT(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT
+\end{equation}
+\begin{equation}
+\begin{bmatrix}
+\dot{T} \\[4pt]
+\dot{z} \\[4pt]
+\dot{V_{1}}
+\end{bmatrix}
+=
+\begin{bmatrix}
+I^{2}R_{0} + IV_{1} - IT\frac{1}{mCp}(c_{0} + zc_{1} + z^{2}c_{2} + z^{3}c_{3} + z^{4}c_{4}) - hAT\frac{1}{mCp} \\[4pt]
+I/Q \\[4pt]
+I/C- V_{1}/R_{1}C
+\end{bmatrix}
+\end{equation} 
 
 
 \nocite{*}
