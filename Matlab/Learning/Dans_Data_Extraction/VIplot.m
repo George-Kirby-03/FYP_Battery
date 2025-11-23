@@ -1,6 +1,5 @@
 %Function to neatly produce Vout-I comparison plots
 function VIplot(t,V,i)
-
 f_size= 26;
 figure
 hold on

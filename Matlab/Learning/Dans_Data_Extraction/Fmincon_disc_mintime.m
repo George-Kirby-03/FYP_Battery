@@ -17,39 +17,37 @@
 % x[k+1] = Ax[k] + Bi[k] (x = [v1,z]')
 % dT[k+1] = alpha*dT[K] + beta3*i[k]^2 + beta4*i[k]*v[k]
 %% Load solution 
-load(SolutionLoader("MOLI_28\",0))
+
+clear
+clc
+close all 
+load(SolutionLoader("MOLI_28\",0,1))
 solution_unbound.p = [solution_unbound.p; 0.6; 120];
 solution = solution_unbound;
 %% Define parameters
 % Changeable parameters
 tmax = 600; %If you change this remember to change nonlcon
-kmax = 4;
+kmax = 10;
 p.dt = tmax/kmax;    %time step (s) (t=k*dt)
+
+
+%Inital conditions
+v_init = 0;
+z_init = 0;
 
 % State constraints
 imax = 10000;
 imin = 0;
 zmax = 1;
-zmin = 0;
+zmin = z_init;
 dTmax = 7;
-
-% Model parameters
+p.Tamb = 30;
 p.R0 = solution.p(end-3);      %Ohms
-p.R1 = 0.0221;      %Ohms
-p.C1 = 15/p.R1;     %Farads
-p.CellCap = 3960;   %As
-p.Tamb = 30;        %degC
-
-%Discrete state space parameters
-p.lambda1 = 1/(p.R1*p.C1);
-p.b1 = 1/p.C1;
-p.b2 = 1/p.CellCap;
-
-A = [exp(-p.lambda1*p.dt) 0; 0 1];
-B = [p.b1/p.lambda1*(1-exp(-p.lambda1*p.dt)); p.b2*p.dt];
 Ts = p.dt;
 
-%% Get A & B from discritisation function
+
+
+%% Get A & B from discritisation function GK
 %G.K
 [A, B] = discrit(solution.p,Ts);
 A = A(1:2,1:2);
@@ -61,7 +59,7 @@ ocv_func = 0;
 for i = 1:coef_length
     ocv_func = ocv_func + solution.p(i) * x1.^(i-1);
 end
-matlabFunction(ocv_func, 'File', 'OCVModel_Fmin', 'Vars', {x1});
+matlabFunction(ocv_func, 'File', 'OCVModel_Fmin', 'Vars', {x1}); %Using this instead GK
 
 
 %% Constuct fmincon matrices
@@ -69,8 +67,10 @@ matlabFunction(ocv_func, 'File', 'OCVModel_Fmin', 'Vars', {x1});
 % Equivalence, includes the discrete voltage model
 % Initialise Peq as zeros, Qeq is just zeros
 Peq = zeros(2*kmax,4*kmax);
-Qeq = zeros(2*kmax,1);
 
+%%Different now since inital conditions can not be assumed to be 0
+%Qeq = zeros(2*kmax,1); 
+Qeq = [A*[v_init; z_init]; zeros(2*kmax-2,1)];
 % Set up matrices to be inserted in Peq
 eq_mat_0 = [-B, eye(2)];
 eq_mat = [-A, zeros(2,1), -B, eye(2)];
@@ -161,17 +161,21 @@ t = 0:p.dt:kmax*p.dt;
 % writematrix(x,'x_latest.csv')
 
 %% Simulate the current profile at a finer time step
-[tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.001,tmax, solution.p);
+% [tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.001,tmax, solution.p);
+%% GK: Using own discrete runner, more suitable for running batches and was more familiar + deals with non 0 SoC
+time = linspace(0,tmax,300);
+i_optimal_discrete = interp1(t,i_optimal,time,"linear");
+[tsim, Vsim] = discrit_solver(time,i_optimal_discrete,solution.p,z_init);
 
 %% Plot graphs
 % Plot Voltage graphs
-VIplot(tsim,Vsim,isim)
-yyaxis left
+plot(time,Vsim)
+hold on
+plot(time,i_optimal_discrete)
 plot([0,tmax],[3.6,3.6],'--','Color','#0072BD','linewidth',1.5)
-axis([0,tmax,2.2,3.65])
+axis([0,tmax,2.2,4.6])
 box on
-yyaxis right
-axis([0,tmax,0,20])
+
 
 %% Plot Temperature graphs
 TPplot(tsim,Tsim,Pgensim)

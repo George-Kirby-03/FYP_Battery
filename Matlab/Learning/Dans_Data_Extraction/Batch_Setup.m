@@ -17,8 +17,11 @@ numCycles = length(cycles);
 if numCycles == 0
     error("No cycle files found in folder: %s", fullfile(file_loc, battery_type));
 end
-batch = strings(size,1);
-
+if size > 1 && ~strcmp(cycle,'NaN')
+batch = strings(1,1);
+else
+    batch = strings(size,1);
+end
 if ~strcmp(cycle,'NaN')
     cycle_nums = nan(numCycles,1);
     for i = 1:numCycles
@@ -34,6 +37,27 @@ if ~strcmp(cycle,'NaN')
         error("No file exists matching cycle _%d.mat", cycle);
     end
     batch(1) = fullfile(file_loc, battery_type, cycles(idx).name);
+    filePath = fullfile(file_loc, battery_type, cycles(idx).name);
+    tmp = load(filePath);
+    ok = false;
+    switch solver
+            case 0
+                ok = ~isfield(tmp,'solution_unbound');
+
+            case 1
+                ok = isfield(tmp,'solution_unbound') && ~isfield(tmp,'greyest');
+
+            case 2
+                ok = ~isfield(tmp,'solution_temp');
+
+            otherwise
+                error("Unknown solver type %d", solver);
+    end
+    if ok
+        batch(1) = filePath; 
+    else
+        error("File has either not had previous solver or already solved");
+    end
     return;
 end
 
