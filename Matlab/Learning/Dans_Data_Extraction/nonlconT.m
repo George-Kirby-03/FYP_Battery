@@ -6,7 +6,7 @@ function [c,ceq] = nonlconT(x, A, B, R0)
 % OCV(z). Kmax = 60
 tmax = 600;
 
-Voutmax = 3.6;
+Voutmax = 4.2;
 Voutmin = 0;
 kmax = size(x,1)/4;
 p.dt = tmax/kmax;

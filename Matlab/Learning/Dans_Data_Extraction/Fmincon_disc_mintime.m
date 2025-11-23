@@ -18,6 +18,7 @@
 % dT[k+1] = alpha*dT[K] + beta3*i[k]^2 + beta4*i[k]*v[k]
 %% Load solution 
 load(SolutionLoader("MOLI_28\",0))
+solution_unbound.p = [solution_unbound.p; 0.6; 120];
 solution = solution_unbound;
 %% Define parameters
 % Changeable parameters
@@ -33,7 +34,7 @@ zmin = 0;
 dTmax = 7;
 
 % Model parameters
-p.R0 = 0.0163;      %Ohms
+p.R0 = solution.p(end-3);      %Ohms
 p.R1 = 0.0221;      %Ohms
 p.C1 = 15/p.R1;     %Farads
 p.CellCap = 3960;   %As
@@ -53,7 +54,7 @@ Ts = p.dt;
 [A, B] = discrit(solution.p,Ts);
 A = A(1:2,1:2);
 B = B(1:2,1);
-R0 = solution.p(end-4);
+R0 = solution.p(end-3);
 syms x1 
 coef_length = length(solution.p) - 6;
 ocv_func = 0;
@@ -164,7 +165,7 @@ t = 0:p.dt:kmax*p.dt;
 
 %% Plot graphs
 % Plot Voltage graphs
-plot(tsim,Vsim)
+VIplot(tsim,Vsim,isim)
 yyaxis left
 plot([0,tmax],[3.6,3.6],'--','Color','#0072BD','linewidth',1.5)
 axis([0,tmax,2.2,3.65])

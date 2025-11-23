@@ -6,12 +6,12 @@ function [tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(tsample,isam
 %time range = maxk * dt
 maxk = floor(tmax/dt);
 p.T0 = 0;
-p.Tamb = 0;
-p.R0 = solution(end-4);
+p.Tamb = 30;
+p.R0 = solution(end-3);
 tsim = 0:dt:maxk*dt;
 isim = interp1(tsample,isample,tsim,'previous');
 
-[A B] = discrit(solution,dt);
+[A, B] = discrit(solution,dt);
 %% Initialise the model
 %x_0 = [v1_0; z_0; dT_0];
 x_disc = [0; 0; p.T0-p.Tamb];

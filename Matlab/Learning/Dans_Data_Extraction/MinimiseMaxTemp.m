@@ -1,5 +1,5 @@
-% Code to optimise a cells charge after a set number of steps
-% Thermal model included
+% Code to minimise the maximum temperature of the cell whilst charging it
+% to 80% SOC
 
 % Using fmincon:
 % x = fmincon(fun,x0,P,Q,Peq,Qeq):
@@ -16,14 +16,12 @@
 % Vmin<Vout<Vmax
 % x[k+1] = Ax[k] + Bi[k] (x = [v1,z]')
 % dT[k+1] = alpha*dT[K] + beta3*i[k]^2 + beta4*i[k]*v[k]
-%% Load solution 
-load(SolutionLoader("MOLI_28\",0))
-solution_unbound = [solution_unbound 140 0.
-solution = solution_unbound;
+
+clear all
 %% Define parameters
 % Changeable parameters
 tmax = 600; %If you change this remember to change nonlcon
-kmax = 4;
+kmax = 60;
 p.dt = tmax/kmax;    %time step (s) (t=k*dt)
 
 % State constraints
@@ -31,10 +29,12 @@ imax = 10000;
 imin = 0;
 zmax = 1;
 zmin = 0;
-dTmax = 7;
+dTmax = 10;
+
+zfinal = 0.8;
 
 % Model parameters
-p.R0 = solution.p(end-3)      %Ohms
+p.R0 = 0.0163;      %Ohms
 p.R1 = 0.0221;      %Ohms
 p.C1 = 15/p.R1;     %Farads
 p.CellCap = 3960;   %As
@@ -47,26 +47,10 @@ p.b2 = 1/p.CellCap;
 
 A = [exp(-p.lambda1*p.dt) 0; 0 1];
 B = [p.b1/p.lambda1*(1-exp(-p.lambda1*p.dt)); p.b2*p.dt];
-Ts = p.dt;
-
-%% Get A & B from discritisation function
-%G.K
-[A, B] = discrit(solution.p,Ts);
-A = A(1:2,1:2);
-B = B(1:2,1);
-R0 = solution.p(end-3);
-syms x1 
-coef_length = length(solution.p) - 6;
-ocv_func = 0;
-for i = 1:coef_length
-    ocv_func = ocv_func + solution.p(i) * x1.^(i-1);
-end
-matlabFunction(ocv_func, 'File', 'OCVModel_Fmin', 'Vars', {x1});
-
 
 %% Constuct fmincon matrices
 %% Peq*x=Qeq
-% Equivalence, includes the discrete voltage model
+% Equivalence, includes the discrete voltage model and final SOC constraint
 % Initialise Peq as zeros, Qeq is just zeros
 Peq = zeros(2*kmax,4*kmax);
 Qeq = zeros(2*kmax,1);
@@ -84,6 +68,12 @@ for i = 2:kmax
     columns = 4*i-6:4*i-1;
     Peq(rows,columns) = eq_mat;
 end
+
+PZcon = zeros(1,4*kmax);
+PZcon(1,4*kmax-1) = 1;
+
+Peq = [Peq;PZcon];
+Qeq = [Qeq;zfinal];
 
 %% P*x < Q
 %%% Positive I limits P1*x < Q1
@@ -132,18 +122,18 @@ Q = [Q1;Q2;Q3;Q4;Q5];
 
 %% initial x, x0
 x0 = zeros(4*kmax,1);
-
+%x0=x;
 %% Objective function, fun
 C = zeros(4*kmax,1);
-C(4*kmax-1,1) = -1;
+C(4:4:4*kmax,1) = 1;
 
-fun = @(x)C'*x;
+fun = @(x)max(C.*x);
 
 %% Optimise
 options = optimoptions('fmincon','MaxFunctionEvaluations',1e10,'MaxIterations',1e10,'StepTolerance',1e-12);
-[A, B] = discrit(solution.p,Ts);
+
 tic
-x = fmincon(fun,x0,P,Q,Peq,Qeq,[],[],@(x) nonlconT(x,A,B,R0),options);
+x = fmincon(fun,x0,P,Q,Peq,Qeq,[],[],@nonlconT,options);
 toc
 
 %% Extract i, v and z from x
@@ -152,35 +142,23 @@ v1_optimal = [0;x(2:4:(4*kmax-2),1)];
 z_optimal = [0;x(3:4:(4*kmax-1),1)];
 dT_optimal = [0;x(4:4:(4*kmax),1)];
 T_optimal = dT_optimal + p.Tamb;
-% fix.poly.xe = zeros(params - 6,1);
-Vout_optimal = v1_optimal + OCVModel_Fmin(z_optimal) + p.R0*i_optimal;
+
+Vout_optimal = v1_optimal + arrayfun(@OCV_Func2,z_optimal) + p.R0*i_optimal;
 
 t = 0:p.dt:kmax*p.dt;
 
 %% Save x just in case
-% writematrix(x,'x_latest.csv')
+writematrix(x,'x_latest.csv')
 
 %% Simulate the current profile at a finer time step
-[tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.001,tmax, solution.p);
+[tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.001,tmax);
 
 %% Plot graphs
 % Plot Voltage graphs
-VIplot(tsim,Vsim)
-yyaxis left
-plot([0,tmax],[3.6,3.6],'--','Color','#0072BD','linewidth',1.5)
-axis([0,tmax,2.2,3.65])
-box on
-yyaxis right
-axis([0,tmax,0,20])
+VIplot(tsim,Vsim,isim)
 
 %% Plot Temperature graphs
 TPplot(tsim,Tsim,Pgensim)
-box on
-yyaxis left
-plot([0,tmax],[37,37],'--','Color','#EDB120','linewidth',1.5)
-axis([0 600 30 37.5])
-yyaxis right
-
 
 Zstr = strcat({'Final SOC = '},num2str(max(z_optimal)));
 disp(Zstr)
