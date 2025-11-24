@@ -99,9 +99,13 @@ The electrolite is a medium in which the lithium ions can be transported via dif
 Mention diffusion differences between charge and discharge (cite micheal j lain) 
 Whiney well 
 \subsubsection{Degredation methods}
+Simon et al. \cite{jokane_lithium-ion_2022} simon e j o summerises the key 5 modes of degredation caused within lithium ion batteries
 
-\textbf{Lithium plating} - During discharge, the lithium ions intercolate into the posotive electrode. Under certain charging conditions, the lithium ions within the electrolyte will join with the electrons outside the negative electrode, producing pure lithium metal - commonly reffered to as dentrites, depicted in figure ... There is still ongoing research into finding the key causes and which factors speed up this process, but it's most understood cause is when the negative electrode (carbon in the projects battery case) potential falls below that of lithiums own potnetial (cite shichun yang + Michael.J. Lain). As previously mentioned, the lithinated carbon potnetintal is slighlty higher than that of pure lithium. From electrochemical models, the potential at the elctrodes is the sum of their open circuit potentials and their overpotential, overpotentials are caused from the dynamics of the battery, i.e during charge and discharge, thus, the overpotentials can drive the battery below that of lithium, aswell as the SoC of the battery which increases the natural potentials (cite zhiqiang). Meaning the more favourable reaction is to form lithium as apoosed to intercalate. The overpotential is largley due to the kenetic overpotential at the interface of the electrolyte, sei and electrodel; it's shown that low temperature, high currents and high SoC can cause the negative potential to drive lower (cite zhiqiang). Modelling aims to characterise and capture potentials to help with controling dendrite formation, methods from numerical electrochemical models like the p2D thing, using the butler-volmer kenetics to show key overpotentials, as well as state estimation approches for realtime - however they all require many parameters about the specific battereis.
+\textbf{Lithium plating} - During discharge, the lithium ions intercolate into the posotive electrode. Under certain charging conditions, the lithium ions within the electrolyte will join with the electrons outside the negative electrode, producing pure lithium metal - commonly reffered to as dentrites, depicted in figure ... There is still ongoing research into finding the key causes and which factors speed up this process, but it's most understood cause is when the negative electrode (carbon in the projects battery case) potential falls below that of lithiums own potnetial (\cite{yang_minimum_2021,lain_understanding_2021} shichun yang + Michael.J. Lain). As previously mentioned, the lithinated carbon potnetintal is slighlty higher than that of pure lithium. From electrochemical models, the potential at the elctrodes is the sum of their open circuit potentials and their overpotential, overpotentials are caused from the dynamics of the battery, i.e during charge and discharge, thus, the overpotentials can drive the battery below that of lithium, aswell as the SoC of the battery which increases the natural potentials (cite zhiqiang). Meaning the more favourable reaction is to form lithium as apoosed to intercalate. The overpotential is largley due to the kenetic overpotential at the interface of the electrolyte, sei and electrodel; it's shown that low temperature, high currents and high SoC can cause the negative potential to drive lower (cite zhiqiang). Modelling aims to characterise and capture potentials to help with controling dendrite formation, methods from numerical electrochemical models like the p2D thing, using the butler-volmer kenetics to show key overpotentials, as well as state estimation approches for realtime - however they all require many parameters about the specific battereis.
 
+\textbf{SEI Layer growth} - A layer known as solid electyroytle interphase is formed as soon as the electrolyte soulution comes into contact with the negative electrode causing salts like \ch{Li_{2}CO_{3}} to produce acids, followerd by futher reactions; this barrier acts to preven electrons further reducing and using up the more of the electrolyte, whilst allowing passage of the lithium ions to intercolate\cite{bouguern_critical_2024}. If this SEI breaks appart, new SEI will form, taking more lithium up causing a reduction of lithum avaolable for charging. Having the battery at very high and very low SoC can cause the SEI layer to thicken also \cite{agubra_analysis_2014}. 
+
+\textbf{Particle fracture} - The physical volume of the elctrodes can change during the interoclation and deintercalation can cause
 
 \begin{figure}[ht]
     \centering
@@ -132,17 +136,14 @@ This S2352152X2400584X nicley shows the overpotential of the battery relating to
 and resistive overpotential. This are equated witin the ecm model as the polorixing rc, and r. 
 0378775313020880 bib5 gives the 
 
-Just say, that theres models for overpotnetial which can cause the dendrite formations, these are caused by to fast ofcharge and overcharging.  dr
 
+Whilst the voltage dynamics of lithium batteries do depend on temperature, this project keeps the ambient temperature to 30deg nd moderatley low temperatures, thus realtime affects are minimal. However moddeling of the temperature is vital since temperature does directly affect degredadion and will help the ICLOCS parameterisation. cite the thermal paper.  The irreversible is much easier to directly relate to the ecm, by basic ohms law. However irreverisitbility can not be directly infered from the ecm model. Cite dodgey paper, equated it to proportional to $\partial U / \partial T$ where $U$ is the OCV and $T$ is the temperature, this value does change over the SoC of the battery and paper et all calculates the curve for a battery of similar to the test battery shown in figure x.x
 
-Polynomial fit ....
 \begin{equation}
     mCp\frac{d T}{dt} = \underbrace{I^{2}R_{0} + IV_{1}}_{irreversable} - \underbrace{IT\frac{\partial U}{\partial T}}_{reversable} - \underbrace{hAT}_{dissipation}
 \end{equation}
 
-
-
-Capturing temperature models can be challegening in order to achive high accuracy, often methods of measuing temperature can have high levels of noise, alognside the thermocouples themselfs often detaching from the battereis. There is then the modeling of the batteries themself. (Talk about the irr and revs heat complications). Theres the paper explaining the irr and rev, link to electrochemical model. Then theres the paper that gives a rough value of the du/dt.
+cite greg, shows methods of extracting the element values for the ecm, but the ocv curve can be particualrily challenging, Especially given it hysterisis affects when charging and dischargign.   This is where iclocs and other modlers can come into play to help get these values 
 
 \subsection{Charging methods}
 There was a paper copmparing them in general, taljk aboutr the advantage of the different ones ect. 
@@ -153,6 +154,8 @@ Talk about CC, MultiStage CC, ConstantPower, George Tuckers minimisation functio
 Talk about how stevesons linear model uses the change in voltage overtime (first 100 cycles). \textbf{Downside - } This requres a slow cycle to get the right features for the model, also only predicts EOL figure, useful for strong indication of battery prediction. However can not fully caupture the input affects of current, only fitting from the affects of it. Additionally does not show how specific characyeristics change.
 
 Attia takes the use of steverson to great use, using the model to predic how well differenct charge cycles last 
+
+
 \begin{itemize}
     \item Fmincon
     \item Greyest
