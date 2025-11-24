@@ -63,12 +63,21 @@ What is this project? the general apprach
 \subsection{Project Aims}
 This project in essance aims first to characterise any battereies behaviour by perameterisation without ex-situe tests. This data will then be used in combination with work previously done to form the charging protocol based off minimising different objectve functions (the level of affects the previously proposed objective functions will be also verified by acting these tests). Data from this will be used to form the basis of a machine learning model in the hopes this model can, over time, allow for a much simpler method of predicting a batteries future behaviour.
 As will be discussed in the sections below, characterising batteries behaviour can require upto nearly 30 parameters about the specific battery in order to see the affects of degredation; even then, due to minor errors in soltuons can fail to predict future properties.
+
+Figure x highlits the original idealised goal, to have a purley data driven model that can predict the output voltage over any cycle, thus been able to derrive an idealised charging current to maxamise the lifespan. 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Images/nn_battery.png}
+    \caption{Inital end objective: Black Box Battery}
+\end{figure}
+
 \subsubsection{Objectives}
 \begin{itemize}
     \item Analyse ICLOCS2 and other methods in parameterising batteries during realtime use
-    \item Modify previously developed charging methods for running in a lab to rest actual results
-    \item See how affective adaptive methods are in the charging process as the battery ages
-    \item Feed results to a data driven model to see if predicitions in battery degredation can be made
+    \item Modify previously developed charging methods for running in a lab to rest actual results, inspect the affects of each method
+    \item See how affective adapting the charging profile over the degredadtion is in increasing battery life
+    \item Propose and test new charging based on results of prevouls developed profiles
+    \item Feed results to a data driven model to find a new optimal charging profile
 \end{itemize}
 
 \section{Literature Review}
@@ -138,8 +147,12 @@ Capturing temperature models can be challegening in order to achive high accurac
 \subsection{Charging methods}
 There was a paper copmparing them in general, taljk aboutr the advantage of the different ones ect. 
 
-\subsection{Optimal controll}
-Fmincon stuff
+Talk about CC, MultiStage CC, ConstantPower, George Tuckers minimisation functions
+
+\subsection{Modelling degredation}
+Talk about how stevesons linear model uses the change in voltage overtime (first 100 cycles). \textbf{Downside - } This requres a slow cycle to get the right features for the model, also only predicts EOL figure, useful for strong indication of battery prediction. However can not fully caupture the input affects of current, only fitting from the affects of it. Additionally does not show how specific characyeristics change.
+
+Attia takes the use of steverson to great use, using the model to predic how well differenct charge cycles last 
 \begin{itemize}
     \item Fmincon
     \item Greyest
@@ -149,17 +162,12 @@ Fmincon stuff
     \item LSTM
     \item 
 \end{itemize}
-\section{Plans for Remaining Work}
 
 \section{Self Review}
 
 % \includegraphics[width=0.25\textwidth]{../nn_battery.png.png}\\[3cm]
 \section{Project progress}
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.5\textwidth]{../Images/nn_battery.png}
-    \caption{Inital end objective: Black Box Battery}
-\end{figure}
+
 
 \newpage
 \nocite{*}
