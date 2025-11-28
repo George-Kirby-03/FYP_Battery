@@ -151,6 +151,23 @@ There was a paper copmparing them in general, taljk aboutr the advantage of the 
 
 Talk about CC, MultiStage CC, ConstantPower, George Tuckers minimisation functions
 
+There exists many techniques to charge batteries with a graphical summary of the common methods shwon in figure xx, with the most common method known as CC-CV. This is where the bulk charge is done such that the applied overportnetial to the battery causes a constant current to flow, voltage reaches the batteries defined maximum voltage, the charging device switched to a contant voltage, this fixed voltage is held until the charge current decays to a negligable or fixed amount. This is the simplest to implament without the need to accurate SoC to risk overcharging (like would be with pure CC charging), CV charging can be too dangerous given the large current draw at low SoC. Some of the data used within this project is charged via CC-CV and is highlited in figure xx.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../../Matlab/Figures/CCCVProtocol.png}
+    \caption{Charging segemnt Lion}
+\end{figure}
+
+multistage
+
+AC
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Images/common_charge_graph.jpg}
+    \caption{Common charge techniques, cite qian lin towards smarter}
+\end{figure}
+
 \subsection{Modelling degredation}
 Talk about how stevesons linear model uses the change in voltage overtime (first 100 cycles). \textbf{Downside - } This requres a slow cycle to get the right features for the model, also only predicts EOL figure, useful for strong indication of battery prediction. However can not fully caupture the input affects of current, only fitting from the affects of it. Additionally does not show how specific characyeristics change.
 
