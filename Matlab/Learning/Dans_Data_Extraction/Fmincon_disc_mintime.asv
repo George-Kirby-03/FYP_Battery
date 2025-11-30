@@ -43,7 +43,7 @@ imin = 0;
 zmax = 1;
 zmin = z_init;
 dTmax = 8;
-p.Tamb = 0;
+p.Tamb = 30;
 p.R0 = solution.p(end-3);      %Ohms
 Ts = p.dt;
 

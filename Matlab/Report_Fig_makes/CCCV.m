@@ -7,8 +7,6 @@ color_two = [1,0,127/255];
 color_one = [0.1,0.8,1]; 
 
 figure;
-
-
 yyaxis left
 p1 = gca;
 p1.YColor = color_one;  
