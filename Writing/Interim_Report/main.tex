@@ -133,7 +133,12 @@ Causes increased ageing and seftey risks, its the deposition of metallic lithoum
         \item Electrolyte decomposition
     \end{itemize}
 \subsection{Equivalent Circuit Model}
-This S2352152X2400584X nicley shows the overpotential of the battery relating to the differend of the output of the battery to the equlibrium potnetial of the battery. Shown as the summation of eletrolyte opverpotential, Li concentration overportnetial, kenetic overpotential .Attempts to estimate the anode voltage based off reduced order elkectrochemical models and by use of a state estimator. In the electrocemical models, the anode potential is equal to the kenetic overpotential, anode equilibrium potential and the electolite potebtial, (cite) shows the solid-phase electrode potnetial is equal to $U_{eq} + \mu _{ct} + \Phi _{electroylite}$ th(cite). 
+
+There are many ways a lithium battery is moddeled
+
+
+
+This S2352152X2400584X nicley shows the overpotential of the battery relating to the differend of the output of the battery to the equlibrium potnetial of the battery. Shown as the summation of eletrolyte opverpotential, Li concentration overportnetial, kenetic overpotential.Attempts to estimate the anode voltage based off reduced order elkectrochemical models and by use of a state estimator. In the electrocemical models, the anode potential is equal to the kenetic overpotential, anode equilibrium potential and the electolite potebtial, (cite) shows the solid-phase electrode potnetial is equal to $U_{eq} + \mu _{ct} + \Phi _{electroylite}$ th(cite). 
 
 and resistive overpotential. This are equated witin the ecm model as the polorixing rc, and r. 
 0378775313020880 bib5 gives the 
@@ -148,12 +153,14 @@ Whilst the voltage dynamics of lithium batteries do depend on temperature, this 
 
 cite greg, shows methods of extracting the element values for the ecm, but the ocv curve can be particualrily challenging, Especially given it hysterisis affects when charging and dischargign.   This is where iclocs and other modlers can come into play to help get these values 
 
+cite Alexander Farman, shows that the OCV of lithium batteries can change throughout degredaditon, for phosphate batteries they showed a 20mV difference in regions of the SoC after aging of 500 cycles at 1C of charge and discharge. Coupled with the fact
+
 \subsection{Charging methods}
 There was a paper copmparing them in general, taljk aboutr the advantage of the different ones ect. 
 
 Talk about CC, MultiStage CC, ConstantPower, George Tuckers minimisation functions
 
-There exists many techniques to charge batteries with a graphical summary of the common methods shwon in figure xx, with the most common method known as CC-CV. This is where the bulk charge is done such that the applied overportnetial to the battery causes a constant current to flow, voltage reaches the batteries defined maximum voltage, the charging device switched to a contant voltage, this fixed voltage is held until the charge current decays to a negligable or fixed amount. This is the simplest to implament without the need to accurate SoC to risk overcharging (like would be with pure CC charging), CV charging can be too dangerous given the large current draw at low SoC. Some of the data used within this project is charged via CC-CV and is highlited in figure xx.
+There exists many techniques to charge batteries with a graphical summary of the common methods shwon in figure xx, with the most common method known as CC-CV. This is where the bulk charge is done such that the applied overportnetial to the battery causes a constant current to flow, the voltage potential of the battery rises to a defined maximum point, the charging device then switches to a contant voltage charging mode, this fixed voltage is held until the charge current decays to a negligable or fixed amount - current still flows during this stage as there is still an overpotnetial between the batteries equlibrium state and the applied constant voltage. This is the simplest to implament without the need for an accurate SoC reading to risk overcharging (like would be with pure CC charging), CV charging can be too dangerous given the large current draw at low SoC. Some of the data used within this project is charged via CC-CV and is highlited in figure xx.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{../../Matlab/Figures/CCCVProtocol.png}
