@@ -24,12 +24,11 @@ close all
 file = SolutionLoader("MOLI_28\",2);
 cyc_no = regexp(file, '_(\d+)\.mat', 'tokens', 'once');
 load(SolutionLoader("MOLI_28\",2))
-solution_unbound.p = [solution_unbound.p];
 solution = solution_temp;
 %% Define parameters
 % Changeable parameters
-tmax = 1500; %If you change this remember to change nonlcon
-kmax = 10;
+tmax = 600; %If you change this remember to change nonlcon
+kmax = 4;
 p.dt = tmax/kmax;    %time step (s) (t=k*dt)
 
 
@@ -38,11 +37,11 @@ v_init = 0;
 z_init = 0;
 
 % State constraints
-imax = 10;
+imax = 10000;
 imin = 0;
 zmax = 1;
 zmin = z_init;
-dTmax = 8;
+dTmax = 7;
 p.Tamb = 0;
 p.R0 = solution.p(end-3);      %Ohms
 Ts = p.dt;
@@ -166,7 +165,7 @@ t = 0:p.dt:kmax*p.dt;
 %% Simulate the current profile at a finer time step
 % [tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.001,tmax, solution.p);
 %% GK: Using own discrete runner, more suitable for running batches and was more familiar + deals with non 0 SoC
-time = linspace(0,tmax,300);
+time = linspace(0,tmax,400);
 i_optimal_discrete = interp1(t,i_optimal,time,"previous");
 [Tsim, Vsim] = discrit_solver(time,i_optimal_discrete,solution.p,z_init);
 %% Plot graphs
@@ -193,12 +192,13 @@ plot(time,Tsim, 'color', color_two, 'linewidth', 3)
 ylabel('Temperature','interpreter','latex','fontsize',f_size);
 
 xlabel('Time','interpreter','latex','fontsize',f_size);
-title('\textbf{CC-CV Charging Protocol}','interpreter','latex','fontsize',f_size+2);
+title('\textbf{Minimising Charge Time}','interpreter','latex','fontsize',f_size+2);
 
 figure
 hold on
 stairs(t,i_optimal)
 stairs(t,dT_optimal)
+plot(time,i_optimal_discrete)
 Zstr = strcat({'Final SOC = '},num2str(max(z_optimal)));
 disp(Zstr)
 Tstr = strcat({'Peak temperature = '},num2str(max(Tsim)),{' degC'});
