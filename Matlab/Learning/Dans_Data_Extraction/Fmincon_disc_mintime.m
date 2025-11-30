@@ -21,8 +21,7 @@
 clear
 clc
 close all 
-load(SolutionLoader("MOLI_28\",0,1))
-solution_unbound.p = [solution_unbound.p; 0.6; 120];
+load(SolutionLoader("MOLI_28\",2))
 solution = solution_unbound;
 %% Define parameters
 % Changeable parameters

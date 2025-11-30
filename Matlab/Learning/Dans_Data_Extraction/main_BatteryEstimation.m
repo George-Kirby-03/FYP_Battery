@@ -17,8 +17,8 @@ clear all;close all;format compact;
 
 
 
-[problem,guess]=Copy_2_of_BatteryEstimation('..\..\..\cycle_exports\MOLI_28\MOLI_cycle_2.mat');          % Fetch the problem definition
-options= problem.settings(130);                  % Get options and solver settings 
+[problem,guess]=BatteryEstimation('..\..\..\cycle_exports\MOLI_28\MOLI_cycle_3.mat');          % Fetch the problem definition
+options= problem.settings(190);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
 %% figure%
