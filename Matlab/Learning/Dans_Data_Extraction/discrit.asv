@@ -12,10 +12,10 @@ l2 = Ah./Cp;
 b1 = 1./C;
 b2 = 1./Q;
 b3 = R0./Cp;
-b4 = 1/Cp;
+b4 = 1/+Cp;
 
 %%B matrix
-bt1 = (b1).*(1-exp(-l1.*Ts))./l1;
+bt1 = b1.*(1-exp(-l1.*Ts));
 bt2 = b2.*Ts;
 bt3 = ((b3./l2 + (b1.*b4)/(l1.*l2)).*(1-exp(-l2.*Ts))) - (((b1.*b4)./(l1.*(l2-l1))).*(exp(-l1*Ts)-exp(-l2*Ts)));
 bt4 = (((b4)./(l2-l1)).*(exp(-l1*Ts)-exp(-l2*Ts)));
