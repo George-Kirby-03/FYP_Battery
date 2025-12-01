@@ -17,7 +17,7 @@ clear all;close all;format compact;
 
 
 
-[problem,guess]=BatteryEstimation_temp('..\..\..\cycle_exports\MOLI_28\MOLI_cycle_1501.mat');          % Fetch the problem definition
+[problem,guess]=BatteryEstimation_temp_Rev('..\..\..\cycle_exports\MOLI_28\MOLI_cycle_1501.mat');          % Fetch the problem definition
 options= problem.settings(320);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 

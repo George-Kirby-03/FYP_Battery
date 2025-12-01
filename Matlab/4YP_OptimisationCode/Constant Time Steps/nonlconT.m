@@ -4,7 +4,7 @@ function [c,ceq] = nonlconT(x)
 
 % Need to use a non-linear condition to put the constraints on Vout and the
 % OCV(z). Kmax = 60
-tmax = 600;
+tmax = 1000;
 
 Voutmax = 3.6;
 Voutmin = 0;

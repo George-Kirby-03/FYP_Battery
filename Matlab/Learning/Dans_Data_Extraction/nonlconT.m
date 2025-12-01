@@ -4,7 +4,7 @@ function [c,ceq] = nonlconT(x, A, B, R0)
 
 % Need to use a non-linear condition to put the constraints on Vout and the
 % OCV(z). Kmax = 60
-tmax = 600;
+tmax = 3000;
 
 %Voutmax = 4.2;   Now taking the Max voltatage to be the ocv(1), since this
 %was causing SoC to be limited (i hope so atleast)

@@ -20,7 +20,7 @@
 clear all
 %% Define parameters
 % Changeable parameters
-tmax = 600; %If you change this remember to change nonlcon
+tmax = 1000; %If you change this remember to change nonlcon
 kmax = 4;
 p.dt = tmax/kmax;    %time step (s) (t=k*dt)
 
@@ -29,7 +29,7 @@ imax = 10000;
 imin = 0;
 zmax = 1;
 zmin = 0;
-dTmax = 7;
+dTmax = 12;
 
 % Model parameters
 p.R0 = 0.0163;      %Ohms

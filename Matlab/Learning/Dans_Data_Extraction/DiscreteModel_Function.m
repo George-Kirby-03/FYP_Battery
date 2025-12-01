@@ -14,7 +14,7 @@ isim = interp1(tsample,isample,tsim,'previous');
 [A, B] = discrit(solution,dt);
 %% Initialise the model
 %x_0 = [v1_0; z_0; dT_0];
-x_disc = [0; 0; p.T0-p.Tamb];
+x_disc = [0; 0; p.T0];
 
 v1 = zeros(1,maxk+1);
 z = zeros(1,maxk+1);

@@ -27,6 +27,9 @@ load(cycle_file)
 % OCV Poly values
 polycount = 8;
 problem.data.poly = polymaker(polycount,480,3,1,1,1);
+
+polycount_rev = 5;
+problem.data.polyrev = polymaker(polycount_rev,300,0,0,0);
 % Extract columns
 
 %adding initial resting condition fudge to maybe help paramtereisation
@@ -37,7 +40,7 @@ problem.data.OutputTemp = griddedInterpolant(tt, tp, 'pchip');
 
 %------------- BEGIN CODE --------------
 % Plant model name, used for Adigator
-InternalDynamics=@BatteryEstimation_Dynamics_Internal_Temp;
+InternalDynamics=@BatteryEstimation_Dynamics_Internal_Temp_Rev;
 SimDynamics=@BatteryEstimation_Dynamics_Sim;
 
 % Analytic derivative files (optional)
@@ -62,11 +65,19 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.5*3600 400 0.009 0.003 0.01 40];
-problem.parameters.pu=[problem.data.poly.xu 3.1*3600 90000 0.1 0.1 3 200];
-guess.parameters=[problem.data.poly.xe 2*3600 1570 0.026 0.04 0.1 150];
-
-
+problem.parameters.pl=[problem.data.poly.xl problem.data.polyrev.xl 1.5*3600 400 0.009 0.003 0.01 40];
+problem.parameters.pu=[problem.data.poly.xu problem.data.polyrev.xu 3.1*3600 90000 0.1 0.1 3 200];
+guess.parameters=[problem.data.poly.xe problem.data.polyrev.xe 2*3600 1570 0.026 0.04 0.1 150];
+% Correcting parameter index in poly.data
+plength = length(problem.parameters.pl);
+problem.data.poly.R0 = plength-3;
+problem.data.poly.R1 = plength-2;
+problem.data.poly.C  = plength-4;
+problem.data.poly.CP = plength;
+problem.data.poly.A = plength-1;
+problem.data.poly.Q =  plength-5;
+problem.data.poly.revidx = length(problem.data.poly.xl)+1;
+problem.data.poly.revend = problem.data.poly.revidx + polycount_rev;
 % Initial conditions for system.
 problem.states.x0=[];
 
@@ -202,7 +213,7 @@ voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
 
 % Polysumation, to fix the ocv(1)
 coef = p(:,1)+p(:,2)+p(:,3)+p(:,4)+p(:,5)+p(:,6)+p(:,7)+p(:,8);
-stageCost = 0.97*(voltage_model-voltage_measured).^2 + 0*(temp_model-temp_measured).^2 + 0.03*(coef-4.12).^2;
+stageCost = 0.6*(voltage_model-voltage_measured).^2 + 0.35*(temp_model-temp_measured).^2 + 0.05*(coef-4.12).^2;
 
 %------------- END OF CODE --------------
 

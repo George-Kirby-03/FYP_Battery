@@ -31,7 +31,7 @@ function [dx] = BatteryEstimation_Dynamics_Internal(x,u,p,t,vdat)
 %
 %------------- BEGIN CODE --------------
 
-SOC = x(:,1); V_RC1 = x(:,2); T = x(:,3);
+SoC = x(:,1); V_RC1 = x(:,2); T = x(:,3);
 
 % Take input measurement directly from Lookup table
 current_bat = vdat.InputCurrent(t);
@@ -43,10 +43,19 @@ Q=p(:,vdat.poly.Q);
 C1=p(:,vdat.poly.C); R0=p(:,vdat.poly.R0); R1=p(:,vdat.poly.R1); 
 hA = p(:,vdat.poly.A); mCp = p(:,vdat.poly.CP);
 
+c0 = p(:,vdat.poly.revidx);
+c1 = p(:,vdat.poly.revidx + 1);
+c2 = p(:,vdat.poly.revidx + 2);
+c3 = p(:,vdat.poly.revidx + 3);
+c4 = p(:,vdat.poly.revidx + 4);
+
 dx(:,1) = current_bat./Q;
 
 dx(:,2) = -V_RC1./(R1.*C1) + current_bat./C1;
 
-dx(:,3) = -(hA./mCp).*(T) + (R0./mCp).*(current_bat).^2 + (1./(mCp)).*V_RC1.*current_bat;
+%dx(:,3) = -(hA./mCp).*(T) + (R0./mCp).*(current_bat).^2 + (1./(mCp)).*V_RC1.*current_bat;
 
+% New thermal model with entropy 
+
+dx(:,3) = -(hA./mCp).*(T) + (R0./mCp).*(current_bat).^2 + (1./(mCp)).*V_RC1.*current_bat - (1./mCp).*T.*current_bat.*(c0 + c1.*SoC + c2.*(SoC.^2)+ c3.*(SoC.^3)+ c4.*(SoC.^4));
 %------------- END OF CODE --------------%

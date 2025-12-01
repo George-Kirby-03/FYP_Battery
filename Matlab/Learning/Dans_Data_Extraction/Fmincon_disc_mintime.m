@@ -21,14 +21,15 @@
 clear
 clc
 close all 
-file = SolutionLoader("MOLI_28\",2);
+file = SolutionLoader("MOLI_28\",0);
 cyc_no = regexp(file, '_(\d+)\.mat', 'tokens', 'once');
 load(SolutionLoader("MOLI_28\",2))
-solution = solution_temp;
+solution = solution_unbound;
+solution.p = [solution.p; 0.09; 120];
 %% Define parameters
 % Changeable parameters
-tmax = 600; %If you change this remember to change nonlcon
-kmax = 4;
+tmax = 3000; %If you change this remember to change nonlcon
+kmax = 10;
 p.dt = tmax/kmax;    %time step (s) (t=k*dt)
 
 
@@ -41,7 +42,7 @@ imax = 10000;
 imin = 0;
 zmax = 1;
 zmin = z_init;
-dTmax = 7;
+dTmax = 20;
 p.Tamb = 0;
 p.R0 = solution.p(end-3);      %Ohms
 Ts = p.dt;
@@ -206,3 +207,26 @@ disp(Tstr)
 Tstr = strcat('Peak temperature = ',num2str(max(Tsim)),{' degC'});
 disp(Tstr)
 
+[tsim, isim, Vsim, Tsim, Pgensim] = DiscreteModel_Function(t,i_optimal,0.1,tmax,solution.p);
+VIplot(tsim,Vsim,isim)
+yyaxis left
+plot([0,tmax],[3.6,3.6],'--','Color','#0072BD','linewidth',1.5)
+axis([0,tmax,2.2,4.3])
+box on
+yyaxis right
+axis([0,tmax,0,20])
+
+%% Plot Temperature graphs
+TPplot(tsim,Tsim,Pgensim)
+box on
+yyaxis left
+plot([0,tmax],[dTmax+p.Tamb,dTmax+p.Tamb],'--','Color','#EDB120','linewidth',1.5)
+axis([0 600 p.Tamb dTmax+p.Tamb+3])
+yyaxis right
+
+
+Zstr = strcat({'Final SOC = '},num2str(max(z_optimal)));
+disp(Zstr)
+
+Tstr = strcat({'Peak temperature = '},num2str(max(Tsim)),{' degC'});
+disp(Tstr)
