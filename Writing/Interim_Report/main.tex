@@ -14,7 +14,7 @@
     
     Understanding the problem\\[1cm]
     \includegraphics[width=0.25\textwidth]{../Images/UOS.png}\\[2cm]
-    \textbf{Implamenting multistage constant-current charging methods in lithium based batterys to reduce degredation} \\[1em]
+    \textbf{Finding Machine learning methods to model the degredadition of lithium based batteries under multi-stage CC charging } \\[1em]
 }
 \author{George W. Kirby \\[2em] \textit{200328186} \\[2em] }
 \date{\today}
@@ -62,30 +62,32 @@ Much research has been done into both modeling LIB's and optimising their usage 
 Moddeling and prediciting how batteries degreade over time is pivitol for the growing use of lithium batteries as it allows informed descisions on how to best charge and use battereis to prolong life, as well allow optimisations on the charging throughout the batteries life.
 
 \subsection{Project Aims}
-This project in essance aims first to characterise any battereies behaviour by perameterisation without ex-situe tests. This data will then be used in combination with work previously done to form the charging protocol based off minimising different objectve functions (the level of affects the previously proposed objective functions will be also verified by acting these tests). Data from this will be used to form the basis of a machine learning model in the hopes this model can, over time, allow for a much simpler method of predicting a batteries future behaviour.
-As will be discussed in the sections below, characterising batteries behaviour can require upto nearly 30 parameters about the specific battery in order to see the affects of degredation; even then, due to minor errors in soltuons can fail to predict future properties.
+This project in essance aims first to characterise any battereies behaviour by perameterisation without ex-situe tests. This data will then be used in combination with work previously done to form the charging protocol based off minimising different objectve functions (the level of affects the previously proposed objective functions will be also verified by acting these tests). Data from this will be used to form the basis of a machine learning model in the hopes this model can, over time, allow for a much simpler method of predicting a batteries future behaviour. If this model can show how different charging currents can affect degredation, a charging protocol which is derivived from minimsing such model will be tried in the labs. If this isnt achived, atleast this project can validate existing predicted charging to minimise degredaditon will be tested, and the parameterisation of the batteries during degredaditon will be researched by using optimisation tools.
 
-Figure x highlits the original idealised goal, to have a purley data driven model that can predict the output voltage over any cycle, thus been able to derrive an idealised charging current to maxamise the lifespan. 
+Figure x highlits the original idealised goal, to have a purley data driven model that can predict the output voltage over any cycle, thus been able to derrive an idealised charging current to maxamise the lifespan.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{../Images/nn_battery.png}
-    \caption{Inital end objective: Black Box Battery}
+    \caption{Inital end objective: Black Box Battery modeling degredaditon}
 \end{figure}
 
 \subsubsection{Objectives}
 \begin{itemize}
-    \item Analyse ICLOCS2 and other methods in parameterising batteries during realtime use
+    \item Analyse ICLOCS2 and other methods in parameterising batteries under realtime use
     \item Modify previously developed charging methods for running in a lab to rest actual results, inspect the affects of each method
     \item See how affective adapting the charging profile over the degredadtion is in increasing battery life
-    \item Propose and test new charging based on results of prevouls developed profiles
-    \item Feed results to a data driven model to find a new optimal charging profile
+    \item Investigate ML methods to model the attained data to predict degredaditon
+    \item Use the model to find a new charging method and validate
 \end{itemize}
 
 \section{Literature Review}
 \subsection{Lithium based battery degredation modes}
-\subsubsection*{Basic Background of Lithium Ion Batteries}
 
-During my time in trying to understand how batteries work and enginering appraches to model,
+
+\textbf{Notice:} Throughout the research and not coming from an electrochemical background, various literature denotes the meaning of \textit{potential} and \textit{overpotential} as slighly different given the context - there is likley equivalances, but of which the author of this report cant explain. For example cite(potential for confusion) shows a clear distinction between the common $\phi$ symbol for potential as the \textit{electrical potential}, however when talking about volts measured in the real world, the \textit{potential difference} is usually the \textit{electrochemical potential difference} (specifically of electrons), for two given points denoted by $ \Delta \tilde{\mu} = \Delta\mu + \Delta zF\phi$. Overpotential in some instaces, such as the Butler-Volmer model for current exhange, is a function of overpotential $\eta$ and from cite greg is a difference in the current \textit{electrical potential} and equlibrium potential, yet papers like S2352152X2400584X show overpotential more generally as the difference between any equlibium potential and current potential. Thus confirmation should be made in regards to what type of potential and overpotential. Assumptions are given that potentials are a form of energy state, whith a difference between two points causing a force, and overpotneital as additional energy for an event to occur.
+
+\subsubsection*{Basic Background of Lithium Ion Batteries}
 
 Lithium-ion based batteryies are favoruable largley due to the highly reducitve nature of Lithium, taking the potential relative to hydorgens reduction, lithiums half-reaction is $-3.01V$ (cite gregg) relative to hydrogens half-reaction, meaning lithium can release its outershell electron relativley easy. Any cells potential difference is the diference in potentals of the negative and posoitve solid state electrodes $V_t = \phi_s^+ (t) -  \phi_s^- (t) - IR_{cc}$ where $R_{cc}$ is the current collector or tabs ohmic resistance (cite liuying), so having negative half reduction of lithium, allows a varierty of postive electordes (where the oxidation occurs), to yeild a high battery voltage. Coupled with Lithiums low molecular weight, a high energy density cell can be achived to. The force produced by the potential difference between the electrodes drives the elctrons via the external circuit, providing useful work, allowing lithium batteries to act as an energy storage medium.
 
@@ -123,11 +125,6 @@ Causes increased ageing and seftey risks, its the deposition of metallic lithoum
 
 There are many ways a lithium battery can be modeled, depending on the accuracy requried, parameters avaoialable and computational power avaoialable. The two main categories are the equivalent circuit models and physics-based models (cite greg). The physics-based models integrate conservation laws aswell as dynamical behaviour which leads to a set of PDE's with both scalar and gradient based boundary conditions. These require discritisation within the physical dimentions of the model to yeild a set of ODE's which can be solved for, PyBaMM is a popular framework for such modeling and its process is shwon in figure xx. Popular physics based models in order of computational complexity cite(juliasim) are the Doyle-Fuller-Newman model (cite doyle), Single-Particle Model with electolyte (SPMe) and SPM. The key problems of PBM is some require over 30 parameters to fully describe the properties and errors of such can accumulate over time, and depending on accuracy needed, the discitisation can yeild hundred of ODEs (cite battery desgin). 
 
-Equivalent circuit models use standard electronic elemental decives to match the behaviour to that of a real lithium battery, it is this type of model most common in BMS systems today cite something. The most common version is shown in figure xx. The key component is the $V_{oc}$ perfect voltage source, this value becomes a function, (when negleting temperature, degredaditon, charging-discharging hysterisis) of the batteries state of charge, given by
-\[ SoC(t) = z(t)/Q = (z(t_{0}) + \int_{t_{0}}^{t} i(\tau) \,d\tau)/Q \] where $Q$ is the batteries nominal maximum capcity and $z$ is the current charge capacity. The $R_{0}$ and $R_{1}C_{1}$ branch are used to model the diffence in terminal voltage compared to that of the $V_{ocv}$ for a given instantanious SoC. 
-
-
-
 \begin{figure}%
     \centering
     \subfloat[\centering PyBaMM solver pipeline]{\includegraphics[width=0.3\textwidth]{../Images/PyBaMM_pipe.jpg}}%
@@ -135,10 +132,10 @@ Equivalent circuit models use standard electronic elemental decives to match the
     \subfloat[\centering DNF Parameters]{\includegraphics[width=0.6\textwidth]{../Images/dfn_param.png}}%
     \caption{Parameters and solution steps for physics based modeling}%
     \label{fig:example}%
-\end{figure}
-This S2352152X2400584X nicley shows the overpotential\footnote{The definition of overpotential appears to be different between different literature, often from an engineering standpoint overpotential} of the battery relating to the differend of the output of the battery to the equlibrium potnetial of the battery. Shown as the summation of eletrolyte opverpotential, Li concentration overportnetial, kenetic overpotential.Attempts to estimate the anode voltage based off reduced order elkectrochemical models and by use of a state estimator. In the electrocemical models, the anode potential is equal to the kenetic overpotential, anode equilibrium potential and the electolite potebtial, (cite) shows the solid-phase electrode potnetial is equal to $U_{eq} + \mu _{ct} + \Phi _{electroylite}$ th(cite). 
+    \end{figure}
 
-
+Equivalent circuit models use standard lumped electrical elements to match the behaviour to that of a real lithium battery dynamics, it is this type of model most common in BMS systems today. T.Kalogiannis \textit{et al} \cite{kalogiannis_comparative_2019} provides common methods for obtaining the parameter values used in ECM's. The most common version is shown in figure xx , which is static in its dynamics. The key component is the $V_{oc}$ ideal voltage source, this value becomes a function, (when negleting temperature, degredaditon, charging-discharging hysterisis) of the batteries state of charge SoC, given by
+\[ SoC(t) = z(t)/Q = (z(t_{0}) + \int_{t_{0}}^{t} i(\tau) \,d\tau)/Q \] where $Q$ is the batteries nominal maximum capcity and $z$ is the current charge capacity. The $R_{0}$ and $R_{1}C_{1}$ branch are used to model the diffence in terminal voltage compared to that of the $V_{ocv}$ for a given instantanious SoC. 
 
 \begin{figure}[ht]
     \centering
@@ -146,13 +143,67 @@ This S2352152X2400584X nicley shows the overpotential\footnote{The definition of
     \caption{ECM model with 1st Order Polorizing dynamics}
 \end{figure}
 
+The common state space form of this system is given below
 
-and resistive overpotential. This are equated witin the ecm model as the polorixing rc, and r. 
-0378775313020880 bib5 gives the 
+\begin{equation}
+\begin{bmatrix}
+\dot{v_{1}}{(t)} \\[4pt]
+\dot{z}{(t)} \\[4pt]
+\end{bmatrix}
+=
+\begin{bmatrix}
+- \frac{1}{R_{1}C_{1}} & 0\\[4pt]
+0 & 0 \\[4pt]
+\end{bmatrix}
+\begin{bmatrix}
+{v_{1}{(t)}} \\[4pt]
+{z{(t)}} \\[4pt]
+\end{bmatrix}
++
+\begin{bmatrix}
+\frac{1}{C_{1}}\\[4pt]
+\frac{1}{Q}\\[4pt]
+\end{bmatrix}
+i(t)
+\end{equation} 
+
+\begin{equation}
+    V_{batt}(t) = V_{oc}(z) + i(t)R_{0} + v_{1}(t)
+\end{equation}
 
 
+S2352152X2400584X provides the equation for the total overpotential within the battery derrived from the Fuller-Newman electrochemical mode, here, the total overpotential $\eta_{batt}$ is equal to the difference from the equlibrium battery potential $U_{batt}$ and terminal voltage potential $V_{batt}$, i.e $ V_{batt} = U_{batt} -\eta_{batt}$. This is analgous to the ECM model given above, whereby the overpotential (dynamical behaviour) is modeled by $i(t)R_{0} + v_{1}(t)$, where the equlibrium potential is $V_{oc}(z)$. Despite the large complexity reduction, reports show that accuracy can be very good, 
 
-The
+
+\begin{equation}
+\eta_{\text{batt}} =
+\left[
+\begin{aligned}
+& 
+\underbrace{
+    \left( \Phi_{2,p}\big|_{x=L_p} - \Phi_{2,n}\big|_{x=0} \right)
+}_{\text{Electrolyte overpotential } (\eta_2)}
+\\[1.2em]
+&+
+\underbrace{
+\left[
+    \left( U_p(c_{1,p}^s)\big|_{x=L_p} - U_p(\bar c_p)\big|_{x=L_p} \right)
+    -
+    \left( U_n(c_{1,n}^s)\big|_{x=0} - U_n(\bar c_n)\big|_{x=0} \right)
+\right]
+}_{\text{Li concentration overpotential } (\eta_1^{c})}
+\\[1.2em]
+&+
+\underbrace{
+    \left( \eta^{ct}_p\big|_{x=L_p} - \eta^{ct}_n\big|_{x=0} \right)
+}_{\text{Kinetic overpotential } (\eta^{ct})}
+\;-\;
+\underbrace{
+    R_f I_{\text{app}}
+}_{\text{Electrode ohmic overpotential } (\eta_1^{\Omega})}
+\end{aligned}
+\right]
+\end{equation}
 
 Whilst the voltage dynamics of lithium batteries do depend on temperature, this project keeps the ambient temperature to 30deg nd moderatley low temperatures, thus realtime affects are minimal. However moddeling of the temperature is vital since temperature does directly affect degredadion and theroised to help the ICLOCS parameterisation. cite the thermal paper.  The irreversible is much easier to directly relate to the ecm, by basic ohms law. However irreverisitbility can not be directly infered from the ecm model. Cite dodgey paper, equated it to proportional to $\partial U / \partial T$ where $U$ is the OCV and $T$ is the temperature, this value does change over the SoC of the battery and paper et all calculates the curve for a battery of similar to the test battery shown in figure x.x
 
@@ -161,10 +212,8 @@ Whilst the voltage dynamics of lithium batteries do depend on temperature, this 
 \end{equation}
 
 
+cite Alexander Farman, shows that the OCV of lithium batteries can change throughout degredaditon, for phosphate batteries they showed a 20mV difference in regions of the SoC after aging of 500 cycles at 1C of charge and discharge. Additionally, while there exits methods of extracting an accurate OCV curve, it can take hours to accuratley obtain to minimise overpotentials \cite{kalogiannis_comparative_2019}. This is where numerical methods could be utilised to obtain the OCV curve and the other ECM parameters by fitting against a grey-box model of the dynamics, ICLOCS2 cite, will be used heavily throughout this project to see it's ability to parameterise the battery dynamics.
 
-cite greg, shows methods of extracting the element values for the ecm, but the ocv curve can be particualrily challenging, Especially given it hysterisis affects when charging and discharging.   This is where iclocs and other modlers can come into play to help get these values 
-
-cite Alexander Farman, shows that the OCV of lithium batteries can change throughout degredaditon, for phosphate batteries they showed a 20mV difference in regions of the SoC after aging of 500 cycles at 1C of charge and discharge. Coupled with the fact
 
 \subsection{Charging methods}
 There was a paper copmparing them in general, taljk aboutr the advantage of the different ones ect. 
@@ -172,10 +221,12 @@ There was a paper copmparing them in general, taljk aboutr the advantage of the 
 Talk about CC, MultiStage CC, ConstantPower, George Tuckers minimisation functions
 
 There exists many techniques to charge batteries with a graphical summary of the common methods shwon in figure xx, with the most common method known as CC-CV. This is where the bulk charge is done such that the applied overportnetial to the battery causes a constant current to flow, the voltage potential of the battery rises to a defined maximum point, the charging device then switches to a contant voltage charging mode, this fixed voltage is held until the charge current decays to a negligable or fixed amount - current still flows during this stage as there is still an overpotnetial between the batteries equlibrium state and the applied constant voltage. This is the simplest to implament without the need for an accurate SoC reading to risk overcharging (like would be with pure CC charging), CV charging can be too dangerous given the large current draw at low SoC. Some of the data used within this project is charged via CC-CV and is highlited in figure xx.
+
+
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{../../Matlab/Figures/CCCVProtocol.png}
-    \caption{Charging segemnt Lion}
+    \includegraphics[width=0.6\textwidth]{../../Matlab/Figures/CCCVProtocol.png}
+    \caption{Charging segment extracted from the UoS dataset}
 \end{figure}
 
 multistage
@@ -196,10 +247,11 @@ Attia takes the use of steverson to great use, using the model to predic how wel
 There are three main categorical methods to predict the degredation of lithium ion battereies: Purley data driven methods, physics-based models and a hyrbdid (phuysics informed). Fujin Wang et al highlitghts the advantages of the hybrid approach, stating the main issue with pure data-driven and pure physics model, they also present a means of categorising the common hybrid approaches, given in figure x. 
 
 
-Papers focusing on the physics based moedeling usually focus on a subset of degredadion modes, such as SEI thickness growth cite Mixed Mode Growth Model for the Solid Electrolyte Interface. Most models start with the Doyle-Fuller-Newman model cite Dole Fuller to describe the transport of lithium within the battery (including potentials), then further sub-modules representing degredadition mechanisms are intergrated to yeild the required models. For example simon e j okane adds sei, li paritcle crackiong anmd lam as the the degredadion models, this can be represented similar to Jishnu Ayyana by representing the electrochamiecal dynamics as $\frac{d\mathbf{x}}{dt} = f(\mathbf{x, z ,u}, t; \mathbf{\alpha})$ and couplining to degradation dynamics $\frac{d\mathbf{z}}{dt} = f(\mathbf{z, x ,u}, t; \mathbf{\theta})$ where $\mathbf{x} \in \mathbb{R}^{n_1}$ and $\mathbf{z} \in \mathbb{R}^{n_1}$ (once discritised), representing the battery electrochemical and degredadtion state variables respecitlvey. These approaches can model intericate parts within the battery, but require a lot of parameters about each battery under test, additionally, the discritised solutions are only ever as accurate as the models used.  E j okane shows a more complete set of degredadtion modeling whulst Jishun applies ML to effectivlye learn the missing modes with good results.
+Papers focusing on the physics based moedeling usually focus on a subset of degredadion modes, such as SEI thickness growth cite Mixed Mode Growth Model for the Solid Electrolyte Interface. Most models start with the Doyle-Fuller-Newman model cite Dole Fuller to describe the transport of lithium within the battery (including potentials), then further sub-modules representing degredadition mechanisms are intergrated to yeild the required models. For example simon e j okane adds sei, li paritcle crackiong anmd lam as the the degredadion models. this can be represented similar to . These approaches can model intericate parts within the battery, but require a lot of parameters about each battery under test, additionally, the discritised solutions are only ever as accurate as the models used.  E j okane shows a more complete set of degredadtion modeling whulst Jishun applies ML to effectivlye learn the missing modes with good results.
 
 Purley data-driven appraches have the ability to provide the most accurate predictions, however on their own suffer the problem that there not currently a large enough set of data to train on - this is a problem as lithium batteries have mutliple degredadtion modes as discuessed, as well as a highly dynamical system when viewed as 
 
+Jishnu Ayyana by representing the electrochamiecal dynamics as $\frac{d\mathbf{x}}{dt} = f(\mathbf{x, z ,u}, t; \mathbf{\alpha})$ and couplining to degradation dynamics $\frac{d\mathbf{z}}{dt} = f(\mathbf{z, x ,u}, t; \mathbf{\theta})$ where $\mathbf{x} \in \mathbb{R}^{n_1}$ and $\mathbf{z} \in \mathbb{R}^{n_1}$ (once discritised), representing the battery electrochemical and degredadtion state variables respecitlvey
 
 Steverson aims to
 
@@ -214,13 +266,18 @@ Steverson aims to
 \end{itemize}
 
 \section{Self Review}
-Choosing this final year project has, and will continue to, be a big personal undertaking. I knew nothing about batteries other than the very basics when starting. Additionally I knew nothing about most machine learning, let alone modern nerual networking. Research has also been a struggle for me as it is easy to follow refferernces of refferences, as well as the disheartnment when some research is shwon that is either behind a paywall, or simply beyond my understanding. 
+Choosing this final year project has, and will continue to, be a big personal undertaking. I knew nothing about batteries other than the very basics when starting, I also knew very little within systems \& control other than simple LTI systems. Research has also been a struggle for me as many papers incorperate control methods or electrochemical background of which i dont have, a high amount of papers regarding the use of AI in modeling degredadtion are also behind paywalls. 
+
+A large amount of time has been spent of narrowing down the focus of the project, as well as preparing the opmitised controll desgins for the lab testing. As of 01/12/2025, the first two batteries are undergoing characterisation tests and the softwear side is nearly done. Focus will now be spent on researching more about the machine learning and ways to optimise charging from the modeling of the battery. 
+
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1\textwidth]{../Images/Online Gantt 20251129.png}
-    \caption{Inital end objective: Black Box Battery}
+    \caption{Gannt Chart of current project plan}
 \end{figure}
+
+
 
 
 \newpage
