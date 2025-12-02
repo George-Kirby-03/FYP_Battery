@@ -140,6 +140,7 @@ where $Q$ is the batteries nominal maximum capcity and $z$ is the current charge
     \centering
     \includegraphics[width=0.5\textwidth]{../Images/ECM_FO.png}
     \caption{ECM model with 1st Order Polorizing dynamics}
+    \label{fig:ECM}
 \end{figure}
 
 The common state space form of this system is given below
@@ -204,19 +205,24 @@ W. Appia \textit{et al} \cite{appiah_unravelling_2024} provides the equation for
 \right]
 \end{equation}
 
-Whilst the voltage dynamics of lithium batteries do depend on temperature, this project keeps the ambient temperature to 30, thus realtime affects on the electrical dynamics are minimal. However moddeling of the temperature is vital since temperature does directly affect degredadion. cite the thermal paper.  The irreversible is much easier to directly relate to the ecm, by basic ohms law and various levels of accuracy cant be obtained with different data avalaoable. However irreverisitbility can not be directly infered from the ecm model. Cite dodgey paper, equated it to proportional to $\partial U / \partial T$ where $U$ is the OCV and $T$ is the temperature, this value does change over the SoC of the battery and paper et all calculates the curve for a battery of similar to the test battery shown in figure x.x
+Whilst the voltage dynamics of lithium batteries do depend on temperature, this project keeps the ambient temperature to 30, thus realtime affects on the electrical dynamics are minimal. However moddeling of the temperature is vital since temperature does directly affect degredadion. L. Mattia \textit{et al.} \cite{mattia_lithium-ion_2025} explains the various thermal modelling aproaches and shows which contributions are key in heat production, with the main equation given below. Reverisible heat generation can not be directly infered by the basic ECM model shown in figure \ref{fig:ECM}. J. Xu \textit{et al.} , equated it being proportional to $\partial U / \partial T$ where $U$ is the OCV and $T$ is the temperature, this value does change over the SoC of the battery and paper et all calculates the curve for a battery of similar to the one used in this project, shown in figure \ref{fig:dudt}
 
 \begin{equation}
     mCp\frac{d T}{dt} = \underbrace{I^{2}R_{0} + IV_{1}}_{irreversable} - \underbrace{IT\frac{\partial U}{\partial T}}_{reversable} - \underbrace{hAT}_{dissipation}
 \end{equation}
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../Images/og_dudt.png}
+    \caption{Charging segment extracted from the UoS dataset}
+    \label{fig:dudt}
+\end{figure}
 
 A. Farman \textit{et al} \cite{farmann_study_2017}, shows that the OCV of lithium batteries can change throughout degredaditon, Lithium phosphate batteries showed a 20mV difference in regions of the SoC after aging of 500 cycles at 1C of charge and discharge. Additionally, while there exits methods of extracting an accurate OCV curve, it can take hours to accuratley obtain to minimise overpotentials \cite{kalogiannis_comparative_2019}. This is where numerical methods could be utilised to obtain the OCV curve and the other ECM parameters by fitting against a grey-box model of the dynamics, ICLOCS2 \cite{noauthor_iclocs2_nodate}, will be used heavily throughout this project to see it's ability to parameterise the battery dynamics. A.A. Mohamed \textit{et al.} \cite{mohamed_advancements_2025} cite shows the many methods to obtain ECM parameters with methods ranging from analyitcal approaches based on various current inputs, to meta-heuristic optimization algorithms.  
 
-
 \subsection{Charging methods}
 
-There exists many techniques to charge batteries with a graphical summary of the common methods shwon in figure xx, cite Qian Lin \cite{chen_overpotential_2021-1} highliths the different methods described below. The most common method is known as CC-CV charge. This is where the bulk charge is done such that the applied overportnetial to the battery causes a constant current to flow, the voltage potential of the battery rises to a defined maximum point, the charging device then switches to a contant voltage charging mode, this fixed voltage is held until the charge current decays to a negligable or fixed amount - current still flows during this stage as there is still an overpotnetial between the batteries equlibrium state and the applied constant voltage. This is the simplest to implament without the need for an accurate SoC reading to risk overcharging (like would be with pure CC charging). 
+There exists many techniques to charge batteries with a graphical summary of the common methods shwon in figure \ref{fig:Chargings}. Q. Lin \textit{et al.} \cite{chen_overpotential_2021-1} highliths the different methods described below. The most common method is known as CC-CV charge. This is where the bulk charge is done such that the applied overportnetial to the battery causes a constant current to flow, the voltage potential of the battery rises to a defined maximum point, the charging device then switches to a contant voltage charging mode, this fixed voltage is held until the charge current decays to a negligable or fixed amount - current still flows during this stage as there is still an overpotnetial between the batteries equlibrium state and the applied constant voltage. This is the simplest to implament without the need for an accurate SoC reading to risk overcharging (like would be with pure CC charging). 
 
 \begin{figure}[ht]
     \centering
@@ -226,9 +232,9 @@ There exists many techniques to charge batteries with a graphical summary of the
 
 CV is another method such that the voltage applied is the batterys maximum at full SoC, but since lithium batteries have low internal resistances, this can lead to a very high current draw at low SoC (where the equilibrium voltage is low), hence can cause accelerated degredadition, cite quan mentions 40\% capacity decrease after only 160 cycles. Boost charging provides a high current increase at low SoC, but only for breif periods and can significantly reduce degredadition rate compared to CV.
 
-AC charging is another method which aims to minimise the frequency dependant impedance of the battery, effectivley allowing to charge the battery with a lower effective overpotentials, however as cite Qian mentiones, there are disputes on the effectivness of this method; coupled with the fact EIS (electrochemical impedance spectroscopy) is rquried to find the frequency points of interest to target, this method wont be futher reseached within the project.
+AC charging is another method which aims to minimise the frequency dependant impedance of the battery, effectivley allowing to charge the battery with a lower effective overpotentials, however as Q. Lin \textit{et al.} mentiones, there are disputes on the effectivness of this method; coupled with the fact EIS (electrochemical impedance spectroscopy) is rquried to find the frequency points of interest to target, this method wont be futher reseached within the project.
 
-Multistage CC is a popular method in reseach as it allows for the customisation of the charging throughout the cycle, this means various models can be used to optimise for a specific goal. Cite tucker for example, simulates various functions to minimise based of the ECM model provided in the section above. Electrochemical based models allows for a finer level of optimisation, such as ensuring the negative elecrode does not reach a potential to cause lithium plating, \cite{li_lithium-ion_2021} models an observer to estimate the potentials, which could be used within optimisation as one of the constraints, figure \ref{fig:OP} shows their predicited potential voltages. 
+Multistage CC is a popular method in reseach as it allows for the customisation of the charging throughout the cycle, this means various models can be used to optimise for a specific goal. G. Tucker \textit{et al.} \cite{tucker_optimal_2023} for example, simulates various functions to minimise based of the ECM model provided in the section above, showing that the physics optimisation correlates closley to optimised degredadition obtained throuh purley data-driven methods. Electrochemical based models allows for a finer level of optimisation, such as ensuring the negative elecrode does not reach a potential to cause lithium plating, \cite{li_lithium-ion_2021} models an observer to estimate the potentials, which could be used within optimisation as one of the constraints, figure \ref{fig:OP} shows their predicited potential voltages. 
 
 \begin{figure}[ht]
     \centering
@@ -240,7 +246,8 @@ Multistage CC is a popular method in reseach as it allows for the customisation 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{../Images/common_charge_graph.jpg}
-    \caption{Common charge techniques, cite qian lin towards smarter}
+    \caption{Common charge techniques summarised}
+    \label{fig:Chargings}
 \end{figure}
 
 The multistage CC charging method provides a good framework to trial different charging methods, its balance of ease of implamentation and adjustability means it is this method which will be used in the project to optimise for degredadition.
