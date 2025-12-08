@@ -23,14 +23,12 @@ function [problem,guess] = BatteryEstimation_temp(cycle_file)
 cd(fileparts(which('BatteryEstimation.m')))
 pwd
 load(cycle_file)
-
 % OCV Poly values
 polycount = 8;
 problem.data.poly = polymaker(polycount,480,3,1,1,1);
 % Extract columns
 
 %adding initial resting condition fudge to maybe help paramtereisation
-
 problem.data.OutputVoltage = griddedInterpolant(tt, y, 'pchip');
 problem.data.InputCurrent  = griddedInterpolant(tt, u1, 'pchip');
 problem.data.OutputTemp = griddedInterpolant(tt, tp, 'pchip');
@@ -202,7 +200,7 @@ voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
 
 % Polysumation, to fix the ocv(1)
 coef = p(:,1)+p(:,2)+p(:,3)+p(:,4)+p(:,5)+p(:,6)+p(:,7)+p(:,8);
-stageCost = 0.97*(voltage_model-voltage_measured).^2 + 0*(temp_model-temp_measured).^2 + 0.03*(coef-4.12).^2;
+stageCost = 0.98*(voltage_model-voltage_measured).^2 + 0*(temp_model-temp_measured).^2 + 0.02*(coef-4.12).^2;
 
 %------------- END OF CODE --------------
 
