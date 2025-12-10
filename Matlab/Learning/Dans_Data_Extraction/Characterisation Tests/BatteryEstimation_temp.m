@@ -20,11 +20,10 @@ function [problem,guess] = BatteryEstimation_temp(cycle_file)
 % iclocs@imperial.ac.uk
 
 % Load the measurement from Data (George Kirby FYP)
-cd(fileparts(which('BatteryEstimation.m')))
 pwd
 load(cycle_file)
 % OCV Poly values
-polycount = 10;
+polycount = 8;
 problem.data.poly = polymaker(polycount,400,2.5,1,1,1);
 % Extract columns
 
@@ -60,17 +59,17 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.3*3600 200 0.009 0.003 0.01 40];
-problem.parameters.pu=[problem.data.poly.xu 1.8*3600 6000 0.9 0.9 0.09 200];
-guess.parameters=[problem.data.poly.xe 1.5*3600 500 0.08 0.08 0.5 120];
+problem.parameters.pl=[problem.data.poly.xl 1.5*3600 290 0.07 0.08 0.01 40];
+problem.parameters.pu=[problem.data.poly.xu 1.6*3600 3000 0.08 0.09 0.09 200];
+guess.parameters=[problem.data.poly.xe 1.51*3600 295 0.079 0.0846 0.5 120];
 
 
 % Initial conditions for system.
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.2 -0.05 0]; 
-problem.states.x0u=[0.6 0.05 0.1]; 
+problem.states.x0l=[0.2 0 0]; 
+problem.states.x0u=[0.6 0 0.1]; 
 
 % State bounds. xl=< x <=xu
 problem.states.xl=[0 -0.8 -0.5];
@@ -85,13 +84,13 @@ problem.states.xErrorTol_integral=[1e-6 1e-6 1e-6];
 problem.states.xConstraintTol=[1e-4 1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.1 -0.05 -0.5];
-problem.states.xfu=[0.4 0.08 2];
+problem.states.xfl=[0.2 0 -0.5];
+problem.states.xfu=[0.6 0 2];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[0.4 0.3];
-guess.states(:,2)=[0 0.01];
-guess.states(:,3)=[0 0];
+guess.states(:,1)=[0.4 0.4];
+guess.states(:,2)=[0 0];
+guess.states(:,3)=[0 1];
 
 % Number of control actions N 
 % Set problem.inputs.N=0 if N is equal to the number of integration steps.  
@@ -199,8 +198,8 @@ voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
 % voltage of the model match the measurement, for the same input)
 
 % Polysumation, to fix the ocv(1)
-coef = p(:,1)+p(:,2)+p(:,3)+p(:,4)+p(:,5)+p(:,6)+p(:,7)+p(:,8)+p(:,9)+p(:,10);
-stageCost = 0.95*(voltage_model-voltage_measured).^2 + 0.05*(coef-3.6).^2;
+coef = p(:,1)+p(:,2)+p(:,3)+p(:,4)+p(:,5)+p(:,6)+p(:,7)+p(:,8);
+stageCost = 0.9*(voltage_model-voltage_measured).^2 + 0.02*(temp_model-temp_measured) + 0.08*(coef-3.6).^2;
 
 %------------- END OF CODE --------------
 

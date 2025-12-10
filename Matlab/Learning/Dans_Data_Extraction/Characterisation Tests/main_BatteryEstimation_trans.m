@@ -15,11 +15,16 @@
 clear all;close all;format compact;
 
 
-
-
-[problem,guess]=BatteryEstimation_temp_trans('B1_CT_trans.mat');          % Fetch the problem definition
-options= problem.settings(350);                  % Get options and solver settings 
+for x = 1:4
+ file= sprintf('charac_02_s%d.mat', x);
+disp(['Loaded file: ' file]);
+[problem,guess]=BatteryEstimation_temp_trans(file);          % Fetch the problem definition
+options= problem.settings(250);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
+solution_trans = solution.p;
+save(file,"solution_trans","-append")
+ clear;
+end
 
 %% figure%
 
@@ -27,12 +32,11 @@ options= problem.settings(350);                  % Get options and solver settin
 tt=solution.T;
 x1=speval(solution,'X',1,tt);
 x2=speval(solution,'X',2,tt);
-x3=speval(solution,'X',3,tt);
+
 u1=problem.data.InputCurrent(tt);
 soc = linspace(0,1,50);
 OCV_SOC = polymodel(problem.data,solution.p,soc,1);
 y=polymodel(problem.data,solution.p,x1,1) + x2 + solution.p(problem.data.poly.R0).*u1;
-temp = x3;
 figure
 subplot(2,3,1)
 hold on
@@ -60,14 +64,6 @@ xlabel('Time [s]')
 grid on
 ylabel('Control Input: Current [A]')
  
-subplot(2,3,4)
-hold on
-plot(tt,temp,'b-' ,'LineWidth',2)
-plot(tt,problem.data.OutputTemp(tt),'k-' ,'LineWidth',2)
-xlabel('Time [s]')
-ylabel('Output: temperature [DT]')
-legend('Model Output', 'Measured')
-grid on
 
 subplot(2,3,5)
 hold on

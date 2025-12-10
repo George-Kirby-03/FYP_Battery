@@ -31,21 +31,17 @@ function [dx] = BatteryEstimation_Dynamics_Internal_Trans(x,u,p,t,vdat)
 %
 %------------- BEGIN CODE --------------
 
-SOC = x(:,1); V_RC1 = x(:,2);
-
+V_RC1 = x(:,1); 
 % Take input measurement directly from Lookup table
 current_bat = vdat.InputCurrent(t);
 
 % Note the battery parameters are no longer saved in vdat, but as static
 % decision variables of the optimisation solution
 %Q=p(:,vdat.poly.Q); 
-Q=1.5*3600;
+Q=1.5*3600; %set constant for this case
 C1=p(:,vdat.poly.C); R0=p(:,vdat.poly.R0); R1=p(:,vdat.poly.R1); 
-
-dx(:,1) = current_bat./Q;
-
-dx(:,2) = -V_RC1./(R1.*C1) + current_bat./C1;
-
+hA = p(:,vdat.poly.A); mCp = p(:,vdat.poly.CP);
+dx(:,1) = -V_RC1./(R1.*C1) + current_bat./C1;
 
 
 %------------- END OF CODE --------------%

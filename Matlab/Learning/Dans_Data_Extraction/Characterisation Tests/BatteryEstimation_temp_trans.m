@@ -24,17 +24,17 @@ function [problem,guess] = BatteryEstimation_temp_trans(cycle_file)
 pwd
 load(cycle_file);
 % OCV Poly values
-polycount = 4;
-problem.data.poly = polymaker(polycount,400,2.9,1,1,1);
+polycount = 5;
+problem.data.poly = polymaker(polycount,200,2.5,1,1,1);
 % Extract columns
 
 problem.data.OutputVoltage = griddedInterpolant(tt, y, 'pchip');
 problem.data.InputCurrent  = griddedInterpolant(tt, u1, 'pchip');
-problem.data.OutputTemp = griddedInterpolant(tt, tp, 'pchip');
+
 
 %------------- BEGIN CODE --------------
 % Plant model name, used for Adigator
-InternalDynamics=@BatteryEstimation_Dynamics_Internal_Temp;
+InternalDynamics=@BatteryEstimation_Dynamics_Internal_Trans;
 SimDynamics=@BatteryEstimation_Dynamics_Sim;
 
 % Analytic derivative files (optional)
@@ -59,38 +59,38 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
 % p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.5*3600 200 0.009 0.003 0.01 40];
-problem.parameters.pu=[problem.data.poly.xu 3.1*3600 9000 0.2 0.1 3 200];
-guess.parameters=[problem.data.poly.xe 2*3600 1570 0.026 0.04 0.1 150];
+problem.parameters.pl=[problem.data.poly.xl 1.4*3600 200 0.003 0.003];
+problem.parameters.pu=[problem.data.poly.xu 1.6*3600 9000 0.2 0.1];
+guess.parameters=[problem.data.poly.xe 1.5*3600 1570 0.026 0.04];
 
 
 % Initial conditions for system.
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.2 -1 0]; 
-problem.states.x0u=[0.6 1 0.1]; 
+problem.states.x0l=[0.5 -1]; 
+problem.states.x0u=[0.55 1]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0.2 -1 -0.5];
-problem.states.xu=[0.6 1 10];
+problem.states.xl=[0.4 -1 ];
+problem.states.xu=[0.6 1 ];
 
 % State error bounds
-problem.states.xErrorTol_local=[1e-6 1e-6 1e-6];
-problem.states.xErrorTol_integral=[1e-6 1e-6 1e-6];
+problem.states.xErrorTol_local=[1e-6 1e-6];
+problem.states.xErrorTol_integral=[1e-6 1e-6 ];
 
 
 % State constraint error bounds
-problem.states.xConstraintTol=[1e-4 1e-4 1e-4];
+problem.states.xConstraintTol=[1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.2 -0.8 0];
-problem.states.xfu=[0.6 0.80 5];
+problem.states.xfl=[0.5 -0.8 ];
+problem.states.xfu=[0.55 0.85];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[0.2 0.6];
+guess.states(:,1)=[0.5 0.5];
 guess.states(:,2)=[-0.05 0.01];
-guess.states(:,3)=[0 0];
+
 
 % Number of control actions N 
 % Set problem.inputs.N=0 if N is equal to the number of integration steps.  
@@ -184,14 +184,14 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %------------- BEGIN CODE --------------
 
-x1=x(:,1);x2=x(:,2);temp_model=x(:,3); R0 = p(:,vdat.poly.R0);
+x1=x(:,1);x2=x(:,2); R0 = p(:,vdat.poly.R0);
 
 % Obtain the measured input from the Lookup Table
 u1=vdat.InputCurrent(t);
 
 % Obtain the measured output voltage from the Lookup Table
 voltage_measured=vdat.OutputVoltage(t);
-temp_measured=vdat.OutputTemp(t);
+
 % Compute the output voltage of the Model
 voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
 % Compute the stage cost as the difference squared (try to make the output
@@ -199,7 +199,7 @@ voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
 
 % Polysumation, to fix the ocv(1)
 coef = p(:,1)+p(:,2)+p(:,3)+p(:,4);%+p(:,5);% +p(:,6)+p(:,7)+p(:,8);
-stageCost = 0.99*(voltage_model-voltage_measured).^2 + 0.00*(temp_model-temp_measured).^2 + 0.01*(coef-3.5).^2;
+stageCost = 0.995*(voltage_model-voltage_measured).^2  + 0.005*(coef-3.6).^2;
 
 %------------- END OF CODE --------------
 

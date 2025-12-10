@@ -17,8 +17,8 @@ clear all;close all;format compact;
 
 
 
-[problem,guess]=BatteryEstimation_temp('Characterisation Tests\charac_01_start.mat');          % Fetch the problem definition
-options= problem.settings(290);                  % Get options and solver settings 
+[problem,guess]=BatteryEstimation_temp('charac_01_start.mat');          % Fetch the problem definition
+options= problem.settings(80);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
 %% figure%
