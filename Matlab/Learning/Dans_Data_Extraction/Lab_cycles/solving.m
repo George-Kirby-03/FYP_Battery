@@ -2,9 +2,15 @@ pwd
 clear
 load('RS_Params.mat')
 
-p.r1 = CROR1(end);
-p.r0 = CROR1(2);
-p.c = CROR1(1);
+% p.r1 = CROR1(end);
+% p.r0 = CROR1(2);
+% p.c = CROR1(1);
+% p.r1 = 0.03;
+% p.r0 = 0.035;
+% p.c = 120;
+p.r1 = 0.07;
+p.r0 = 0.163 - p.r1;
+p.c = 315;
 p.q = 1.53*60*60;
 p.vu = polyval(ocv_curve,1);
 p.vl = polyval(ocv_curve,0);
@@ -18,10 +24,11 @@ hrl = linspace(0.1,1.5,7)';
 socl = ones(10,7);
 
 %%
-tt = linspace(0,hr*60*60,150);
+count = 0;
 for i=1:length(Cl)
     for j=1:length(hrl)
 C = Cl(i); hr = hrl(j);
+tt = linspace(0,hr*60*60,150);
 current_cc_discharge = C*Curr*ones(150,1);
 current_lut = @(t) interp1(tt, current_cc_discharge, t, 'linear', 'extrap');
 [t_sim, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; 0; 0]);
@@ -36,12 +43,21 @@ settle_time = 5*p.c.*p.r1;
 voltage_model = polyval(ocv_curve,x1) + x2 + R0.*Curr*C;
 voltage_model_ccd = voltage_model(vlim_sim_idx);
 settle_voltage = -Curr*(p.r1 + p.r0) + voltage_model_ccd;
+hold on
+
+count = count + 1;
 fprintf(['For Discharge at %.1fC for %.2f hours: \n' ...
     'Drainage SOC is %.2f%% \n' ...
     'Settling time is %.2fs \n' ...
     'Settling voltage is %.3fV \n'],C,hr,discharge_soc*100, settle_time, settle_voltage);
     end
+    plot(t_sim,voltage_model,t_sim,x1)
+    count = count + 1;
 end
+fprintf('%d sims ran\n', count)
+hold off
+%%
+
 %% Map
 colormap default
 heatmap(hrl,Cl,socl)

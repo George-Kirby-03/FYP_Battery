@@ -24,8 +24,9 @@ function [problem,guess] = BatteryEstimation_temp_trans(cycle_file)
 pwd
 load(cycle_file);
 % OCV Poly values
-polycount = 5;
-problem.data.poly = polymaker(polycount,200,2.5,1,1,1);
+polycount = 0;
+problem.data.poly = polymaker(polycount,200,0,1,1,1);
+problem.data.ocv = y(1)
 % Extract columns
 
 problem.data.OutputVoltage = griddedInterpolant(tt, y, 'pchip');
@@ -58,22 +59,22 @@ guess.tf=tt(end);
 
 % Parameters bounds. pl=< p <=pu
 % These are unknown parameters to be estimated in this Battery estimation problem
-% p=[poly Q C1 R0 R1]
-problem.parameters.pl=[problem.data.poly.xl 1.4*3600 200 0.003 0.003];
-problem.parameters.pu=[problem.data.poly.xu 1.6*3600 9000 0.2 0.1];
-guess.parameters=[problem.data.poly.xe 1.5*3600 1570 0.026 0.04];
+% p=[Q C1 R0 R1]
+problem.parameters.pl=[1.4*3600 20 0.03 0.02];
+problem.parameters.pu=[1.6*3600 2000 0.2 0.2];
+guess.parameters=[1.5*3600 1570 0.026 0.04];
 
 
 % Initial conditions for system.
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.5 -1]; 
-problem.states.x0u=[0.55 1]; 
+problem.states.x0l=[0 0]; 
+problem.states.x0u=[1 0]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0.4 -1 ];
-problem.states.xu=[0.6 1 ];
+problem.states.xl=[0 -2 ];
+problem.states.xu=[1 2 ];
 
 % State error bounds
 problem.states.xErrorTol_local=[1e-6 1e-6];
@@ -84,8 +85,8 @@ problem.states.xErrorTol_integral=[1e-6 1e-6 ];
 problem.states.xConstraintTol=[1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.5 -0.8 ];
-problem.states.xfu=[0.55 0.85];
+problem.states.xfl=[0 0 ];
+problem.states.xfu=[1 0];
 
 % Guess the state trajectories with [x0 xf]
 guess.states(:,1)=[0.5 0.5];
@@ -184,8 +185,8 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %------------- BEGIN CODE --------------
 
-x1=x(:,1);x2=x(:,2); R0 = p(:,vdat.poly.R0);
-
+x1=x(:,1);x2=x(:,2); R0 = p(:,3); R1 = p(:,4);
+V = vdat.ocv;
 % Obtain the measured input from the Lookup Table
 u1=vdat.InputCurrent(t);
 
@@ -193,13 +194,13 @@ u1=vdat.InputCurrent(t);
 voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
-voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
+voltage_model= V + x2 + R0.*u1;
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
 
 % Polysumation, to fix the ocv(1)
-coef = p(:,1)+p(:,2)+p(:,3)+p(:,4);%+p(:,5);% +p(:,6)+p(:,7)+p(:,8);
-stageCost = 0.995*(voltage_model-voltage_measured).^2  + 0.005*(coef-3.6).^2;
+%coef = p(:,1)+p(:,2)+p(:,3)+p(:,4);%+p(:,5);% +p(:,6)+p(:,7)+p(:,8);
+stageCost = 1*(voltage_model-voltage_measured).^2 + 0.0*(R0 + R1 - 0.075).^2 ;
 
 %------------- END OF CODE --------------
 

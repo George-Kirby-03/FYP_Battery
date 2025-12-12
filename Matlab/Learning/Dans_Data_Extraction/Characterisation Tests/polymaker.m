@@ -22,13 +22,13 @@ poly.R0 = polycount+3;
 poly.R1 = polycount+4;
 poly.C  = polycount+2;
 poly.Q = polycount+1;
-
 else
 poly.R0 = polycount+2;
 poly.R1 = polycount+3;
 poly.C  = polycount+1;
 end
 if temp == 1
+    poly.Q = polycount+1;
 poly.R0 = polycount+3;
 poly.R1 = polycount+4;
 poly.C  = polycount+2;

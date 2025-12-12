@@ -19,7 +19,7 @@ for x = 1:1
  file= sprintf('charac_02_s%d.mat', x);
 disp(['Loaded file: ' file]);
 [problem,guess]=BatteryEstimation_temp_trans(file);          % Fetch the problem definition
-options= problem.settings(1000);                  % Get options and solver settings 
+options= problem.settings(250);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 solution_trans = solution.p;
 %save(file,"solution_trans","-append")
@@ -34,9 +34,9 @@ x1=speval(solution,'X',1,tt);
 x2=speval(solution,'X',2,tt);
 
 u1=problem.data.InputCurrent(tt);
- soc = linspace(0,1,50);
-OCV_SOC = polymodel(problem.data,solution.p,soc,1);
- y= problem.data.ocv + x2 + solution.p(3).*u1;
+% soc = linspace(0,1,50);
+% OCV_SOC = polymodel(problem.data,solution.p,soc,1);
+ y=polymodel(problem.data,solution.p,x1,1) + x2 + solution.p(problem.data.poly.R0).*u1;
  figure
  subplot(2,3,1)
  hold on
@@ -46,12 +46,12 @@ OCV_SOC = polymodel(problem.data,solution.p,soc,1);
  ylabel('States: State-of-Charge')
  grid on
 
-% subplot(2,3,2)
-% hold on
-% plot(soc,OCV_SOC,'b-' ,'LineWidth',2)
-% xlabel('SOC')
-% ylabel('OCV')
-% grid on
+subplot(2,3,2)
+hold on
+plot(soc,OCV_SOC,'b-' ,'LineWidth',2)
+xlabel('SOC')
+ylabel('OCV')
+grid on
 
 subplot(2,3,3)
 hold on

@@ -40,7 +40,7 @@ current_bat = vdat.InputCurrent(t);
 % decision variables of the optimisation solution
 %Q=p(:,vdat.poly.Q); 
 Q=1.54*3600;
-C1=p(:,2); R1=p(:,3); 
+C1=p(:,vdat.poly.C); R1=p(:,3); 
 
 dx(:,1) = current_bat./Q;
 
