@@ -14,7 +14,7 @@ if (v < v_llim) && current < 0
     current = 0;
     dx3 = 1;
 end
-if (v >= v_ulim) || (y(1) > 1) && current > 0
+if (v >= v_ulim) && current > 0
     current = 0;
     dx3 = 1;
 end

@@ -45,13 +45,11 @@ end
 %% Map
 colormap default
 heatmap(hrl,Cl,socl)
-%% Charging simulation
 
-hr = 8; %%how long charge max
+%% Now, charge CC, upto the point V_ulim is reached, this is when CV takes over
+hr = 3; %%how long charge max
 
-
-Cl = linspace(0.2,2,1)'; %%CC_rate charge
-Cl = 0.2;
+Cl = linspace(0.2,2,15)'; %%CC_rate charge
 cc_times = ones(length(Cl),1);
 cv_times = ones(length(Cl),1);
 tt = linspace(0,hr*60*60,150);
@@ -62,34 +60,27 @@ current_cc_charge = C*Curr*ones(150,1);
 current_lut = @(t) interp1(tt, current_cc_charge, t, 'linear', 'extrap');
 [t_sim, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0; 0; 0]);
 x1=y(:,1);x2=y(:,2);
-socu_sim_idx = find(y(:,1) <= 0.985, 1, 'last');
-vlim_sim_idx = find(y(:,3) <= 0, 1, 'last');
-if isempty(vlim_sim_idx)
-fprintf(['For Discharge at %.1fC: \n' ...
+vlim_sim_idx = find(y(:,3) >= 0, 1, 'first');
+socu_sim_idx = find(y(:,1) <= 0.98, 1, 'last');
+if isempty(vlim_sim_idx) && (x1(end)>0.96)
+fprintf(['For Charge at %.1fC: \n' ...
     'Time to full-charge: %.1fh \n' ...
-    'INSTANT CV limit \n'],C,t_sim(socu_sim_idx)/60^2);
-cc_times(i) = 0;
-cv_times(i) = t_sim(socu_sim_idx);
+    'CV limit not reached \n'],C,t_sim(socu_sim_idx)/60^2);
+    cc_times(i) = t_sim(vlim_sim_idx);
+    cv_times(i) = 0;
 else
-fprintf(['For Discharge at %.1fC: \n' ...
-    'Time to full-charge: %.1fh \n' ...
-    'CV time reached at: %.1fh \n'],C,t_sim(socu_sim_idx)/60^2,t_sim(vlim_sim_idx)/60^2);
-cc_times(i) = t_sim(vlim_sim_idx);
-cv_times(i) = t_sim(socu_sim_idx) - cc_times(i);
+[t_sim, y] = ode45(@(t, y) CV_dynamics(t, y, p), [0 tt(end)], [x1(end); x2(end); 0]);
+x1=y(:,1);x2=y(:,2);
+socu_sim_idx = find(y(:,1) <= 0.98, 1, 'last');
+fprintf('CV time: %.1fh \n',t_sim(socu_sim_idx)/60^2);
+cv_times(i) = t_sim(socu_sim_idx);
 end
 end
-                               
-voltage_model = polyval(ocv_curve,x1) + x2 + R0.*Curr*C;
 
 
-plot(t_sim,voltage_model)
 
+%%
 
-%% 
-hr = 1; %%how long charge max
-
-
-Cl = linspace(0.2,2,1)'; %%CC_rate charge
 Cl = 2;
 cc_times = ones(length(Cl),1);
 cv_times = ones(length(Cl),1);
