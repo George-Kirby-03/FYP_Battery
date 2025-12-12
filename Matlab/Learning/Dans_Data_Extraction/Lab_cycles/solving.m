@@ -50,7 +50,8 @@ heatmap(hrl,Cl,socl)
 hr = 8; %%how long charge max
 
 
-Cl = linspace(0.2,2,15)'; %%CC_rate charge
+Cl = linspace(0.2,2,1)'; %%CC_rate charge
+Cl = 0.2;
 cc_times = ones(length(Cl),1);
 cv_times = ones(length(Cl),1);
 tt = linspace(0,hr*60*60,150);
@@ -78,10 +79,41 @@ cv_times(i) = t_sim(socu_sim_idx) - cc_times(i);
 end
 end
                                
+voltage_model = polyval(ocv_curve,x1) + x2 + R0.*Curr*C;
 
 
-
-plot(Cl,cv_times)
-
+plot(t_sim,voltage_model)
 
 
+%% 
+hr = 1; %%how long charge max
+
+
+Cl = linspace(0.2,2,1)'; %%CC_rate charge
+Cl = 2;
+cc_times = ones(length(Cl),1);
+cv_times = ones(length(Cl),1);
+tt = linspace(0,hr*60*60,150);
+
+for i=1:length(Cl)
+[t_sim, y] = ode45(@(t, y) CV_dynamics(t, y, p), [0 tt(end)], [0.3; 0.2; 0]);
+x1=y(:,1);x2=y(:,2);
+socu_sim_idx = find(y(:,1) <= 0.985, 1, 'last');
+vlim_sim_idx = find(y(:,3) <= 0, 1, 'last');
+if isempty(vlim_sim_idx)
+fprintf(['For Discharge at %.1fC: \n' ...
+    'Time to full-charge: %.1fh \n' ...
+    'INSTANT CV limit \n'],C,t_sim(socu_sim_idx)/60^2);
+cc_times(i) = 0;
+cv_times(i) = t_sim(socu_sim_idx);
+else
+fprintf(['For Discharge at %.1fC: \n' ...
+    'Time to full-charge: %.1fh \n' ...
+    'CV time reached at: %.1fh \n'],C,t_sim(socu_sim_idx)/60^2,t_sim(vlim_sim_idx)/60^2);
+cc_times(i) = t_sim(vlim_sim_idx);
+cv_times(i) = t_sim(socu_sim_idx) - cc_times(i);
+end
+end
+current = diff(y(:,1).*p.q) ./ diff(t_sim);    
+current = [current;0];
+voltage_model = polyval(ocv_curve,x1) + x2 + R0.*current;
