@@ -20,7 +20,7 @@ socl = ones(10,7);
 
 op = ocv_curve;
 f = @(x) polyval(op, x) - y(1);
-init = fzero(f, 0.8)
+init = fzero(f, 0.8);
 %%
 %tt = linspace(0,hr*60*60,150); 
 %current_cc_discharge = C*Curr*ones(150,1);

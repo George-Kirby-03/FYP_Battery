@@ -65,7 +65,7 @@ heatmap(hrl,Cl,socl)
 %% Now, charge CC, upto the point V_ulim is reached, this is when CV takes over
 hr = 3; %%how long charge max
 
-Cl = linspace(0.2,2,15)'; %%CC_rate charge
+Cl = linspace(0.2,3,15)'; %%CC_rate charge
 cc_times = ones(length(Cl),1);
 cv_times = ones(length(Cl),1);
 tt = linspace(0,hr*60*60,150);
@@ -75,24 +75,39 @@ C = Cl(i);
 current_cc_charge = C*Curr*ones(150,1);
 current_lut = @(t) interp1(tt, current_cc_charge, t, 'linear', 'extrap');
 [t_sim, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0; 0; 0]);
-x1=y(:,1);x2=y(:,2);
-vlim_sim_idx = find(y(:,3) >= 0, 1, 'first');
-socu_sim_idx = find(y(:,1) <= 0.98, 1, 'last');
-if isempty(vlim_sim_idx) && (x1(end)>0.96)
-fprintf(['For Charge at %.1fC: \n' ...
-    'Time to full-charge: %.1fh \n' ...
-    'CV limit not reached \n'],C,t_sim(socu_sim_idx)/60^2);
-    cc_times(i) = t_sim(vlim_sim_idx);
+x1=y(:,1);x2=y(:,2); %If Vlim is reached, this soc is not reliable
+vlim_sim_idx = find(y(:,3) > 0, 1, 'first');
+socu_sim_idx = find(y(:,1) >= 0.98, 1, 'first');
+fprintf('##### Current loop (cc rate of %.1f): \n',C)
+if isempty(vlim_sim_idx) && ~isempty(socu_sim_idx) %If its nearly charged just from cc alone, soc will be near 1, and voltage limit not reached
+fprintf(['Time to full-charge (~0.98): %.3fh \n' ...
+    'CV limit not reached i.e no cc needed \n'],t_sim(socu_sim_idx)/60^2);
+    cc_times(i) = 0;
     cv_times(i) = 0;
-else
+elseif ~isempty(vlim_sim_idx)
+cc_times(i) = t_sim(vlim_sim_idx);
+fprintf('Running CV stage since full SoC not reached before cutoff voltage, (reached %.2f SoC)\n',x1(end))
 [t_sim, y] = ode45(@(t, y) CV_dynamics(t, y, p), [0 tt(end)], [x1(end); x2(end); 0]);
 x1=y(:,1);x2=y(:,2);
-socu_sim_idx = find(y(:,1) <= 0.98, 1, 'last');
-fprintf('CV time: %.1fh \n',t_sim(socu_sim_idx)/60^2);
+hold on
+current = diff(y(:,1).*p.q) ./ diff(t_sim);    
+current = [current;0];
+plot(t_sim,current)
+socu_sim_idx = find(y(:,1) >= 0.999, 1, 'first');
+fprintf('Time for CV: %.2fh \n',t_sim(socu_sim_idx)/60^2);
 cv_times(i) = t_sim(socu_sim_idx);
+fprintf('Time to full-charge (~0.99): %.3fh \n', (cv_times(i)+cc_times(i))./60^2)
+else
+    fprintf('Charge time not reached, max SoC: %.2f\n',x1(end,1))
 end
+fprintf('##### \n')
 end
 
+hold off
+
+%%
+
+    plot(Cl,cc_times,Cl,cv_times,Cl,cc_times+cv_times)
 
 
 %%
