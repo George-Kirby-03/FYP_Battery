@@ -12,11 +12,12 @@ load('RS_Params.mat')
 % p.r0 = 0.163 - p.r1;
 p.r1 = 0.03;
 p.r0 = 0.075 - p.r1;
-p.c = 315;
+p.c = 289;
 p.q = 1.53*60*60;
-p.vu = polyval(ocv_curve,1);
-p.vl = polyval(ocv_curve,0);
-p.ocv = ocv_curve;
+
+p.ocv = ocv_curve_2;
+p.vu = polyval(p.ocv,1);
+p.vl = polyval(p.ocv,0);
 R0 = p.r0;
 R1 = p.r1;
 Curr = p.q/(60^2);
@@ -42,7 +43,7 @@ vlim_sim_idx = find(y(:,3) == 0, 1, 'last');   % Hack to find when voltage limit
 discharge_soc = y(vlim_sim_idx,1);
 socl(i,j) = discharge_soc;
 settle_time = 5*p.c.*p.r1;
-voltage_model = polyval(ocv_curve,x1) + x2 + R0.*Curr*C;
+voltage_model = polyval(p.ocv,x1) + x2 + R0.*Curr*C;
 voltage_model_ccd = voltage_model(vlim_sim_idx);
 settle_voltage = -Curr*(p.r1 + p.r0) + voltage_model_ccd;
 hold on
@@ -159,4 +160,4 @@ end
 end
 current = diff(y(:,1).*p.q) ./ diff(t_sim);    
 current = [current;0];
-voltage_model = polyval(ocv_curve,x1) + x2 + R0.*current;
+voltage_model = polyval(p.ocv,x1) + x2 + R0.*current;

@@ -3,13 +3,13 @@ clear
 close all
 load('charac_01_s4.mat')
 load('RS_Params.mat')
-p.r1 = 0.08;
-p.r0 = 0.163 - p.r1;
-p.c = 200;
+p.r1 = 0.03;
+p.r0 = 0.075 - p.r1;
+p.c = 250;
 p.q = 1.53*60*60;
-p.vu = polyval(ocv_curve,1);
-p.vl = polyval(ocv_curve,0);
-p.ocv = ocv_curve;
+p.vu = polyval(ocv_curve_2,1);
+p.vl = polyval(ocv_curve_2,0);
+p.ocv = ocv_curve_2;
 R0 = p.r0;
 R1 = p.r1;
 Curr = p.q/(60^2);
@@ -43,7 +43,7 @@ tt = linspace(0,12*60^2,150);
 current_lut = @(t) interp1(tt, u2, t, 'linear', 'extrap');
 [t_sim, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; 0; 0]);
 x1=y_sim(:,1);x2=y_sim(:,2);
-voltage_model = polyval(ocv_curve,x1) + x2 + R0.*current_cc_discharge(i);
+voltage_model = polyval(p.ocv,x1) + x2 + R0.*current_cc_discharge(i);
 sim_time{i}    = t_sim;
 cap{i}         = -t_sim .*current_cc_discharge(i)*1000/(60^2);
 sim_voltage{i} = voltage_model;
