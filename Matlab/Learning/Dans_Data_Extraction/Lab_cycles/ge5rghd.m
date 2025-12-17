@@ -35,4 +35,28 @@ mathbfCC13min.LineWidth = 4.5000
 mathbfCC4min = findobj(gcf,"DisplayName","$\mathbf{CC}_{4,min}$")
 mathbfCC4min.LineWidth = 4
 
+hold off;
+figure;
+
+x = linspace(0.1, 1, 100);
+t = linspace(0.5, 1, 100);
+
+% Create grid
+[X, T] = meshgrid(x, t);
+
+% Define function
+Z = 1 ./ (X .* T - 0.593.* X.^2);
+
+% Mask singularities (avoid 1/0 blow-up)
+Z(abs(X .* T - 0.593 .* X.^2) < 1e-1) = NaN;
+
+% Plot
+figure
+mesh(X, T, Z)
+xlabel('x')
+ylabel('t')
+zlabel('f(x,t)')
+grid on
+
+
 
