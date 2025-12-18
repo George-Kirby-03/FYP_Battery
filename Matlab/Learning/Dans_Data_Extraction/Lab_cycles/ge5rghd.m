@@ -38,25 +38,45 @@ mathbfCC4min.LineWidth = 4
 hold off;
 figure;
 
-x = linspace(0.1, 1, 100);
-t = linspace(0.5, 1, 100);
+x = linspace(0.1, 0.425, 100);
+t = linspace(0.3, 0.9, 100);
 
 % Create grid
 [X, T] = meshgrid(x, t);
 
 % Define function
-Z = 1 ./ (X .* T - 0.593.* X.^2);
+
+Z = 0.2 ./ (X .* T - 0.2*0.593);
 
 % Mask singularities (avoid 1/0 blow-up)
-Z(abs(X .* T - 0.593 .* X.^2) < 1e-1) = NaN;
+Z(abs(X .* T - 0.2*0.593) < 1e-2) = NaN;
 
 % Plot
 figure
-mesh(X, T, Z)
+hold on
+
+surf(X, T, Z)
+scatter3(0.425, 0.383, 0.2 ./ (0.425.*0.383 - 0.2*0.593), 80, 'r', 'filled')
+contour(X, T, Z, 'k', 'LineWidth', 0.8)
+shading interp
+colorbar
+
 xlabel('x')
 ylabel('t')
 zlabel('f(x,t)')
 grid on
 
+annotation("textarrow", [0.2826 0.3321], [0.5393 0.3929], "String", "Optimal balance scaling chosen", "FontSize", 11, "FontWeight", "bold")
+annotation("textarrow", [0.1521 0.127], [0.2976 0.2298], "String", "True Scaling", "FontSize", 12, "FontWeight", "bold")
+ 
+view([180.0 -90.0])
+grid on
+title("$CC_{4} $ After parameter adjustment", "Interpreter", "latex", "FontSize", 19, "LineWidth", 3.5)
+xlabel("Protocol Scale Factor $x$", "Interpreter", "latex", "FontSize", 17)
+ylabel("$t_{0-80\%}$", "Interpreter", "latex", "FontSize", 21)
+zlabel("f(x,t")
+ 
+ZSurface = findobj(gcf, "DisplayName", "Z")
+datatip(ZSurface,0.3298,0.5061,4.141);
 
 

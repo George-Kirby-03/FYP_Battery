@@ -38,21 +38,29 @@ mathbfCC4min.LineWidth = 4
 hold off;
 figure;
 
-x = linspace(1, 5, 100);
-t = linspace(0.5, 1, 100);
+x = linspace(0.1, 0.425, 100);
+t = linspace(0.3, 0.9, 100);
 
 % Create grid
 [X, T] = meshgrid(x, t);
 
 % Define function
-Z = 1 ./ (X .* T - 0.593.* X.^2);
+
+Z = 0.2 ./ (X .* T - 0.2*0.593);
 
 % Mask singularities (avoid 1/0 blow-up)
-Z(abs(X .* T - 0.593 .* X.^2) < 1e-1) = NaN;
+Z(abs(X .* T - 0.2*0.593) < 1e-2) = NaN;
 
 % Plot
 figure
-mesh(X, T, Z)
+hold on
+
+surf(X, T, Z)
+scatter3(0.425, 0.383, 0.2 ./ (0.425.*0.383 - 0.2*0.593), 80, 'r', 'filled')
+contour(X, T, Z, 20, 'k', 'LineWidth', 0.8)
+shading interp
+colorbar
+
 xlabel('x')
 ylabel('t')
 zlabel('f(x,t)')
