@@ -2,7 +2,7 @@
 rho = 2300; % density of copper, kg/m^3
 specificHeat = 800; % specific heat of copper, J/(kg-K)
 hCoeff = 100; % Heat transfer coefficient, W/(m^2-K)
-q = 3e5; % Volumentric heat source
+w = 20; % Volumentric heat source
 cx = 100;
 cy = 40;
 T_amb = 20;
@@ -15,6 +15,8 @@ figure;
 pdegplot(model,EdgeLabels="on"); 
 axis([-.1 1.1 -.1 1.1]);
 title("Geometry With Edge Labels Displayed")
+
+q = w/(1.65e-5);
 %%
 % c = thick*k;
 % f = 2*hCoeff*ta + 2*emiss*stefanBoltz*ta^4;
@@ -41,52 +43,27 @@ pdeplot(model);
 axis equal
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
-endTime = 5000;
-tlist = 0:50:endTime;
+endTime = 500;
+tlist = 0:5:endTime;
 setInitialConditions(model,20);
 model.SolverOptions.RelativeTolerance = 1.0e-3; 
 model.SolverOptions.AbsoluteTolerance = 1.0e-4;
 
 R = solvepde(model,tlist);
 u = R.NodalSolution;
-figure; 
-plot(tlist,u(1,:)); 
-grid on
-title(["Temperature Along the Top Edge of " ...
-       "the Plate as a Function of Time"])
-xlabel("Time, seconds")
-ylabel("Temperature, degrees-Kelvin")
+% figure; 
+% plot(tlist,u(1,:)); 
+% grid on
+% title(["Temperature Along the Top Edge of " ...
+%        "the Plate as a Function of Time"])
+% xlabel("Time, seconds")
+% ylabel("Temperature, degrees-Kelvin")
 
 figure;
-pdeplot(model,XYData=u(:,5),Contour="on",ColorMap="jet");
+pdeplot(model,XYData=u(:,20),Contour="on",ColorMap="jet");
 title(sprintf(['Temperature In The Plate,' ...
                'Transient Solution( %d seconds)\n'],tlist(1,end)));
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
 axis equal;
-figure;
-filename = 'temperature_evolution.gif';
 
-for k = 1:length(tlist)
-    pdeplot(model, ...
-        XYData = u(:,k), ...
-        Contour = "on", ...
-        ColorMap = "jet");
-    
-    title(sprintf('Temperature at t = %.1f s', tlist(k)))
-    xlabel('X-coordinate (m)')
-    ylabel('Y-coordinate (m)')
-    axis equal
-    caxis([min(u(:)) max(u(:))])   % lock color scale
-    drawnow
-
-    frame = getframe(gcf);
-    im = frame2im(frame);
-    [A,map] = rgb2ind(im,256);
-
-    if k == 1
-        imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',0.1);
-    else
-        imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',0.1);
-    end
-end
