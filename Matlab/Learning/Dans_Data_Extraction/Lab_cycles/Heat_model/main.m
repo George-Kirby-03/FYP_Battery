@@ -1,10 +1,10 @@
 
-rho = 2300; % density of copper, kg/m^3
-specificHeat = 800; % specific heat of copper, J/(kg-K)
-hCoeff = 100; % Heat transfer coefficient, W/(m^2-K)
-w = 20; % Volumentric heat source
-cx = 100;
-cy = 40;
+rho = 2800; % kg/m^3
+specificHeat = 1720; % J/(kg-K)
+hCoeff = 20; % W/(m^2-K)
+w = 0.675; % Volumentric heat source
+cx = 5.4;
+cy = 0.2;
 T_amb = 20;
 load("Geom.mat")
 model = createpde;
@@ -43,9 +43,9 @@ pdeplot(model);
 axis equal
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
-endTime = 500;
-tlist = 0:5:endTime;
-setInitialConditions(model,20);
+endTime = 50000;
+tlist = 0:50:endTime;
+setInitialConditions(model,T_amb);
 model.SolverOptions.RelativeTolerance = 1.0e-3; 
 model.SolverOptions.AbsoluteTolerance = 1.0e-4;
 
@@ -60,10 +60,22 @@ u = R.NodalSolution;
 % ylabel("Temperature, degrees-Kelvin")
 
 figure;
-pdeplot(model,XYData=u(:,20),Contour="on",ColorMap="jet");
+pdeplot(model,XYData=u(:,end),Contour="on",ColorMap="jet");
 title(sprintf(['Temperature In The Plate,' ...
                'Transient Solution( %d seconds)\n'],tlist(1,end)));
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
 axis equal;
 
+figure;
+Tmax = max(u, [], 1);   % max over nodes, for each time
+Tmin = min(u, [], 1);   % min over nodes, for each time
+
+figure;
+plot(tlist, Tmax, 'r', 'LineWidth', 2); hold on
+plot(tlist, Tmin, 'b', 'LineWidth', 2);
+grid on
+xlabel('Time (s)')
+ylabel('Temperature (°C)')
+legend('T_{max}', 'T_{min}', 'Location', 'best')
+title('Global Temperature Extremes vs Time')
