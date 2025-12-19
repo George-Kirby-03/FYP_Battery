@@ -265,6 +265,12 @@ To provide inequalities to help decide values, two cases were considered to help
 
 The first case considered is when $\mathbf{CC}_i$, $i = 1,2,3$, are at their maximum, since all currents are posotive values, the equality given above must mean that $\mathbf{CC}_4$ is at its minimum. This inequality narrows descision variables to only 2, with the equality given as $$\mathbf{CC}_{4,\min}\times\left(t_{0-80\%} - 0.2\sum_{i=1}^{3} \frac{1}{CC_i,max}\right) = 0.2$$. The maximum permissable current values can be worked out by finding for each stage along a charging profile, the current that can be applied to bring the OCV voltage to the upper bound (difference is just $IR_{0+1}$), using the OCV curve obtained gives the graph below, the values were obtained in C units: $\mathbf{CC}_{1,\max} = 3.4$, $\mathbf{CC}_{2,\max} = 2.9$, $\mathbf{CC}_{3,\max} = 2.8$ and $\mathbf{CC}_{4,\max} = 2.5$. Thus the equation has only two variables and can be written as  $\mathbf{CC}_{4,\min} = \frac{0.2}{t_{0-80\%} - 0.279}$
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Matlab/Learning/Dans_Data_Extraction/Lab_cycles/Charge_peaks.png}
+    \caption{RS battery (our battery) C limits}
+\end{figure}
+
 In the second case, supose there is a current profile which is lowest for all $\mathbf{CC}_i$, $i = 1,2,3$ (which as mentioned is the same for those segments, thus is denoted as $\mathbf{CC}_{1:3,min}$), again due to the posotive nature of the currents, must mean $\mathbf{CC}_{4}$ is at its maximum. Since as before $\mathbf{CC}_{4,max}$ is known, a similar equation as before is calculated as $\mathbf{CC}_{1:3,min} = \frac{0.2\times3}{t_{0-80\%} - \frac{0.2}{\mathbf{CC}_{4,max}}} = \frac{0.6}{t_{0-80\%} - 0.08}$. These two equations can now be plotted to help decide values based on $t_{0-80\%}$.
 
 \begin{figure}[ht]
@@ -303,7 +309,7 @@ An idea is to subjectivley choose $t_{0-80\%}$ from figure x, and for the attia 
     \caption{Ffes }
 \end{figure}
 
-Lastly the final CV section is to be chosen, this could have been scaled with more reasoning, but
+Lastly the final CV section is to be chosen, this could have been scaled with more reasoning, but for now a value of 0.5C (half of the Attia value was chosen for now to balance total charge duration and the scaling of the previous segments), Attia value was fixed to 1C.
 
 
 \nocite{*}
