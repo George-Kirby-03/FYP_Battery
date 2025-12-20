@@ -1,10 +1,10 @@
-k = 400; % thermal conductivity of copper, W/(m-K)
-rho = 8960; % density of copper, kg/m^3
-specificHeat = 386; % specific heat of copper, J/(kg-K)
-hCoeff = 50; % Heat transfer coefficient, W/(m^2-K)
-q = 200000; % Volumentric heat source
-cx = 100;
-cy = 40;
+
+rho = 2800; % kg/m^3
+specificHeat = 1720; % J/(kg-K)
+hCoeff = 15; % W/(m^2-K)
+w = 0.675; % Power Watts
+cx = 30.4;
+cy = 0.2;
 T_amb = 20;
 load("Geom.mat")
 model = createpde;
@@ -15,18 +15,13 @@ figure;
 pdegplot(model,EdgeLabels="on"); 
 axis([-.1 1.1 -.1 1.1]);
 title("Geometry With Edge Labels Displayed")
-%%
-% c = thick*k;
-% f = 2*hCoeff*ta + 2*emiss*stefanBoltz*ta^4;
-% d = thick*rho*specificHeat;
 
-%a = @(~,state) 2*hCoeff + 2*emiss*stefanBoltz*state.u.^3;
+q = w/(1.65e-5);
+
 f = @(location,~) q*location.y;
 d = @(location,~) rho*specificHeat*location.y;
 c = @(location,state) coeffk(location,state,cx,cy);
 specifyCoefficients(model,m=0,d=d,c=c,a=0,f=f);
-
-
 
 applyBoundaryCondition(model,"neumann", ...
                        Edge=[2,3,4],g=@(location,state) Newman_BC(location,state,hCoeff,T_amb), ...
@@ -41,21 +36,21 @@ pdeplot(model);
 axis equal
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
-endTime = 5000;
-tlist = 0:50:endTime;
-setInitialConditions(model,20);
+endTime = 28;
+tlist = 0:60:endTime;
+setInitialConditions(model,T_amb);
 model.SolverOptions.RelativeTolerance = 1.0e-3; 
 model.SolverOptions.AbsoluteTolerance = 1.0e-4;
 
 R = solvepde(model,tlist);
 u = R.NodalSolution;
-figure; 
-plot(tlist,u(1,:)); 
-grid on
-title(["Temperature Along the Top Edge of " ...
-       "the Plate as a Function of Time"])
-xlabel("Time, seconds")
-ylabel("Temperature, degrees-Kelvin")
+% figure; 
+% plot(tlist,u(1,:)); 
+% grid on
+% title(["Temperature Along the Top Edge of " ...
+%        "the Plate as a Function of Time"])
+% xlabel("Time, seconds")
+% ylabel("Temperature, degrees-Kelvin")
 
 figure;
 pdeplot(model,XYData=u(:,end),Contour="on",ColorMap="jet");
@@ -64,3 +59,16 @@ title(sprintf(['Temperature In The Plate,' ...
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
 axis equal;
+
+figure;
+Tmax = max(u, [], 1);   % max over nodes, for each time
+Tmin = min(u, [], 1);   % min over nodes, for each time
+
+figure;
+plot(tlist, Tmax, 'r', 'LineWidth', 2); hold on
+plot(tlist, Tmin, 'b', 'LineWidth', 2);
+grid on
+xlabel('Time (s)')
+ylabel('Temperature (°C)')
+legend('T_{max}', 'T_{min}', 'Location', 'best')
+title('Global Temperature Extremes vs Time')

@@ -1,12 +1,13 @@
 
 rho = 2800; % kg/m^3
 specificHeat = 1720; % J/(kg-K)
-hCoeff = 20; % W/(m^2-K)
-w = 0.675; % Volumentric heat source
-cx = 5.4;
+hCoeff = 15; % W/(m^2-K)
+w = 0.675; % Power Watts
+cx = 30.4;
 cy = 0.2;
 T_amb = 20;
 load("Geom.mat")
+load("../../../../../cycle_exports/MOLI_cycle_2234.mat")
 model = createpde;
 g = decsg(gd,'S1',('S1')');
 geometryFromEdges(model,g);
@@ -15,20 +16,15 @@ figure;
 pdegplot(model,EdgeLabels="on"); 
 axis([-.1 1.1 -.1 1.1]);
 title("Geometry With Edge Labels Displayed")
-
+w = (u1.^2).*0.08;
 q = w/(1.65e-5);
-%%
-% c = thick*k;
-% f = 2*hCoeff*ta + 2*emiss*stefanBoltz*ta^4;
-% d = thick*rho*specificHeat;
 
-%a = @(~,state) 2*hCoeff + 2*emiss*stefanBoltz*state.u.^3;
-f = @(location,~) q*location.y;
+q_lut = @(t) interp1(tt, q, t, 'linear', 'extrap');
+f = @(location,state) heat_time(location,state,q_lut);
+%f = @(location,~) q*location.y;
 d = @(location,~) rho*specificHeat*location.y;
 c = @(location,state) coeffk(location,state,cx,cy);
 specifyCoefficients(model,m=0,d=d,c=c,a=0,f=f);
-
-
 
 applyBoundaryCondition(model,"neumann", ...
                        Edge=[2,3,4],g=@(location,state) Newman_BC(location,state,hCoeff,T_amb), ...
@@ -43,8 +39,8 @@ pdeplot(model);
 axis equal
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
-endTime = 50000;
-tlist = 0:50:endTime;
+endTime = 2*60^2;
+tlist = 0:60:endTime;
 setInitialConditions(model,T_amb);
 model.SolverOptions.RelativeTolerance = 1.0e-3; 
 model.SolverOptions.AbsoluteTolerance = 1.0e-4;
