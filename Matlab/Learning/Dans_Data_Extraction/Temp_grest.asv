@@ -4,8 +4,8 @@ close
 pwd
 %load("../../../cycle_exports\MOLI_cycle_2234.mat")
 %load("../../../cycle_exports/MOLI_28/MOLI_cycle_5.mat")
-load("./Characterisation Tests/charac_01.mat")
-%p = solution_unbound.p;
+load("./Characterisation Tests/charac_02.mat")
+p = solution_unbound.p;
 [tt_unique, ia] = unique(tt);
 
 % Keep corresponding rows of the other matrices

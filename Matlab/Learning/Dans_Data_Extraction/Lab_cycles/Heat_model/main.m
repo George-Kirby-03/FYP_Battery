@@ -1,13 +1,13 @@
-
-rho = 2800; % kg/m^3
-specificHeat = 1720; % J/(kg-K)
-hCoeff = 15; % W/(m^2-K)
+load("../../Characterisation Tests/charac_02.mat")
+rho = 2400; % kg/m^3
+specificHeat = 1450; % J/(kg-K)
+hCoeff = 8; % W/(m^2-K)
 w = 0.675; % Power Watts
 cx = 30.4;
 cy = 0.2;
-T_amb = 20;
+T_amb = tp(1);
 load("Geom.mat")
-load("../../../../../cycle_exports/MOLI_cycle_2234.mat")
+
 model = createpde;
 g = decsg(gd,'S1',('S1')');
 geometryFromEdges(model,g);
@@ -17,7 +17,7 @@ pdegplot(model,EdgeLabels="on");
 axis([-.1 1.1 -.1 1.1]);
 title("Geometry With Edge Labels Displayed")
 w = (u1.^2).*0.08;
-q = w/(1.65e-5);
+q = w/(1.6e-5);
 
 q_lut = @(t) interp1(tt, q, t, 'linear', 'extrap');
 f = @(location,state) heat_time(location,state,q_lut);
@@ -39,7 +39,7 @@ pdeplot(model);
 axis equal
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
-endTime = 2*60^2;
+endTime = 32668;
 tlist = 0:60:endTime;
 setInitialConditions(model,T_amb);
 model.SolverOptions.RelativeTolerance = 1.0e-3; 
@@ -70,8 +70,9 @@ Tmin = min(u, [], 1);   % min over nodes, for each time
 figure;
 plot(tlist, Tmax, 'r', 'LineWidth', 2); hold on
 plot(tlist, Tmin, 'b', 'LineWidth', 2);
+plot(tlist, interp1(tt,tp,tlist), 'g', 'LineWidth', 2);
 grid on
-xlabel('Time (s)')
-ylabel('Temperature (°C)')
+xlabel('Time')
+ylabel('Tempe')
 legend('T_{max}', 'T_{min}', 'Location', 'best')
-title('Global Temperature Extremes vs Time')
+title('Sim temps vs Time')
