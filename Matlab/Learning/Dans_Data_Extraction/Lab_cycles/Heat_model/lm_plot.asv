@@ -1,0 +1,49 @@
+clear
+
+load("..\Dans_Data_Extraction\Characterisation Tests\charac_02.mat")
+
+hA = 0.0399;
+mCp = 58.7796;
+C = 1.5;
+
+rest = 1000;
+
+discharge = 2.5;
+
+C1
+C2 
+C3 
+C4 
+
+
+A = [-hA/mCp];
+B = [1/mCp];
+C = eye(1);
+D = [0];
+
+t = linspace(0,5000,1000)';
+
+disch = C/discharge * 60.^2;
+end_rest = disch + rest;
+
+C1_time = 0.2/C1;
+C2_time = 0.2/C2;
+C3_time = 0.2/C3;
+C4_time = 0.2/C4;
+
+i = zeros(size(t)); 
+i(t <= disch) = discharg;
+i(t > disch & t <= (end_rest)) = 0;
+i(t > end_rest & t <= end_rest+C1_time) = C1;
+i(t > end_rest+C1_time & t <= end_rest+C1_time+C2_time) = C2;
+i(t > end_rest+C1_time+C2_time & t <= end_rest+C1_time+C2_time+C3_time) = C3;
+i(t > end_rest+C1_time+C2_time+C3_time & t <= end_rest+C1_time+C2_time+C3_time) = C4;
+%u = interp1(tt,u1,t);
+q = i.^2 * 0.075;
+
+
+sys = ss(A,B,C,D);
+
+y = lsim(sys,q,t);
+
+plot(t,y)
