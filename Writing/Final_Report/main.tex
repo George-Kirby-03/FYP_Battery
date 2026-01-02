@@ -1,0 +1,306 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{chemformula}
+\usepackage{amssymb}
+\usepackage{subfig}
+\setlength{\parskip}{0.8em plus 0.2em minus 0.1em}
+\setlength{\parindent}{0pt}
+
+\title{
+    
+    Final Report\\[1cm]
+    \includegraphics[width=0.25\textwidth]{../Images/UOS.png}\\[2cm]
+    \textbf{Applying Machine learning methods to model the degredadition of lithium based batteries under multi-stage CC charging} \\[1em]
+}
+\author{George W. Kirby \\[2em] \textit{200328186} \\[2em] }
+\date{\today}
+\linespread{1.5}
+\begin{document}
+\maketitle
+\vfill 
+\begin{center}
+    \textbf{Supervisor:} Dr. Ross Drummond 
+\end{center}
+\newpage
+{
+  \setlength{\parskip}{0pt}
+  \tableofcontents
+  \newpage
+}
+
+\section{Introduction}
+
+The global consumption of energy is rising by $4.5\times10^{16}$ Joules every year; 77\% of which is from non-renewable sources \cite{noauthor_renewable_nodate}. With the effects of non-renewables on the environment still not fully realised, coupled with concerns over their finite nature, there is a constant need to increase the usage of renewable sources. However, a large set of renewable generation methods fall under the category of variable renewable energy (VRE) sources \cite{guo_effects_2024}, thus requiring a robust form of energy storage to solve their intermittent availability. As battery technology improves, the use of batteries as a storage medium for the energy sector is becoming increasingly prominent. There is also a rapid increase in electric vehicle production, with a push to increase the adoption of EVs. In 2024, 17.3 million EVs were produced \cite{li_evolution_2024}, alongside a recent average year-on-year increase of 20\%. Lithium-ion batteries (LIBs) are currently the most widely used batteries due to their desirable characteristics in energy density, ageing behaviour, cost, and more.
+
+EVs and the energy sector now account for 90\% of total lithium-ion battery demand, and the total lithium-ion battery demand has increased ten-fold since 2016 \cite{noauthor_executive_nodate}. Different sources predict different forecasts for battery growth \cite{chinnam_fast-charging_2021,lucu_data-driven_2020}; regardless, the rate of demand does not appear to be decreasing in the near future.
+
+LIBs decrease in performance and capacity over time \cite{palacin_why_2016}, until they are deemed unsuitable for their current use. Eventually, all batteries in use today will require disposal. In 2021, 436,000 tonnes of lithium were mined for batteries alone \cite{noauthor_battery_2023}, further highlighting the need to reduce reliance on mining while meeting demand. Battery chemistry is still a developing field, and newer batteries may use fewer scarce materials, making long-term sustainability difficult to predict, however, some reports suggest cobalt reserves may be exhausted by 2040 \cite{gifford_lithium_nodate}. Recycling methods are being developed to recover battery materials, termed battery metal recycling (BMR) - however, sources vary widely, with estimates of current recycling rates ranging from as low as 5\%. Recycling technology is still developing, and many different process routes exist \cite{das_lithium-ion_2026}. Since most valuable metals are located in the cathode, hydrometallurgical processes can recover them, at the expense of other metal recovery, although often with reduced lithium yield \cite{hasan_advancing_2025} - this could continue to become more benificial however, promising work has shown lithium recovery requiring less than 40\% of the energy needed to mine virgin material \cite{yoo_life-cycle_2023}, while still recovering nickel and cobalt.
+
+There is also increasing interest in reusing batteries before recycling. These are referred to as second-life batteries (SLBs). In EV applications, batteries are typically retired when their usable capacity falls below 80\% \cite{wang_overview_2017}, yet they can still perform effectively in less demanding applications such as energy storage systems (ESS) \cite{mattia_lithium-ion_2025}. Re-use has been reported to reduce $CO_{2}$ emissions by up to 56\% compared with natural gas systems. However, challenges exist, including safety validation, cell sorting based on health, and the lack of automated pack disassembly methods. These additional steps may lead to SLBs being insufficiently cheaper than new batteries, limiting commercial appeal \cite{mattia_lithium-ion_2025}.
+
+In summary, several methods are developing to reduce reliance on newly mined materials and lower recycling energy requirements, but extending the usable lifetime of existing batteries remains a direct and impactful way to reduce environmental burden while meeting rising demand. If just one additional life cycle could be added to all EVs currently on the road (60 million \cite{noauthor_trends_nodate-2}), the saved energy would be enough to power the UK for an entire day \cite{noauthor_energy_nodate-1}. With most modern batteries capable of over 1000 cycles, any increase in cycle life can lead to significant benefit.
+
+Modelling and predicting lithium-ion battery degradation is therefore pivotal, as it enables informed decisions on how best to charge and operate batteries to prolong life, as well as optimise usage across their lifetime.
+
+\subsection{Project Aims}
+This project aims first to characterise lithium battery behaviour through parameterisation without ex-situ tests. The obtained data will then be used, in combination with previous work, to develop a charging protocol based on minimising different objective functions. The results from this will be used to form the basis of a machine learning model, with the intention that the model can, over time, provide a simpler method of predicting a battery's future behaviour. If the model can show how different charging currents affect degradation, a charging protocol derived from minimising such a model will be implemented and tested experimentally. If this is not achieved, the project will still provide value by validating existing charging strategies designed to minimise degradation, and by investigating parameterisation of batteries during degradation using optimisation tools.
+
+Figure \ref{fig:bb} highlights the original idealised goal: to develop a purely data-driven model capable of predicting output voltage for any cycle, allowing the derivation of an ideal charging current to maximise lifespan.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\textwidth]{../Images/nn_battery.png}
+\caption{Initial end objective: black-box battery degradation modelling}
+\label{fig:bb}
+\end{figure}
+
+\subsubsection{Objectives}
+\begin{itemize}
+\item Analyse ICLOCS2 and other methods for parameterising batteries under real-time use
+\item Modify previously developed charging methods for laboratory implementation and compare real experimental results
+\item Examine how adapting the charging profile during degradation influences battery lifetime
+\item Investigate machine learning methods to model the collected data for predicting degradation
+\item Use the model to develop a new charging strategy and validate experimentally
+\end{itemize}
+
+\section{Literature Review}
+\subsection{Lithium based battery backgrounds}
+
+\textbf{Notice:} During this research, and given the author does not come from an electrochemical background, it became clear that the terms potential and overpotential are used with slightly different meanings depending on context. There are likely equivalences between definitions, though the author cannot fully state them. For example, \cite{boettcher_potentially_2021} describes the commonly used symbol $\phi$ as the electrical potential, whereas measurements of voltage in practice generally correspond to electrochemical potential difference (specifically of electrons) between two points, expressed as $\Delta \tilde{\mu} = \Delta \mu + \Delta zF\phi$. Overpotential in some instaces, such as the Butler-Volmer model for current exhange, is a function of overpotential $\eta$ and from G. Plett\cite{noauthor_battery_nodate} is a difference in the current \textit{electrical potential} and equlibrium potential, yet papers like \cite{appiah_unravelling_2024} show overpotential more generally as the difference between any equlibium potential and current potential. Thus confirmation should be made in regards to what type of potential and overpotential. Assumptions are given that potentials are a  measure of energy state, whith a difference between two points causing a force, and overpotential representing additional energy required for a process to occur.
+
+Lithium-ion batteries are favourable largely due to the highly reductive nature of lithium. Taking the potential relative to the standard hydrogen electrode (SHE), the half-reaction of metallic lithium is approximately $-3.01V$ \cite{noauthor_battery_nodate}. The cells potential difference is the diference in potentals of the negative and posoitve solid state electrodes $V_t = \phi_s^+ (t) -  \phi_s^- (t) - IR_{cc}$ where $R_{cc}$ is the current collector or tabs ohmic resistance \cite{li_lithium-ion_2021}, having a large negeative reduction potential allows for a varierty of postive electordes, yeilding a high battery voltage. Coupled with Lithiums low molecular weight, a high energy density cell can be achived too.
+
+All lithium-ion batteries follow the same basic principle of operation. They consist of a positive electrode, a negative electrode, an electrolyte, a separator, and current collectors. Unlike many battery chemistries where active materials undergo conversion reactions that change the electrode's chemical composition, lithium-ion electrodes typically store lithium through intercalation and de-intercalation — the lithium is inserted into or extracted from \cite{noauthor_battery_nodate}. The negative electrode is usually graphite, able to store up to one lithium atom per six carbon atoms. The positive electrode can vary greatly, the most common are often composed of transitional metal oxides such as LCO, LMO, NMC, NCA \cite{koech_lithium-ion_2024}. The electrochemical state of lithium in graphite is similar to that of metallic lithium, so the negative electrode potential lies close to -3.0 V vs. SHE. Positive-electrode lithium is in a lower electrochemical energy state, giving typical reaction potentials of roughly  0-1.3 V vs. SHE, overall there is a large potential difference created. The negative electrode is often the key limiting factor in degredation as discussed later. The posotive electrode materials vary greatly in material, but since this electrode has the biggest electrode potential, it has a largest impact on the overall cell voltage, and thus energy density of the cell, in addition since per volume it holds less lithium, electrode material with higer lithium capcity will be of greater affect that improving the negative electrodes capcity. The two reactions with lithium with the battery electrodes chosen for this project are shown below (during dicharge, the reactions proceede from left to right, for the charging process, it's right to left):
+
+\begin{align}
+  \ch{LiFePO4 &<=> Li+ + e- + FePO4} \label{eq:lithium} \\
+  \ch{C6 + Li+ + e- &<=> LiC6} \label{eq:sodium}
+\end{align}
+
+The electrolyte is a medium that allows lithium ions to travel between the electrodes; however, it does not allow electrons to flow, which instead travel via the external circuit. The separator acts as a structural barrier to prevent the opposite electrodes from touching, allowing only ions to pass and thus preventing uncontrolled reactions that could cause major fire risks. During the discharging process, an external electrical path is provided between the collectors. The lithium stored within the negative electrode deintercalates, releasing lithium ions into the electrolyte, while the electrons leave the negative electrode, traveling across the external circuit to the positive electrode, where the lithium ions recombine with electrons and intercalate into the positive electrode structure. During charging, the applied voltage at the terminals is above the difference of the equilibrium electrode potentials. This applied overpotential drives lithium ions to deintercalate from the positive electrode, travel across the electrolyte, and intercalate into the negative electrode, where they combine with electrons. The speed at which the ions flow is much slower than the electron transfer, which contributes to the characteristic behavior of lithium batteries \cite{noauthor_battery_nodate}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.4\textwidth]{../Images/LIStruct.png}
+\caption{Visual structure of Lithium Battery \cite{hasan_advancing_2025}}
+\label{fig:lipd}
+\end{figure}
+
+\subsection{Lithium based battery degradation modes}
+
+J'O. Kane et al. \cite{jokane_lithium-ion_2022} summarises the key 3 modes of degradation caused within lithium-ion batteries described below. Calendar aging is neglected in this discussion.
+
+\textbf{Lithium plating} - Under certain charging conditions, the lithium ions within the electrolyte will join with the electrons outside the negative electrode, producing pure lithium metal — which can grow forming dendrites, depicted in figure \ref{fig:lip}. The most understood causes which accelerate this is when the negative electrode potential falls below that of lithium’s own electrode potential \cite{yang_minimum_2021,lain_understanding_2021}, becoming the most thermodynamically viable reaction. From electrochemical models, the potential at the electrodes is the sum of their open circuit potentials and overpotential. The overpotential is largely due to the kinetic overpotential at the interface between the electrolyte and electrode \cite{liu_insight_2021}; the Butler-Volmer equation shows as the current density $j$ increases, overpotential $\eta$ increases (figure \ref{fig:OP} shows the potentials changing during charge). Low temperatures and high SoC also increase lithium plating, since it becomes harder for the lithium to intercalate within the carbon.
+$$
+j = a_s i_0 \left[ 
+    \exp\!\left( \frac{\alpha_a F}{R T}\,\eta \right)
+    - 
+    \exp\!\left( -\frac{\alpha_c F}{R T}\,\eta \right)
+\right]
+$$
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.3\textwidth]{../Images/Lithium_Plating.png}
+\caption{Lithium deposits shown in lighter grey on the graphite electrode \cite{attia_closed-loop_2020}}
+\label{fig:lip}
+\end{figure}
+
+\textbf{SEI Layer growth} - A layer known as solid electrolyte interphase \cite{bouguern_critical_2024} is formed as soon as the electrolyte solution comes into contact with the negative electrode causing salts like \ch{Li_{2}CO_{3}} to produce acids, followed by further reactions; this barrier acts to prevent electrons further reducing and using up more of the electrolyte, whilst allowing passage of the lithium ions to intercalate \cite{bouguern_critical_2024}. If this SEI breaks apart, new SEI will form, taking more lithium up, losing material for charging (LLI). Having the battery at high and low SoC can cause the SEI layer to thicken also \cite{agubra_analysis_2014}. SEI formation also takes up electrons within its reaction, thus reducing battery capacity.
+
+\textbf{Particle fracture} - The physical volume of the electrodes can change during the intercalation and deintercalation, this is a degradation feature that can't be avoided in order to charge and discharge a battery; some electrodes exhibit more contraction than others, silicon significantly greater than graphite \cite{noauthor_battery_nodate}. Concentration gradients, caused by high currents, within the electrode can also cause internal stress. This can over time cause the electrodes to break down, either resulting in more SEI growth, reducing more lithium; inability for areas of lithium intercalation, reducing charge capacity; and separation from the binder causing either increased ohmic resistance or loss in capacity.
+
+In summary, high charging currents, extreme temperatures and extreme states of charge can accelerate degradation, thus to reduce this, charging and discharging at infinitesimally small rates and at optimal temperatures is best, however this neglects considerations such as charge times, thus a balance between these constraints should always be taken into account and the charging strategies used in this project attempt to do so. The impact on degradation can change between charging and discharging, for example diffusion differences between charge and discharge are shown by J. Lain \textit{et al.} \cite{lain_understanding_2021}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\textwidth]{../Images/degred.jpg}
+\caption{Visual impact of common degradation mechanisms \cite{birkl_degradation_2017}}
+\label{fig:deg}
+\end{figure}
+
+\subsection{Equivalent Circuit Model}
+
+There are many ways a lithium battery can be modeled, depending on the accuracy required, parameters available and computational power available. The two main categories are equivalent circuit models and physics-based models \cite{noauthor_battery_nodate}. The physics-based models integrate conservation laws as well as dynamical behaviour which leads to a set of PDEs with both scalar and gradient-based boundary conditions. These require discretisation within the physical dimensions of the model to yield a set of ODEs which can be solved for. PyBaMM is a popular framework for such modeling, and its process is shown in figure \ref{fig:pyb}. Popular physics-based models in order of computational complexity \cite{noauthor_choosing_nodate} are the Doyle-Fuller-Newman model \cite{doyle_modeling_1993}, Single-Particle Model with electrolyte (SPMe) and SPM. The key problem of PBM's is that some require over 30 parameters to fully describe the properties, and errors in such can accumulate over time; depending on accuracy needed, the discretisation can yield hundreds of ODEs.
+
+\begin{figure}%
+\centering
+\subfloat[\centering PyBaMM solver pipeline]{\includegraphics[width=0.3\textwidth]{../Images/PyBaMM_pipe.jpg}}%
+\qquad
+\subfloat[\centering DFN Parameters]{\includegraphics[width=0.6\textwidth]{../Images/dfn_param.png}}%
+\caption{Parameters and solution steps for physics-based modeling}%
+\label{fig:pyb}%
+\end{figure}
+
+Equivalent circuit models use standard lumped electrical elements to match the behaviour of a real lithium battery’s dynamics. It is this type of model most common in BMS systems today. T. Kalogiannis \textit{et al.} \cite{kalogiannis_comparative_2019} provides common methods for obtaining the parameter values used in ECMs. The most common version is shown in figure \ref{fig:ECM}, which is static in its dynamics. The key component is the $V_{oc}$ ideal voltage source; this value becomes a function (when neglecting temperature, degradation, charging-discharging hysteresis) of the battery state of charge SoC, given by
+$$ SoC(t) = z(t)/Q = (z(t_{0}) + \int_{t_{0}}^{t} \eta(\tau) i(\tau) \,d\tau)/Q $$ 
+where $Q$ is the battery's nominal maximum capacity and $z$ is the current charge capacity. The $R_{0}$ and $R_{1}C_{1}$ branch are used to model the difference in terminal voltage compared to that of the $V_{ocv}$ for a given instantaneous SoC, and $\eta$ here is the coulombic efficiency, usually $\approx 0.99$ for lithium batteries, since some current will be used in irreversible chemical reactions within the cell \cite{noauthor_battery_nodate}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\textwidth]{../Images/ECM_FO.png}
+\caption{ECM model with 1st-order polarizing dynamics}
+\label{fig:ECM}
+\end{figure}
+
+The common state space form of this system is given below
+
+\begin{equation}
+\begin{bmatrix}
+\dot{v_{1}}{(t)} \\[4pt]
+\dot{z}{(t)} \\[4pt]
+\end{bmatrix}
+=
+\begin{bmatrix}
+- \frac{1}{R_{1}C_{1}} & 0\\[4pt]
+0 & 0 \\[4pt]
+\end{bmatrix}
+\begin{bmatrix}
+{v_{1}{(t)}} \\[4pt]
+{z{(t)}} \\[4pt]
+\end{bmatrix}
++
+\begin{bmatrix}
+\frac{1}{C_{1}}\\[4pt]
+\frac{1}{Q}\\[4pt]
+\end{bmatrix}
+i(t)
+\end{equation} 
+
+\begin{equation}
+    V_{batt}(t) = V_{oc}(z) + i(t)R_{0} + v_{1}(t)
+\end{equation}
+
+
+W. Appiah et al. \cite{appiah_unravelling_2024} provide the equation for the total overpotential within the battery derived from the Fuller–Newman electrochemical model. Here, the total overpotential $\eta_{batt}$ is equal to the difference between the equilibrium battery potential $U_{batt}$ and the terminal voltage potential $V_{batt}$, i.e. $V_{batt} = U_{batt} - \eta_{batt}$. This is analogous to the ECM model given above, whereby the overpotential (dynamical behaviour) is modelled by $i(t)R_{0} + v_{1}(t)$, where the equilibrium potential is $V_{oc}(z)$.
+
+\begin{equation}
+\eta_{\text{batt}} =
+\left[
+\begin{aligned}
+& 
+\underbrace{
+    \left( \Phi_{2,p}\big|_{x=L_p} - \Phi_{2,n}\big|_{x=0} \right)
+}_{\text{Electrolyte overpotential } (\eta_2)}
+\\[1.2em]
+&+
+\underbrace{
+\left[
+    \left( U_p(c_{1,p}^s)\big|_{x=L_p} - U_p(\bar c_p)\big|_{x=L_p} \right)
+    -
+    \left( U_n(c_{1,n}^s)\big|_{x=0} - U_n(\bar c_n)\big|_{x=0} \right)
+\right]
+}_{\text{Li concentration overpotential } (\eta_1^{c})}
+\\[1.2em]
+&+
+\underbrace{
+    \left( \eta^{ct}_p\big|_{x=L_p} - \eta^{ct}_n\big|_{x=0} \right)
+}_{\text{Kinetic overpotential } (\eta^{ct})}
+\;-\;
+\underbrace{
+    R_f I_{\text{app}}
+}_{\text{Electrode ohmic overpotential } (\eta_1^{\Omega})}
+\end{aligned}
+\right]
+\end{equation}
+
+Whilst the voltage dynamics of lithium batteries do depend on temperature, this project keeps the ambient temperature at 30°C, thus real-time effects on the electrical dynamics are minimal. However, modelling of the temperature is vital since temperature directly affects degradation. L. Mattia et al. \cite{mattia_lithium-ion_2025} explain the various thermal modelling approaches and show which contributions are key in heat production, with the main equation given below. Reversible heat generation cannot be directly inferred by the basic ECM model shown in figure \ref{fig:ECM}. J. Xu et al. equated it to being proportional to $\partial U / \partial T$, where $U$ is the OCV and $T$ is the temperature. This value changes over the SoC of the battery, and the paper calculates the curve for a battery similar to the one used in this project, shown in figure \ref{fig:dudt}.
+
+\begin{equation}
+    mCp\frac{d T}{dt} = \underbrace{I^{2}R_{0} + IV_{1}}_{irreversable} - \underbrace{IT\frac{\partial U}{\partial T}}_{reversable} - \underbrace{hAT}_{dissipation}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Images/og_dudt.png}
+    \caption{Charging segment extracted from the UoS dataset}
+    \label{fig:dudt}
+\end{figure}
+
+A. Farman et al. \cite{farmann_study_2017} shows that the OCV of lithium batteries can change throughout degradation, Lithium phosphate batteries showed a 20 mV difference in regions of the SoC after aging of 500 cycles at 1C of charge and discharge. Additionally, while there exists methods of extracting an accurate OCV curve, it can take hours to accurately obtain to minimise overpotentials \cite{kalogiannis_comparative_2019}. This is where numerical methods could be utilised to obtain the OCV curve and the other ECM parameters by fitting against a grey-box model of the dynamics, ICLOCS2 \cite{noauthor_iclocs2_nodate}, will be used heavily throughout this project to see its ability to parameterise the battery dynamics. A.A. Mohamed et al. \cite{mohamed_advancements_2025} shows the many methods to obtain ECM parameters with methods ranging from analytical approaches based on various current inputs, to meta-heuristic optimisation algorithms.
+
+\subsection{Charging methods}
+
+There exist many techniques to charge batteries with a graphical summary of the common methods shown in figure \ref{fig:Chargings}. Q. Lin et al. \cite{chen_overpotential_2021} highlights the different methods described below. The most common method is known as CC-CV charge. This is where the bulk charge is done such that the applied overpotential to the battery causes a constant current to flow, the voltage potential of the battery rises to a defined maximum point, the charging device then switches to a constant voltage charging mode, this fixed voltage is held until the charge current decays to a negligible or fixed amount - current still flows during this stage as there is still an overpotential between the battery's equilibrium state and the applied constant voltage. This is the simplest to implement without the need for an accurate SoC reading to risk overcharging (like would be with pure CC charging).
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.6\textwidth]{../../Matlab/Figures/CCCVProtocol.png}
+\caption{Charging segment extracted from the UoS dataset}
+\end{figure}
+
+CV is another method such that the voltage applied is the battery's maximum at full SoC, but since lithium batteries have low internal resistances, this can lead to a very high current draw at low SoC (where the equilibrium voltage is low), hence can cause accelerated degradation, Q. Lin et al. mentions 40\% capacity decrease after only 160 cycles. Boost charging provides a high current increase at low SoC, but only for brief periods and can significantly reduce degradation rate compared to CV.
+
+AC charging is another method which aims to minimise the frequency dependent impedance of the battery, effectively allowing charging the battery with a lower effective overpotential, however as Q. Lin et al. mentions, there are disputes on the effectiveness of this method; coupled with the fact EIS (electrochemical impedance spectroscopy) is required to find the frequency points of interest to target, this method won't be further researched within the project.
+
+Multistage CC is a popular method in research as it allows for the customisation of the charging throughout the cycle, this means various models can be used to optimise for a specific goal. G. Tucker et al. \cite{tucker_optimal_2023} for example, simulates various functions to minimise based on the ECM model provided in the section above, showing that the physics optimisation correlates closely to optimised degradation obtained through purely data-driven methods. Electrochemical-based models allow for a finer level of optimisation, such as ensuring the negative electrode does not reach a potential to cause lithium plating, \cite{li_lithium-ion_2021} models an observer to estimate the potentials, which could be used within optimisation as one of the constraints, figure \ref{fig:OP} shows their predicted potential voltages.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../Images/Observer_op.png}
+    \caption{Estimated potentials in response to charge currents}
+    \label{fig:OP}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Images/common_charge_graph.jpg}
+    \caption{Common charge techniques summarised}
+    \label{fig:Chargings}
+\end{figure}
+
+The multistage CC charging method provides a good framework to trial different charging methods, its balance of ease of implamentation and adjustability means it is this method which will be used in the project to optimise for degredadition.
+
+\subsection{Modelling degredation}
+
+There are three main categorical methods to predict the degradation of lithium-ion batteries: Purely data-driven methods, physics-based models and a hybrid (physics informed). F. Wang et al. \cite{wang_advanced_2025} highlights the advantages of the hybrid approach, stating issues and advantages with pure data-driven and pure physics model, they also present a means of categorising the common hybrid approaches.
+
+Papers focusing on the physics based modeling usually focus on a subset of degradation modes, such as SEI thickness growth from N.Kamyab \textit{et al.}\cite{kamyab_mixed_2019}. Most models start with the Doyle-Fuller-Newman model \cite{doyle_modeling_1993} to describe the transport of lithium within the battery (including potentials), then further sub-modules representing degradation mechanisms are integrated to yield the required models. For example J. Okane et al. \cite{jokane_lithium-ion_2022} adds SEI, electrode cracking and loss of active material (LAM) as the degradation models. These approaches can model intricate parts within the battery, but require a lot of parameters about each battery under test, additionally, the discretised solutions are only ever as accurate as the models used.
+
+Kuzhiyil et al. \cite{kuzhiyil_lithium-ion_2025} represent the electrochemical dynamics as $\frac{d\mathbf{x}}{dt} = f(\mathbf{x, z ,u}, t; \mathbf{\alpha})$ and couplining to degradation dynamics $\frac{d\mathbf{z}}{dt} = f(\mathbf{z, x ,u}, t; \mathbf{\theta})$ where $\mathbf{x} \in \mathbb{R}^{n_1}$ and $\mathbf{z} \in \mathbb{R}^{m_1}$ (once the SPM is discretised), representing the battery electrochemical and degradation state variables respectively. They use neural nets in place of some common degradation equations to improve the PBM's accuracy, in the report's case, to improve accuracy of calendar aging with good results, however complications can arise in parameterisation and obtaining parameters to train against.
+
+Severson et al. \cite{severson_data-driven_2019}, provides one of the largest available datasets for battery charging. This paper uses a purely data driven approach in modeling, but uses engineered features such as the change in discharge voltage curves between cycle 0 and cycle 100. Using a linear regression model, they predict the cycle-to-failure (defined when the capacity drops to 80\% of original), it shows up to a 9.2\% error. Attia et al. \cite{attia_closed-loop_2020} takes the work of Severson et al. to great use, using the model to predict how well different charge cycles last by cycling the batteries under random multistage CC cycles, predicting the degradation and using a Bayesian optimisation strategy \cite{noauthor_bayesian_nodate} to find the next appropriate charging protocol - in a closed loop feedback shown in figure \ref{fig:OptimB}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../Images/atia.png}
+    \caption{Closed loop workflow for finding optimal CC charging}
+    \label{fig:OptimB}
+\end{figure}
+
+\section{Methodology}
+\subsection{Thermal Modeling}
+It's most common to considder the 1d Lumped thermal model of small batteries, such as 18650's. Tucker shows that using this apprach, yeilds a charge profile close to that of the optimum profile found from Attia, its thought that if this model could somehow be improved
+
+
+
+\section{Self Review}
+Choosing this final year project has, and will continue to, be a big personal undertaking. I knew nothing about batteries other than the very basics when starting, I also knew very little within systems \& control other than simple LTI systems. Research has also been a struggle for me as many papers incorperate control methods or electrochemical background of which i dont have, a high amount of papers regarding the use of AI in modeling degredadtion are also behind paywalls. I understand this document does not have indepth explinations of the use of AI within the modeling and may be vauge in the project steps, the project is very much in the sense adapting to what can be done. Work in general AI was done early in the project, I was able to learn the basics in pure nural-nets and produced a basic image classifer within pytorch but took a pause to work on other aspects of the project and univeristy modules. 
+
+A large amount of time has been spent of narrowing down the focus of the project, as well as preparing the opmitised controll desgins for the lab testing. As of 01/12/2025, the first two batteries are undergoing characterisation tests and the softwear side is nearly done. Focus will now be spent on researching more about the machine learning and ways to optimise charging from the modeling of the battery. 
+
+\section{Project Plan}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{../Images/Online Gantt 20251129.png}
+    \caption{Gannt Chart of current project plan}
+\end{figure}
+
+\section{Risk Register}
+\begin{figure}[htt]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Images/rr.png}
+    \caption{Current risk register}
+\end{figure}
+\clearpage
+\newpage
+\nocite{*}
+\textbf{Note: } The following references may have duplicates and unused references, this should hopefully be fixed for the final report
+\bibliographystyle{../IEEEtran/IEEEtran}
+\bibliography{My_Library}
+
+\end{document}
