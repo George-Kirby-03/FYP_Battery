@@ -8,6 +8,7 @@
 \contentsline {subsection}{\numberline {2.4}Charging methods}{14}{subsection.2.4}%
 \contentsline {subsection}{\numberline {2.5}Modelling degredation}{16}{subsection.2.5}%
 \contentsline {section}{\numberline {3}Methodology}{18}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Thermal Modeling}{18}{subsection.3.1}%
 \contentsline {section}{\numberline {4}Self Review}{18}{section.4}%
-\contentsline {section}{\numberline {5}Project Plan}{18}{section.5}%
-\contentsline {section}{\numberline {6}Risk Register}{18}{section.6}%
+\contentsline {section}{\numberline {5}Project Plan}{19}{section.5}%
+\contentsline {section}{\numberline {6}Risk Register}{19}{section.6}%

@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1767354635.02701 "main.aux" "main.bbl" "main" 1767354636.86421 0
+["bibtex main"] 1767383593.18811 "main.aux" "main.bbl" "main" 1767383595.10996 0
   "../IEEEtran/IEEEtran.bst" 1762257339 61630 a90e64071cc7185c225b4d6ec93de903 ""
   "./My_Library.bib" 1764871956 148424 45b034f8a3b0d3772934882969bc6998 ""
-  "main.aux" 1767354636 10849 9b6e976c71f69fd88858253abf993d03 "pdflatex"
+  "main.aux" 1767383594 10973 e23733c390d340379d0fa122aa4c90a8 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1767354635.10505 "c:/Users/jekir/GitHub/FYP_Battery/Writing/Final_Report/main.tex" "main.pdf" "main" 1767354636.86458 0
+["pdflatex"] 1767383593.29975 "c:/Users/jekir/GitHub/FYP_Battery/Writing/Final_Report/main.tex" "main.pdf" "main" 1767383595.11037 0
   "../../Matlab/Figures/CCCVProtocol.png" 1764519624 73008 ee6f681f436f73366a8ff68aea447b06 ""
   "../Images/ECM_FO.png" 1764519624 48660 9e09ceb332da014cf97fa0543edaf249 ""
   "../Images/LIStruct.png" 1764871956 156401 27c0beeac6a6c633ca694c1559746155 ""
@@ -23,7 +23,7 @@
   "../Images/nn_battery.png" 1762446333 40818 1a5a115deb88ccf93635f47dd6537fa1 ""
   "../Images/og_dudt.png" 1763908804 506344 0d7cb3a8a44983a94f46346daa5d643e ""
   "../Images/rr.png" 1764871956 266352 f37ad4ef192556aaa836e5dcbcc4ba7c ""
-  "c:/Users/jekir/GitHub/FYP_Battery/Writing/Final_Report/main.tex" 1767354632 32664 22f97d21a840b8e171a3d652acca97f5 ""
+  "c:/Users/jekir/GitHub/FYP_Battery/Writing/Final_Report/main.tex" 1767383589 32969 2a1d1e3ff4f4c061888854065a27dfec ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1762257720 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1762257981 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1762257887 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
@@ -193,11 +193,11 @@
   "c:/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1762258747 371233 0f6aca6addd6800b190706172e78fdc2 ""
   "c:/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1762258789 3435732 93e8ceb8616c1a4db08b2f52bf195bfc ""
   "c:/texlive/2025/texmf.cnf" 1762258744 713 e69b156964470283e0530f5060668171 ""
-  "main.aux" 1767354636 10849 9b6e976c71f69fd88858253abf993d03 "pdflatex"
-  "main.bbl" 1767354635 35303 4c14bba946dbe4eb487d0bfa87d0b0cc "bibtex main"
-  "main.out" 1767354636 1874 066bedd1fa98defe36fa4b647a7cbea8 "pdflatex"
-  "main.tex" 1767354632 32664 22f97d21a840b8e171a3d652acca97f5 ""
-  "main.toc" 1767354636 1046 98b045bb7b0a51f8f4b3aed396ea79e9 "pdflatex"
+  "main.aux" 1767383594 10973 e23733c390d340379d0fa122aa4c90a8 "pdflatex"
+  "main.bbl" 1767383593 35303 4c14bba946dbe4eb487d0bfa87d0b0cc "bibtex main"
+  "main.out" 1767383594 2015 9210016ae34a6d14e56075b1e82e69d4 "pdflatex"
+  "main.tex" 1767383589 32969 2a1d1e3ff4f4c061888854065a27dfec ""
+  "main.toc" 1767383594 1129 db1ba91f150e2f8821f0a7cae309d4f8 "pdflatex"
   (generated)
   "main.aux"
   "main.log"

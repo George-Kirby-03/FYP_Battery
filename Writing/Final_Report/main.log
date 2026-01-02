@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.4)  2 JAN 2026 11:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.4)  2 JAN 2026 19:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -636,7 +636,7 @@ Package hyperref Info: Link coloring OFF on input line 22.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
-<../Images/UOS.png, id=59, 1003.75pt x 958.58125pt>
+<../Images/UOS.png, id=63, 1003.75pt x 958.58125pt>
 File: ../Images/UOS.png Graphic file (type png)
 <use ../Images/UOS.png>
 Package pdftex.def Info: ../Images/UOS.png  used on input line 24.
@@ -655,84 +655,84 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout5 = `main.toc'.
 
  [2] [3] [4]
-<../Images/nn_battery.png, id=134, 494.2214pt x 153.95015pt>
+<../Images/nn_battery.png, id=139, 494.2214pt x 153.95015pt>
 File: ../Images/nn_battery.png Graphic file (type png)
 <use ../Images/nn_battery.png>
 Package pdftex.def Info: ../Images/nn_battery.png  used on input line 56.
 (pdftex.def)             Requested size: 234.8775pt x 73.16231pt.
  [5{c:/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <../Images/nn_battery.png>] [6] [7]
-<../Images/LIStruct.png, id=168, 717.68124pt x 584.1825pt>
+<../Images/LIStruct.png, id=173, 717.68124pt x 584.1825pt>
 File: ../Images/LIStruct.png Graphic file (type png)
 <use ../Images/LIStruct.png>
 Package pdftex.def Info: ../Images/LIStruct.png  used on input line 88.
 (pdftex.def)             Requested size: 187.89914pt x 152.94461pt.
  [8 <../Images/LIStruct.png>]
-<../Images/Lithium_Plating.png, id=190, 405.01312pt x 268.75406pt>
+<../Images/Lithium_Plating.png, id=195, 405.01312pt x 268.75406pt>
 File: ../Images/Lithium_Plating.png Graphic file (type png)
 <use ../Images/Lithium_Plating.png>
 Package pdftex.def Info: ../Images/Lithium_Plating.png  used on input line 108.
 (pdftex.def)             Requested size: 140.92793pt x 93.51581pt.
  [9 <../Images/Lithium_Plating.png>]
-<../Images/degred.jpg, id=207, 270.86797pt x 128.06244pt>
+<../Images/degred.jpg, id=212, 270.86797pt x 128.06244pt>
 File: ../Images/degred.jpg Graphic file (type jpg)
 <use ../Images/degred.jpg>
 Package pdftex.def Info: ../Images/degred.jpg  used on input line 121.
 (pdftex.def)             Requested size: 328.82707pt x 155.47774pt.
-<../Images/PyBaMM_pipe.jpg, id=214, 215.1293pt x 222.52437pt>
+<../Images/PyBaMM_pipe.jpg, id=219, 215.1293pt x 222.52437pt>
 File: ../Images/PyBaMM_pipe.jpg Graphic file (type jpg)
 <use ../Images/PyBaMM_pipe.jpg>
 Package pdftex.def Info: ../Images/PyBaMM_pipe.jpg  used on input line 132.
 (pdftex.def)             Requested size: 140.92793pt x 145.7732pt.
-<../Images/dfn_param.png, id=215, 1027.84pt x 595.22375pt>
+<../Images/dfn_param.png, id=220, 1027.84pt x 595.22375pt>
 File: ../Images/dfn_param.png Graphic file (type png)
 <use ../Images/dfn_param.png>
 Package pdftex.def Info: ../Images/dfn_param.png  used on input line 134.
 (pdftex.def)             Requested size: 281.85587pt x 163.2193pt.
  [10 <../Images/degred.jpg>]
-<../Images/ECM_FO.png, id=228, 844.3545pt x 476.982pt>
+<../Images/ECM_FO.png, id=233, 844.3545pt x 476.982pt>
 File: ../Images/ECM_FO.png Graphic file (type png)
 <use ../Images/ECM_FO.png>
 Package pdftex.def Info: ../Images/ECM_FO.png  used on input line 145.
 (pdftex.def)             Requested size: 234.8775pt x 132.68066pt.
  [11 <../Images/PyBaMM_pipe.jpg> <../Images/dfn_param.png>] [12 <../Images/ECM_FO.png>]
-<../Images/og_dudt.png, id=252, 906.38625pt x 702.625pt>
+<../Images/og_dudt.png, id=257, 906.38625pt x 702.625pt>
 File: ../Images/og_dudt.png Graphic file (type png)
 <use ../Images/og_dudt.png>
 Package pdftex.def Info: ../Images/og_dudt.png  used on input line 219.
 (pdftex.def)             Requested size: 234.8775pt x 182.06708pt.
  [13 <../Images/og_dudt.png>]
-<../../Matlab/Figures/CCCVProtocol.png, id=270, 993.9534pt x 619.113pt>
+<../../Matlab/Figures/CCCVProtocol.png, id=275, 993.9534pt x 619.113pt>
 File: ../../Matlab/Figures/CCCVProtocol.png Graphic file (type png)
 <use ../../Matlab/Figures/CCCVProtocol.png>
 Package pdftex.def Info: ../../Matlab/Figures/CCCVProtocol.png  used on input line 232.
 (pdftex.def)             Requested size: 281.85587pt x 175.56104pt.
  [14 <../../Matlab/Figures/CCCVProtocol.png (PNG copy)>]
-<../Images/Observer_op.png, id=281, 726.715pt x 505.89pt>
+<../Images/Observer_op.png, id=286, 726.715pt x 505.89pt>
 File: ../Images/Observer_op.png Graphic file (type png)
 <use ../Images/Observer_op.png>
 Package pdftex.def Info: ../Images/Observer_op.png  used on input line 244.
 (pdftex.def)             Requested size: 281.85587pt x 196.2156pt.
-<../Images/common_charge_graph.jpg, id=282, 244.70622pt x 332.73108pt>
+<../Images/common_charge_graph.jpg, id=287, 244.70622pt x 332.73108pt>
 File: ../Images/common_charge_graph.jpg Graphic file (type jpg)
 <use ../Images/common_charge_graph.jpg>
 Package pdftex.def Info: ../Images/common_charge_graph.jpg  used on input line 251.
 (pdftex.def)             Requested size: 234.8775pt x 319.36742pt.
  [15 <../Images/Observer_op.png>] [16 <../Images/common_charge_graph.jpg>]
-<../Images/atia.png, id=304, 809.0225pt x 397.485pt>
+<../Images/atia.png, id=309, 809.0225pt x 397.485pt>
 File: ../Images/atia.png Graphic file (type png)
 <use ../Images/atia.png>
 Package pdftex.def Info: ../Images/atia.png  used on input line 270.
 (pdftex.def)             Requested size: 281.85587pt x 138.47893pt.
  [17 <../Images/atia.png>]
-<../Images/Online Gantt 20251129.png, id=316, 1866.975pt x 1313.90875pt>
+<../Images/Online Gantt 20251129.png, id=321, 1866.975pt x 1313.90875pt>
 File: ../Images/Online Gantt 20251129.png Graphic file (type png)
 <use ../Images/Online Gantt 20251129.png>
-Package pdftex.def Info: ../Images/Online Gantt 20251129.png  used on input line 285.
+Package pdftex.def Info: ../Images/Online Gantt 20251129.png  used on input line 289.
 (pdftex.def)             Requested size: 469.75502pt x 330.58148pt.
-<../Images/rr.png, id=317, 416.55624pt x 755.82375pt>
+<../Images/rr.png, id=322, 416.55624pt x 755.82375pt>
 File: ../Images/rr.png Graphic file (type png)
 <use ../Images/rr.png>
-Package pdftex.def Info: ../Images/rr.png  used on input line 292.
+Package pdftex.def Info: ../Images/rr.png  used on input line 296.
 (pdftex.def)             Requested size: 328.82707pt x 596.6675pt.
  [18] [19 <../Images/Online Gantt 20251129.png>] [20 <../Images/rr.png>] (./main.bbl
 ** WARNING: IEEEtran.bst: No hyphenation pattern has been
@@ -934,21 +934,21 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2025-10-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 066BEDD1FA98DEFE36FA4B647A7CBEA8;1874.
+(rerunfilecheck)             Checksum: 9210016AE34A6D14E56075B1E82E69D4;2015.
  ) 
 Here is how much of TeX's memory you used:
- 23944 strings out of 468702
- 457052 string characters out of 5445578
- 849253 words of memory out of 5000000
- 52111 multiletter control sequences out of 15000+600000
+ 23946 strings out of 468702
+ 457082 string characters out of 5445578
+ 849256 words of memory out of 5000000
+ 52112 multiletter control sequences out of 15000+600000
  639088 words of font info for 83 fonts, out of 8000000 for 9000
  430 hyphenation exceptions out of 8191
  99i,21n,118p,1875b,823s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on main.pdf (33 pages, 3707489 bytes).
+Output written on main.pdf (33 pages, 3708248 bytes).
 PDF statistics:
- 647 PDF objects out of 1000 (max. 8388607)
- 546 compressed objects within 6 object streams
- 156 named destinations out of 1000 (max. 500000)
- 192 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 653 PDF objects out of 1000 (max. 8388607)
+ 552 compressed objects within 6 object streams
+ 157 named destinations out of 1000 (max. 500000)
+ 200 words of extra memory for PDF output out of 10000 (max. 10000000)
 
