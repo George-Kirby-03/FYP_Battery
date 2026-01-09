@@ -1,0 +1,66 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: ../IEEEtran/IEEEtran.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: ../Interim_Report/My_Library.bib
+-- IEEEtran.bst version 1.12 (2007/01/11) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in kollmeyer_lg_2020
+Warning--empty author in noauthor_energy_nodate
+Warning--empty journal in noauthor_energy_nodate
+Warning--empty year in noauthor_energy_nodate
+Warning--empty journal in liaw_modeling_nodate
+Warning--empty year in liaw_modeling_nodate
+Warning--missing publisher in sulzer_python_2020
+Warning--empty journal in gifford_lithium_nodate
+Warning--empty year in gifford_lithium_nodate
+
+Done.
+You've used 86 entries,
+            4024 wiz_defined-function locations,
+            1302 strings with 31129 characters,
+and the built_in function-call counts, 64195 in all, are:
+= -- 5398
+> -- 1838
+< -- 360
++ -- 950
+- -- 383
+* -- 3469
+:= -- 9927
+add.period$ -- 171
+call.type$ -- 86
+change.case$ -- 102
+chr.to.int$ -- 666
+cite$ -- 95
+duplicate$ -- 4812
+empty$ -- 4662
+format.name$ -- 449
+if$ -- 14534
+int.to.chr$ -- 0
+int.to.str$ -- 86
+missing$ -- 922
+newline$ -- 439
+num.names$ -- 68
+pop$ -- 2177
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 4929
+stack$ -- 0
+substring$ -- 2037
+swap$ -- 4054
+text.length$ -- 138
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 86
+warning$ -- 9
+while$ -- 208
+width$ -- 88
+write$ -- 1044
+(There were 9 warnings)
