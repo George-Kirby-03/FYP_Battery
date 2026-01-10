@@ -26,8 +26,8 @@ problem.mp.data.N_phases=4;
 
 % Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
 problem.mp.time.t_min=[0 1 2 3 600];     
-problem.mp.time.t_max=[0 300 300 300 600]; 
-guess.mp.time=[0 50 100 150 600];
+problem.mp.time.t_max=[0 600 600 600 600]; 
+guess.mp.time=[0 50 100 300 600];
 
 % Parameters bounds. pl=< p <=pu
 problem.mp.parameters.pl=[zeros(1,problem.mp.data.N_phases)];
