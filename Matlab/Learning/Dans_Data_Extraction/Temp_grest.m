@@ -9,11 +9,11 @@ load("./Characterisation Tests/charac_01.mat")
 [tt_unique, ia] = unique(tt);
 
 % Keep corresponding rows of the other matrices
-tp_unique = tp(ia, :);  % assuming tp is a column or 2D
+tp_unique = tp(ia, :);  
 u1_unique = u1(ia, :);
 y_unique  = y(ia, :);
 
-% Optionally overwrite old variables
+
 tt = tt_unique;
 tp = tp_unique - tp_unique(1);
 u1 = u1_unique;
@@ -66,7 +66,7 @@ parameters = {'specificheat*mass',mCp;'conduction*length',hA};
 init_sys = idgrey(@TempFnc,parameters,'c');
 
 opt = greyestOptions('Focus','simulation');
-sys = greyest(smodle,init_sys, opt)
+sys = greyest(smodle,init_sys, opt);
 getpvec(sys)
 
 simulated_temp = lsim(sys, Q_lut(greyest_time_sampling)',greyest_time_sampling);

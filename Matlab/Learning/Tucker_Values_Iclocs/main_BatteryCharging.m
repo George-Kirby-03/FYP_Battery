@@ -12,7 +12,6 @@ for i=1:length(solution.phaseSol)
     sol=solution.phaseSol{i};
     xx=sol.T;
     
-    
     figure(100)
     hold on
     plot(xx,speval(sol,'X',1,xx),'linewidth',2)
@@ -39,14 +38,9 @@ for i=1:length(solution.phaseSol)
     plot(xx,speval(sol,'U',1,xx).*sol.p(i),'linewidth',2)
     xlabel('Time [s]')
     grid on
-    ylabel('Control Input (Thrust) [lbf]')
+    ylabel('Input Current [I]')
 
-    figure(104)
-    hold on
-    plot(xx,speval(sol,'U',1,xx).*sol.p(i),'linewidth',2)
-    xlabel('Time [s]')
-    grid on
-    ylabel('Control Input (Thrust) [lbf]')
 
 end
     
+
