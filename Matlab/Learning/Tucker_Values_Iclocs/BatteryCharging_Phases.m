@@ -79,7 +79,7 @@ problem.states.xfu=xful{i}(2,:);
 % Guess the state trajectories with [x0 xf]
 guess.states(:,1)=[0.25*(i-1) 0.25*i];
 guess.states(:,2)=[0 0.25];
-guess.states(:,3)=[15 19];
+guess.states(:,3)=[25 Temp_Max];
 
 
 % Number of control actions N 
@@ -176,7 +176,7 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 
 %stageCost = 0*t;
-stageCost = vdx(:,3);  %Minimising temperature (i hope)
+stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
 %------------- END OF CODE --------------
 
 
@@ -203,8 +203,8 @@ function boundaryCost=E_unscaled(x0,xf,u0,uf,p,t0,tf,vdat)
 
 boundaryCost=0;
  % if vdat.iPhase==vdat.mp.N_phases
- %     boundaryCost=tf;
- % end
+ %      boundaryCost=(xf(3)-34.5).^2;
+ %  end
 
 %------------- END OF CODE --------------
 

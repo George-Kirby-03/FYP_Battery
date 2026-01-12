@@ -21,12 +21,12 @@ function [problem,guess,phaseoptions] = BangBangTwoPhase
 % iclocs@imperial.ac.uk
 load("RS_OC.mat")
 Vmax=polyval(co,1);
-Temp_Max=28;
+Temp_Max=40;
 problem.mp.data.N_phases=4;
 
 % Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
-problem.mp.time.t_min=[0 1 2 3 2000];     
-problem.mp.time.t_max=[0 1500 1500 1500 2000]; 
+problem.mp.time.t_min=[0 1 2 3 600];     
+problem.mp.time.t_max=[0 600 600 600 600]; 
 guess.mp.time=[0 50 100 300 600];
 
 % Parameters bounds. pl=< p <=pu
@@ -47,21 +47,21 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=5400;
-problem.mp.data.R0=0.030;
-problem.mp.data.R1=0.035;
-problem.mp.data.C1=300;
+problem.mp.data.Q=3960;
+problem.mp.data.R0=0.0163;
+problem.mp.data.R1=0.0221;
+problem.mp.data.C1=678;
 problem.mp.data.Vmax=Vmax;
-problem.mp.data.batt_m=0.0305;
-problem.mp.data.batt_Cp=1800.737;
-problem.mp.data.batt_h=25.061;
-problem.mp.data.TempAmb=25;
+problem.mp.data.batt_m=0.0039;
+problem.mp.data.batt_Cp=2025.737;
+problem.mp.data.batt_h=43.061;
+problem.mp.data.TempAmb=30;
 problem.mp.data.batt_A=0.003714;
 problem.mp.data.ocvpoly=co;
 % Define different phases of OCP
 
 % Configure 1 fixed SOC boundary
-x0ul{1}=[0 0 25;0 0 25];
+x0ul{1}=[0 0 problem.mp.data.TempAmb;0 0 problem.mp.data.TempAmb];
 x0ul{2}=[0.2 0 0;0.2 0.35 Temp_Max];
 x0ul{3}=[0.4 0 0;0.4 0.35 Temp_Max];
 x0ul{4}=[0.6 0 0;0.6 0.35 Temp_Max];
@@ -69,7 +69,7 @@ x0ul{4}=[0.6 0 0;0.6 0.35 Temp_Max];
 xful{1}=x0ul{2};
 xful{2}=x0ul{3};
 xful{3}=x0ul{4};
-xful{4}=[0.8 0 0;0.8 0.35 Temp_Max];
+xful{4}=[0.8 0 20;0.8 0.35 Temp_Max];
 
 % Configure 2 free SOC boundary
 % x0ul{1}=[0 0 15;0 0 15];
@@ -85,7 +85,7 @@ xful{4}=[0.8 0 0;0.8 0.35 Temp_Max];
 
 for i=1:problem.mp.data.N_phases
     [problem.phases{i},guess.phases{i}] = BatteryCharging_Phases(problem.mp, guess.mp,i,x0ul,xful,Temp_Max);
-    phaseoptions{i}=problem.phases{i}.settings(30);
+    phaseoptions{i}=problem.phases{i}.settings(35);
 end
 
 %------------- END OF CODE --------------

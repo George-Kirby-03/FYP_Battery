@@ -79,7 +79,7 @@ problem.states.xfu=xful{i}(2,:);
 % Guess the state trajectories with [x0 xf]
 guess.states(:,1)=[0.25*(i-1) 0.25*i];
 guess.states(:,2)=[0 0.25];
-guess.states(:,3)=[15 40];
+guess.states(:,3)=[25 40];
 
 
 % Number of control actions N 
@@ -101,7 +101,7 @@ problem.inputs.u0u=[1];
 problem.inputs.uConstraintTol=[0.1];
 
 % Guess the input sequences with [u0 uf]
-guess.inputs(:,1)=[1 0];
+guess.inputs(:,1)=[1 1];
 
 
 % Choose the set-points if required
@@ -112,7 +112,7 @@ problem.setpoints.inputs=[];
 problem.constraints.ng_eq=0;
 problem.constraints.gTol_eq=[];
 
-problem.constraints.gl=[3.5];
+problem.constraints.gl=[2.5];
 problem.constraints.gu=[problem_mp.data.Vmax];
 problem.constraints.gTol_neq=[0.01];
 
@@ -120,8 +120,8 @@ problem.constraints.gTol_neq=[0.01];
 
 % Bounds for boundary constraints bl =< b(x0,xf,u0,uf,p,t0,tf) =< bu
 
-problem.constraints.bl = 0;
-problem.constraints.bu = 600;
+problem.constraints.bl = 5;
+problem.constraints.bu = 2000;
 problem.constraints.bTol = [0.01];
 
 
@@ -176,7 +176,7 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 
 %stageCost = 0*t;
-stageCost = x(:,3);  %Minimising temperature (i hope)
+stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
 %------------- END OF CODE --------------
 
 
@@ -202,9 +202,9 @@ function boundaryCost=E_unscaled(x0,xf,u0,uf,p,t0,tf,vdat)
 %------------- BEGIN CODE --------------
 
 boundaryCost=0;
- if vdat.iPhase==vdat.mp.N_phases
-     boundaryCost=tf;
- end
+ % if vdat.iPhase==vdat.mp.N_phases
+ %     boundaryCost=tf;
+ % end
 
 %------------- END OF CODE --------------
 
