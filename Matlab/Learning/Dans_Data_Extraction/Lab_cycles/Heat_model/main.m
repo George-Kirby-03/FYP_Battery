@@ -9,15 +9,15 @@ T_amb = tp(1);
 load("Geom.mat")
 
 model = createpde;
-g = decsg(gd,'S1',('S1')');
+g = decsg(gd,'S1',('S1')'); %Not really sure what this does but worked in an example
 geometryFromEdges(model,g);
-u1 = u1 * 2;
+% u1 = u1 * 2;
 figure; 
 pdegplot(model,EdgeLabels="on"); 
 axis([-.1 1.1 -.1 1.1]);
-title("Geometry With Edge Labels Displayed")
-w = (u1.^2).*0.08;
-q = w/(1.6e-5);
+title("Geomtry With edge labels")
+w = (u1.^2).*0.075;
+q = w/(1.6e-5); %Volumetric heat generation
 
 q_lut = @(t) interp1(tt, q, t, 'linear', 'extrap');
 v_lut = @(t) interp1(tt, y, t, 'linear', 'extrap');
@@ -27,12 +27,9 @@ d = @(location,~) rho*specificHeat*location.y;
 c = @(location,state) coeffk(location,state,cx,cy);
 specifyCoefficients(model,m=0,d=d,c=c,a=0,f=f);
 
-applyBoundaryCondition(model,"neumann", ...
-                       Edge=[2,3,4],g=@(location,state) Newman_BC(location,state,hCoeff,T_amb), ...
-                       q=@(location,state) Newman_BC(location,state,hCoeff,1));
-applyBoundaryCondition(model,"neumann", ...
-                       Edge=1,g=0, ...
-                       q=0);
+applyBoundaryCondition(model,"neumann", Edge=[2,3,4],g=@(location,state) Newman_BC(location,state,hCoeff,T_amb), ...
+    q=@(location,state) Newman_BC(location,state,hCoeff,1));
+applyBoundaryCondition(model,"neumann", Edge=1,g=0, q=0);
 
 msh = generateMesh(model,Hmax=0.0005);
 figure; 
@@ -40,7 +37,7 @@ pdeplot(model);
 axis equal
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
-endTime = 32668;
+endTime = 32668; %End of pain part
 tlist = 0:60:endTime;
 setInitialConditions(model,T_amb);
 model.SolverOptions.RelativeTolerance = 1.0e-3; 

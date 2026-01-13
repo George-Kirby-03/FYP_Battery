@@ -79,17 +79,18 @@ lower = post_mu - 1.96 * std_post;
 % Sample 3 functions from the posterior distribution
 f_star = mvnrnd(post_mu', post_cov, 3); 
 
-%% Below is from AI, lost it trying to make decent graphs
-figure; hold on; grid on;
+figure; 
+hold on; 
+grid on;
 
-% Uncertainty band
+% Uncertainty +-2 (stgandard deviations had to ask AI how to do this part)
 fill([Xs; flipud(Xs)], ...
      [upper; flipud(lower)], ...
      [0.7 0.8 1], ...
      'EdgeColor','none', ...
      'FaceAlpha',0.4);
 
-% Posterior samples (light grey)
+% Posterior function samples
 plot(Xs, f_star(1,:), 'Color', [0.75 0.75 0.75], 'LineWidth', 1.5)
 plot(Xs, f_star(2,:), 'Color', [0.75 0.75 0.75], 'LineWidth', 1.5)
 plot(Xs, f_star(3,:), 'Color', [0.75 0.75 0.75], 'LineWidth', 1.5)
