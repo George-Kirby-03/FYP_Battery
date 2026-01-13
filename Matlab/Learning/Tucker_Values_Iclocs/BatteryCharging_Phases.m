@@ -175,8 +175,8 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 %------------- BEGIN CODE --------------
 
 
-stageCost = 0*t;
-%stageCost = -x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
+%tageCost = 0*t;
+stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
 %------------- END OF CODE --------------
 
 
@@ -201,8 +201,8 @@ function boundaryCost=E_unscaled(x0,xf,u0,uf,p,t0,tf,vdat)
 %
 %------------- BEGIN CODE --------------
 
-%boundaryCost=0;
-boundaryCost = (xf(3)).^2; %For each stage, i belive this should minimise temp rise from the ambient
+boundaryCost=0;
+%boundaryCost = (xf(3)).^2; %For each stage, i belive this should minimise temp rise from the ambient
  % if vdat.iPhase==vdat.mp.N_phases 
  %      boundaryCost=(xf(3)-34.5).^2;
  %  end
