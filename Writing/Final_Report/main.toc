@@ -9,6 +9,7 @@
 \contentsline {subsection}{\numberline {2.5}Modelling degredation}{16}{subsection.2.5}%
 \contentsline {section}{\numberline {3}Methodology}{18}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Thermal Modeling}{18}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Bayesian Optimization}{18}{subsection.3.2}%
 \contentsline {section}{\numberline {4}Self Review}{18}{section.4}%
 \contentsline {section}{\numberline {5}Project Plan}{19}{section.5}%
 \contentsline {section}{\numberline {6}Risk Register}{19}{section.6}%
