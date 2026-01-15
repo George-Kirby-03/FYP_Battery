@@ -86,6 +86,8 @@ end
 post_mu = (K_X_star_X*inv(K_X_X))*f;   %Supose could give f individualy, but given as vector as per book
 post_cov = K_X_star_X_star - (K_X_star_X *inv(K_X_X)) * K_X_X_star; % Posterior covariance
 std_post = sqrt(diag(post_cov)); 
+k=1;
+acq = post_mu + k * std_post;
 upper = post_mu + 1.96 * std_post;
 lower = post_mu - 1.96 * std_post;
 
@@ -96,7 +98,8 @@ figure;
 hold on; 
 grid on;
 B = reshape(f_star(1,:),length(X1),[]); %As matlab docs, let colum wise be auto determined
-mesh(X1,X2,B)
+C = reshape(acq,length(X1),[]); %As matlab docs, let colum wise be auto determined
+mesh(X1,X2,C)
 scatter3(X(:,1), X(:,2), f, 80, 'r', 'filled')
 
 % % Uncertainty +-2 (stgandard deviations had to ask AI how to do this part)
