@@ -53,7 +53,7 @@ X = [-2,-4;
     2,4; 
     3,5; 
     5,5];
-f = [sin(X(1,1)); sin(X(2,1)); sin(X(3,1)); sin(X(4,1)); sin(X(5,1)); sin(X(6,1)); sin(X(7,1))];
+f = [0; 1; 0; -1; 0; 5; -2];
 n = length(X); %Seems to report the size wanted
 
 K_X_star_X = zeros(m,n);
