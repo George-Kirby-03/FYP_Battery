@@ -24,14 +24,20 @@ for i = 1:m
     end
 end
 
-f = mvnrnd(zeros(m,1), Kss, 3);  %Sampling 3 vectors (vector is the function)
+f = mvnrnd(zeros(m,1), Kss, 5);  %Sampling 3 vectors (vector is the function)
 
 %Reshape back into 2D, the f(a,:) output needs putting in 2d array shape,
 %every mth row down needs shifting to become the next column
-B = reshape(f(1,:),length(X1),[]); %As matlab docs, let colum wise be auto determined
 
-figure; hold on; grid on;
-mesh(X1,X2,B)
+
+
+for n = 1:5
+    figure; hold on; grid on;
+    B = reshape(f(n,:),length(X1),[]); %As matlab docs, let colum wise be auto determined
+    view([30.25 41.52])
+    mesh(X1,X2,B)    
+      exportgraphics(gcf,'BO2D2.gif','Append',true);
+end
 
 %% Now when data incoming for functions to be conditioned against
 % Plot
@@ -46,16 +52,21 @@ mesh(X1,X2,B)
 
 % Assuming X_star and f_star are defined for the new data points
 
-X = [-2,-4; 
+X_l = [-2,-4; 
     -1,0; 
     0,1; 
     1,2; 
     2,4; 
     3,5; 
-    5,5];
-f = [sin(X(1,1)); sin(X(2,1)); sin(X(3,1)); sin(X(4,1)); sin(X(5,1)); sin(X(6,1)); sin(X(7,1))];
-n = length(X); %Seems to report the size wanted
+    5,5;
+    6,6];
+f_l = [2; 4; 5; 6; 4; 3; 2; -3];
+%n = length(X); %Seems to report the size wanted
 
+for p=1:length(X_l)
+    n=p;
+    f = f_l(1:n,:);
+    X = X_l(1:n,:);
 K_X_star_X = zeros(m,n);
 K_X_star_X_star = Kss; % Already computed
 K_X_X_star = zeros(n,m);
@@ -92,16 +103,21 @@ upper = post_mu + 1.96 * std_post;
 lower = post_mu - 1.96 * std_post;
 
 % Sample 3 functions from the posterior distribution
-f_star = mvnrnd(post_mu', post_cov, 3); 
+f_star = mvnrnd(post_mu', post_cov, 5); 
 
-figure; 
+for j=1:5
+B = reshape(f_star(j,:),length(X1),[]); %As matlab docs, let colum wise be auto determined
+%C = reshape(acq,length(X1),[]); %As matlab docs, let colum wise be auto determinedfigure; 
+figure;
 hold on; 
 grid on;
-B = reshape(f_star(1,:),length(X1),[]); %As matlab docs, let colum wise be auto determined
-C = reshape(acq,length(X1),[]); %As matlab docs, let colum wise be auto determined
-mesh(X1,X2,C)
-scatter3(X(:,1), X(:,2), f, 80, 'r', 'filled')
-
+view([30.25 41.52])
+mesh(X1,X2,B)
+%scatter3(X(:,1), X(:,2), f, 80, 'r', 'filled')
+scatter3(X(1:n,1), X(1:n,2), f(1:n), 80, 'r', 'filled')
+exportgraphics(gcf,'BO2D2.gif','Append',true);
+end
+end
 % % Uncertainty +-2 (stgandard deviations had to ask AI how to do this part)
 % fill([Xs; flipud(Xs)], ...
 %      [upper; flipud(lower)], ...
