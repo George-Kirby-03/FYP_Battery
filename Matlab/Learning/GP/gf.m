@@ -54,3 +54,37 @@ title('Gaussian Process Posterior (Page 4 Formula)')
 xlabel('x')
 ylabel('f(x)')
 legend('Observations','Posterior Mean','95% Credible Interval')
+
+%% ---- PRIOR SAMPLE FUNCTIONS ----
+alpha = 1;     % output scale
+l = 0.3;         % length scale
+% Sample locations for drawing functions
+Xs = linspace(-5,5,200)'; 
+m = length(Xs);
+
+% Build prior covariance Kss = K(Xs, Xs)
+Kss = zeros(m,m);
+for i = 1:m
+    for j = 1:m
+        Kss(i,j) = kernel(Xs(i), Xs(j), alpha, l);
+    end
+end
+
+% Numerical jitter for stability
+Kss = Kss + 1e-6*eye(m);
+
+% Draw 3 random functions from GP prior
+L = chol(Kss,'lower');                 % Cholesky factor
+f1 = L*randn(m,1);
+f2 = L*randn(m,1);
+f3 = L*randn(m,1);
+
+% Plot
+figure; hold on; grid on;
+plot(Xs,f1,'LineWidth',2)
+plot(Xs,f2,'LineWidth',2)
+plot(Xs,f3,'LineWidth',2)
+
+title('Samples from GP Prior')
+xlabel('x')
+ylabel('f(x)')
