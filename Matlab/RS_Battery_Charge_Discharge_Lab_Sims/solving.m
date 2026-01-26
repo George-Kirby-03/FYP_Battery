@@ -15,7 +15,7 @@ p.r0 = 0.163 - p.r1;
 p.c = 289;
 p.q = 1.53*60*60;
 
-p.ocv = ocv_curve_2;
+p.ocv = ocv_curve;
 p.vu = polyval(p.ocv,1);
 p.vl = polyval(p.ocv,0);
 R0 = p.r0;
