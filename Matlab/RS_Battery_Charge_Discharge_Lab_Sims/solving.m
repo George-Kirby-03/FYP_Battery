@@ -1,5 +1,6 @@
 pwd
 clear
+close all
 load('RS_Params.mat')
 
 % p.r1 = CROR1(end);
@@ -11,11 +12,11 @@ load('RS_Params.mat')
 % p.r1 = 0.07;
 % p.r0 = 0.163 - p.r1;
 p.r1 = 0.07;
-p.r0 = 0.163 - p.r1;
-p.c = 289;
+p.r0 = 0.16- p.r1;
+p.c = 300;
 p.q = 1.53*60*60;
 
-p.ocv = ocv_curve;
+p.ocv = ocv_curve_2;
 p.vu = polyval(p.ocv,1);
 p.vl = polyval(p.ocv,0);
 R0 = p.r0;
@@ -23,10 +24,11 @@ R1 = p.r1;
 Curr = p.q/(60^2);
 
 Cl = linspace(-4,-0.5,15)';
-hrl = linspace(0.1,1.5,7)';
+hrl = linspace(0.1,1.5,10)';
 socl = ones(10,7);
 
 %%
+figure();
 count = 0;
 for i=1:length(Cl)
     for j=1:length(hrl)
@@ -62,10 +64,12 @@ hold off
 %%
 
 %% Map
+figure();
 colormap default
 heatmap(hrl,Cl,socl)
 
 %% Now, charge CC, upto the point V_ulim is reached, this is when CV takes over
+figure();
 hr = 4; %%how long charge max
 
 Cl = linspace(0.4,4,15)'; %%CC_rate charge
@@ -113,7 +117,7 @@ end
 
 %%
 
-    
+figure();
 grid on
 plot(Cl,cc_times,Cl,cv_times,Cl,cc_times+cv_times)
 legend(["CC Time", "CV Time", "Total Time"], "Position", [0.8148 0.8298 0.0684, 0.0614]);
@@ -133,7 +137,7 @@ CVTime.LineWidth = 2;
 CVTime.LineStyle = "--";
 
 %%
-
+figure();
 Cl = 2;
 cc_times = ones(length(Cl),1);
 cv_times = ones(length(Cl),1);
