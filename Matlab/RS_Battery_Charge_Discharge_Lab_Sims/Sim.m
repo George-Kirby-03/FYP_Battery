@@ -3,9 +3,9 @@ clear
 close all
 load('charac_01_s4.mat')
 load('RS_Params.mat')
-p.r1 = 0.03;
-p.r0 = 0.075 - p.r1;
-p.c = 250;
+p.r1 = 0.07;
+p.r0 = 0.16- p.r1;
+p.c = 300;
 p.q = 1.53*60*60;
 p.vu = polyval(ocv_curve,1);
 p.vl = polyval(ocv_curve,0);
@@ -31,10 +31,12 @@ x1=y_sim(:,1);x2=y_sim(:,2);
 
 voltage_model = polyval(ocv_curve,x1) + x2 + R0.*current_lut(t_sim);
 y_og = interp1(tt, y, t_sim, 'linear', 'extrap');
+figure();
 plot(t_sim,voltage_model,t_sim,y_og,t_sim,current_lut(t_sim)./10+y(1))
 
-%% Simulate the 3C discharge to comapre with datasheet
 
+%% Simulate the 3C discharge to comapre with datasheet
+figure();
 current_cc_discharge = -1.5.*[0.1, 0.2, 0.5, 1, 2, 3 ];
 
 for i=1:length(current_cc_discharge)

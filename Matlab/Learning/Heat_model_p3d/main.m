@@ -9,7 +9,7 @@ T_amb = tp(1);
 load("Geom.mat")
 
 model = createpde;
-g = decsg(gd,'S1',('S1')'); %Not really sure what this does but worked in an example
+g = decsg(gd,'S1',('S1')'); %Not really sure what this does but worked in an example similar to this
 geometryFromEdges(model,g);
 % u1 = u1 * 2;
 figure; 
