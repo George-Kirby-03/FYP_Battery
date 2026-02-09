@@ -20,7 +20,10 @@ function [problem,guess,phaseoptions] = BangBangTwoPhase
 % 1 Aug 2019
 % iclocs@imperial.ac.uk
 load("RS_OC.mat")
+load("tucker_poly.mat")
+co = z;
 Vmax=polyval(co,1);
+Vmin=polyval(co,0);
 Temp_Max=40;
 problem.mp.data.N_phases=4;
 
@@ -30,9 +33,11 @@ problem.mp.time.t_max=[0 600 600 600 600];
 guess.mp.time=[0 50 100 300 600];
 
 % Parameters bounds. pl=< p <=pu
-problem.mp.parameters.pl=[zeros(1,problem.mp.data.N_phases)];
-problem.mp.parameters.pu=[10*15*ones(1,problem.mp.data.N_phases)];
-guess.mp.parameters=[zeros(1,problem.mp.data.N_phases)];
+%G.K adding parmeters which is T_Max by definining as shown in All_phases
+%file
+problem.mp.parameters.pl=[zeros(1,problem.mp.data.N_phases) 0];
+problem.mp.parameters.pu=[10*15*ones(1,problem.mp.data.N_phases) 50];
+guess.mp.parameters=[zeros(1,problem.mp.data.N_phases) 30];
 
 % Bounds for linkage boundary constraints bll =< bclink(x0,xf,u0,uf,p,t0,tf,vdat) =< blu
 problem.mp.constraints.bll.linear=[zeros(1,(problem.mp.data.N_phases-1)*3)];
@@ -52,6 +57,7 @@ problem.mp.data.R0=0.0163;
 problem.mp.data.R1=0.0221;
 problem.mp.data.C1=678;
 problem.mp.data.Vmax=Vmax;
+problem.mp.data.Vmin=Vmin;
 problem.mp.data.batt_m=0.0039;
 problem.mp.data.batt_Cp=2025.737;
 problem.mp.data.batt_h=43.061;

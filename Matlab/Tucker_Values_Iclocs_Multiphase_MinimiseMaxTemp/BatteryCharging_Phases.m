@@ -112,9 +112,9 @@ problem.setpoints.inputs=[];
 problem.constraints.ng_eq=0;
 problem.constraints.gTol_eq=[];
 
-problem.constraints.gl=[2.5];
-problem.constraints.gu=[problem_mp.data.Vmax];
-problem.constraints.gTol_neq=[0.01];
+problem.constraints.gl=[problem_mp.data.Vmin -inf];
+problem.constraints.gu=[problem_mp.data.Vmax 0];
+problem.constraints.gTol_neq=[0.01 0.01];
 
 
 
@@ -175,8 +175,8 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 %------------- BEGIN CODE --------------
 
 
-%tageCost = 0*t;
-stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
+stageCost = 0*t;
+%stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
 %------------- END OF CODE --------------
 
 
@@ -202,10 +202,11 @@ function boundaryCost=E_unscaled(x0,xf,u0,uf,p,t0,tf,vdat)
 %------------- BEGIN CODE --------------
 
 boundaryCost=0;
+
 %boundaryCost = (xf(3)).^2; %For each stage, i belive this should minimise temp rise from the ambient
- % if vdat.iPhase==vdat.mp.N_phases 
- %      boundaryCost=(xf(3)-34.5).^2;
- %  end
+  if vdat.iPhase==vdat.mp.N_phases 
+      boundaryCost = p(end);
+  end
 
 %------------- END OF CODE --------------
 
