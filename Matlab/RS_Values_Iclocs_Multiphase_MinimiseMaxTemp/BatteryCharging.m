@@ -19,16 +19,17 @@ function [problem,guess,phaseoptions] = BangBangTwoPhase
 % ICLOCS (Imperial College London Optimal Control) Version 2.5 
 % 1 Aug 2019
 % iclocs@imperial.ac.uk
-load("RS_Params.mat")
-co = ocv_curve_2;
+load("RS_OC.mat")
+% load("tucker_poly.mat")
+% co = z;
 Vmax=polyval(co,1);
 Vmin=polyval(co,0);
-Temp_Max=40;
+Temp_Max=45;
 problem.mp.data.N_phases=4;
 
 % Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
-problem.mp.time.t_min=[0 1 2 3 3600];     
-problem.mp.time.t_max=[0 3600 3600 3600 3600]; 
+problem.mp.time.t_min=[0 1 2 3 1500];     
+problem.mp.time.t_max=[0 600 600 600 1500]; 
 guess.mp.time=[0 50 100 300 600];
 
 % Parameters bounds. pl=< p <=pu
@@ -51,14 +52,14 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=1.5 * 3600;
-problem.mp.data.R0=0.0846;
-problem.mp.data.R1=0.0793;
-problem.mp.data.C1=303;
+problem.mp.data.Q=5400;
+problem.mp.data.R0=0.01;
+problem.mp.data.R1=0.06;
+problem.mp.data.C1=1000;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
 problem.mp.data.batt_m=0.0039;
-problem.mp.data.batt_Cp=1800.737;
+problem.mp.data.batt_Cp=2025.737;
 problem.mp.data.batt_h=43.061;
 problem.mp.data.TempAmb=30;
 problem.mp.data.batt_A=0.003714;
