@@ -38,7 +38,7 @@ end
 %%
 t_lin = linspace(0,Cycle10.TestTime(end)-Cycle10.TestTime(1),1000);
 hA = 64.9964;
-mcp=  0.0991;
+hA=  0.0991;
 
 model = ss(TempFnc(mcp,hA,0,0));
 
