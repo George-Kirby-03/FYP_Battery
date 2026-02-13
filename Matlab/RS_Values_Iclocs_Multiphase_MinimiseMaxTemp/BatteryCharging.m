@@ -58,10 +58,10 @@ problem.mp.data.R1=0.06;
 problem.mp.data.C1=1000;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
-problem.mp.data.batt_m=0.0039;
-problem.mp.data.batt_Cp=2025.737;
-problem.mp.data.batt_h=43.061;
-problem.mp.data.TempAmb=30;
+problem.mp.data.batt_m=0.0042;
+problem.mp.data.batt_Cp=1547.737;
+problem.mp.data.batt_h=158.061;
+problem.mp.data.TempAmb=24;
 problem.mp.data.batt_A=0.003714;
 problem.mp.data.ocvpoly=co;
 % Define different phases of OCP
@@ -91,7 +91,7 @@ xful{4}=[0.8 0 20;0.8 0.35 Temp_Max];
 
 for i=1:problem.mp.data.N_phases
     [problem.phases{i},guess.phases{i}] = BatteryCharging_Phases(problem.mp, guess.mp,i,x0ul,xful,Temp_Max);
-    phaseoptions{i}=problem.phases{i}.settings(35);
+    phaseoptions{i}=problem.phases{i}.settings(40);
 end
 
 %------------- END OF CODE --------------

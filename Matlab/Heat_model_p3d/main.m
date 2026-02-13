@@ -1,8 +1,15 @@
-load("../../Characterisation Tests/charac_02.mat")
-rho = 2400; % kg/m^3
-specificHeat = 1250; % J/(kg-K)
-hCoeff = 7; % W/(m^2-K)
-w = 0.675; % Power Watts
+load("../RS_Battery_Lab_Analysis/RS_Baseline_og_attia_normalised.mat")
+Cycle10 = GK_RS_baseline_028(GK_RS_baseline_028.Cyc_ == 10 | GK_RS_baseline_028.Cyc_ == 11 ,:);
+% Select the rows from (end - 599) up to the end
+Cycle10 = Cycle10(end-800:end,:);
+%plot(Cycle10.TestTime,Cycle10.Volts,Cycle10.TestTime,Cycle10.Amps./2 + 3)
+tt = Cycle10.TestTime - Cycle10.TestTime(1);
+tp = Cycle10.Temp1;
+u1 = Cycle10.Amps;
+y = Cycle10.Volts;
+rho = 1820; % kg/m^3
+specificHeat = 1548; % J/(kg-K)
+hCoeff = 158; % W/(m^2-K)
 cx = 30.4;
 cy = 0.2;
 T_amb = tp(1);
@@ -16,8 +23,8 @@ figure;
 pdegplot(model,EdgeLabels="on"); 
 axis([-.1 1.1 -.1 1.1]);
 title("Geomtry With edge labels")
-w = (u1.^2).*0.075;
-q = w/(1.6e-5); %Volumetric heat generation
+w = (u1.^2).*0.07;
+q = w/(1.8e-5); %Volumetric heat generation
 
 q_lut = @(t) interp1(tt, q, t, 'linear', 'extrap');
 v_lut = @(t) interp1(tt, y, t, 'linear', 'extrap');
@@ -37,7 +44,7 @@ pdeplot(model);
 axis equal
 xlabel("X-coordinate, meters")
 ylabel("Y-coordinate, meters")
-endTime = 32668; %End of pain part
+endTime = tt(end); %End of pain part
 tlist = 0:60:endTime;
 setInitialConditions(model,T_amb);
 model.SolverOptions.RelativeTolerance = 1.0e-3; 

@@ -13,6 +13,7 @@ v= polyval(ocv_curve, y(1)) + y(2) + R0.*current;
 if (v < v_llim) && current < 0
     current = 0;
     dx3 = 1;
+    dx1 = 0;
 end
 if (v >= v_ulim) && current > 0
     current = 0;

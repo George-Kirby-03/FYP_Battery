@@ -58,10 +58,10 @@ problem.mp.data.R1=0.06;
 problem.mp.data.C1=1000;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
-problem.mp.data.batt_m=0.0039;
-problem.mp.data.batt_Cp=2025.737;
-problem.mp.data.batt_h=43.061;
-problem.mp.data.TempAmb=30;
+problem.mp.data.batt_m=0.0042;
+problem.mp.data.batt_Cp=1547.737;
+problem.mp.data.batt_h=158.061;
+problem.mp.data.TempAmb=24;
 problem.mp.data.batt_A=0.003714;
 problem.mp.data.ocvpoly=co;
 % Define different phases of OCP
