@@ -274,7 +274,25 @@ Severson et al. \cite{severson_data-driven_2019}, provides one of the largest av
 
 \section{Methodology}
 \subsection{Thermal Modeling}
-It's most common to considder the 1d Lumped thermal model of small batteries, such as 18650's. Tucker shows that using this apprach, yeilds a charge profile close to that of the optimum profile found from Attia, its thought that if this model could somehow be improved
+It's most common to considder the 1d Lumped thermal model of small batteries, such as 18650's. Tucker shows that using this apprach, yeilds a charge profile close to that of the optimum profile found from Attia, its thought that if this model could somehow be improved to help give a more true measurment of the batterys temperature during use. [cite thermal paper], shows theres many methods to this with varying levels of complexity, usually with a higher order approach means more parameters needed. Given this project aims for for actual use in the feild, an approach with obtainable parameters. The most popular apprach is using the 0-d lumped ellement model, this requires only\dots
+
+Matlabs Partial Differential Equation Toolbox allows for finding solutions in the form 
+
+\begin{equation}
+\mathbf{m}\frac{\partial^2 \mathbf{u}}{\partial t^2}
++ d\frac{\partial \mathbf{u}}{\partial t}
+- \nabla \cdot (\mathbf{c}\nabla\mathbf{u})
++ \mathbf{a}\mathbf{u}
+= \mathbf{f}
+\end{equation}
+
+Subject to the boundary conditions in either the Dirichlet form $\mathbf{h}\mathbf{u} = \mathbf{r}$ or Neumann form $\vec{\mathbf{n}} \cdot (\mathbf{c}\nabla\mathbf{u}) + \mathbf{q}\mathbf{u}= g $. All bold terms can be matrix type and the asociated documentation for each coeffient was used to determine what type of information can be passed to the solver as described below. 
+
+Since the RS battery under review is an 18650, it's a cylidrical battery,
+
+
+
+
 \subsection{Bayesian Optimization}
 As this project aims to find the optimal charging profile for degredation, 
 
