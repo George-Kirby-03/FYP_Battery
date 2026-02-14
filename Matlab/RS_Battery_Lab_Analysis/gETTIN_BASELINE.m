@@ -2,8 +2,8 @@ clear
 load RS_Baseline_og_attia_normalised.mat
 close all
 load('RS_Params.mat')
-Cycle10 = GK_RS_baseline_028(GK_RS_baseline_028.Cyc_ == 10 | GK_RS_baseline_028.Cyc_ == 11 ,:);
 % Select the rows from (end - 599) up to the end
+Cycle10 = GK_RS_baseline_028(GK_RS_baseline_028.Cyc_ == 10 | GK_RS_baseline_028.Cyc_ == 11 ,:);
 Cycle10 = Cycle10(end-800:end, :);
 plot(Cycle10.TestTime,Cycle10.Volts,Cycle10.TestTime,Cycle10.Amps./2 + 3)
 
