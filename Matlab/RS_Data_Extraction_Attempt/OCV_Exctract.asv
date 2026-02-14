@@ -1,0 +1,3 @@
+Discharge01C.Mah = Discharge01C.Q;
+Discharge01C.Q = Discharge01C.Mah/(1000)*(60^2);
+Discharge01C = sortrows(Discharge01C,'')
