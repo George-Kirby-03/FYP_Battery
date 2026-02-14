@@ -7,10 +7,10 @@ Cycle10 = GK_RS_baseline_028(GK_RS_baseline_028.Cyc_ == 10 | GK_RS_baseline_028.
 Cycle10 = Cycle10(end-800:end, :);
 plot(Cycle10.TestTime,Cycle10.Volts,Cycle10.TestTime,Cycle10.Amps./2 + 3)
 
-p.r1 = 0.05;
-p.r0 = 0.07- p.r1;
-p.c = 1500;
-p.q = 1.53*60*60;
+p.r1 = 0.06;
+p.r0 = 0.09- p.r1;
+p.c = 1000;
+p.q = 1.52*60*60;
 p.vu = polyval(ocv_curve,1);
 %p.vl = polyval(ocv_curve_2,0);#
 p.vl = 2.5;

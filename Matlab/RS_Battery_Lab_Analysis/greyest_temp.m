@@ -48,7 +48,7 @@ current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
 %Creatingh the table entry for the iddata for the model
 t = linspace(0,tt(end),1500);
 %Q_heat = (voltage_model - OCV_x).*current_lut(t);
-Q_heat = 0.07*current_lut(t).^2;
+Q_heat = 0.09*current_lut(t).^2;
 Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
 temp_lut = @(tn) interp1(tt, tp, tn, 'linear', 'extrap');
 
@@ -86,11 +86,13 @@ title("\textbf{Baseline Cyle-10 Greyest Temp}", "Interpreter", "latex", "FontSiz
 % A = -ha/mCp , B = 1/mCp  so Cp = 1/m*B
 A = sys.A;
 B = sys.B;
-m = 42/1000; %19g for RS battery
-a = 0.003714; %Surface area 18650
+m = 42/1000; 
+a = 0.003714;  
 
-Cp = 1/(B(1)*m)
-h = -a*m*Cp/A(1)
+mCp = 1/B(1);
+Cp  = mCp/m
+hA = -A(1)*mCp;
+h  = hA/a
 params.Cp = Cp;
 params.h = 27;
 params.A = a;

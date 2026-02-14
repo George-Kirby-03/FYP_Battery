@@ -5,11 +5,13 @@
 clear all;close all;format compact;
 load RS_Baseline_og_attia_normalised.mat
 Cycle10 = GK_RS_baseline_028(GK_RS_baseline_028.Cyc_ == 10 | GK_RS_baseline_028.Cyc_ == 11 ,:);
-k = find(abs(Cycle10.TestTime - 103992) < 1, 1);
+k = find(abs(Cycle10.TestTime - 104079) < 10, 1);
 Cycle10 = Cycle10(k:end,:);
 Cycle10.TestTime = Cycle10.TestTime - Cycle10.TestTime(1);
 k = find(abs(Cycle10.TestTime - 1800) < 5, 1);
 Cycle10 = Cycle10(1:k,:);
+diff = Cycle10.Temp1(1) - 24;
+Cycle10.Temp1 = Cycle10.Temp1 - diff;
 [problem,guess,options.phaseoptions]=BatteryCharging;          % Fetch the problem definition
 options.mp= settings_BatteryCharging;                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
@@ -56,6 +58,7 @@ for i=1:length(solution.phaseSol)
     figure(105)
     hold on
     plot(tt,outputV,'linewidth',2)
+     plot(Cycle10.TestTime,Cycle10.Volts)
     xlabel('Time [s]')
     grid on
     ylabel('Voltage [I]')
