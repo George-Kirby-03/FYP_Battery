@@ -1,2 +1,1 @@
-
-Discharge01C = sortrows(Discharge01C,'Q','descend');
+[fun gof] = createFit(Discharge01C.Q,Discharge01C.V);
