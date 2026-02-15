@@ -1,5 +1,3 @@
-
-
 %--------------------------------------------------------10
 clear all;close all;format compact;
 load RS_Param_Retry.mat

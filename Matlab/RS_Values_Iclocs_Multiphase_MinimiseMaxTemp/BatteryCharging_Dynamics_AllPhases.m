@@ -42,6 +42,6 @@ dx(:,3) = 1./(vdat.mp.batt_m*vdat.mp.batt_Cp).*(u1.^2*vdat.mp.R0-vdat.batt_h*vda
 
 
 %g_neq=3.64+0.55*x1-0.72*x1.^2+0.75*x1.^3+x2+vdat.mp.R0*u1;
-g_neq= [polyval(vdat.ocvpoly,x1)+x2+vdat.mp.R0*u1 x3-p(:,end)]; %Simpler poly that used in other simulations, charging shouldnt be hitting the Vout Limit anyways to 80% SoC
+g_neq= [vdat.ocvpoly(x1)+x2+vdat.mp.R0*u1 x3-p(:,end)]; %Simpler poly that used in other simulations, charging shouldnt be hitting the Vout Limit anyways to 80% SoC
 %g_neq= [polyval(vdat.ocvpolytucke+x2+vdat.mp.R0*u1 x3-p(:,end)];
 %------------- END OF CODE --------------
