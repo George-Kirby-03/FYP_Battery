@@ -1,17 +1,17 @@
 
 
-%--------------------------------------------------------10
+%--------------------------------------------------------
+
 clear all;close all;format compact;
-load RS_Param_Retry.mat
-k_start = find(abs(RS_01_baseline.TestTime - 14290) < 1, 1);
-k_end = find(abs(RS_01_baseline.TestTime - 16600) < 10, 1);
-RS_01_baseline_cycle = RS_01_baseline(k_start:k_end,:);
-RS_01_baseline_cycle.TestTime = RS_01_baseline_cycle.TestTime - RS_01_baseline_cycle.TestTime(1);
-k_start = find(abs(RS_01_baseline_cycle.TestTime - 453.93) < 3, 1);
-RS_01_baseline_cycle = RS_01_baseline_cycle(k_start:end,:);
-RS_01_baseline_cycle.TestTime = RS_01_baseline_cycle.TestTime - RS_01_baseline_cycle.TestTime(1);
-diff = RS_01_baseline_cycle.Temp1(1) - 24;
-RS_01_baseline_cycle.Temp1 = RS_01_baseline_cycle.Temp1 - diff;
+load RS_Baseline_og_attia_normalised.mat
+Cycle10 = GK_RS_baseline_028(GK_RS_baseline_028.Cyc_ == 10 | GK_RS_baseline_028.Cyc_ == 11 ,:);
+k = find(abs(Cycle10.TestTime - 104079) < 10, 1);
+Cycle10 = Cycle10(k:end,:);
+Cycle10.TestTime = Cycle10.TestTime - Cycle10.TestTime(1);
+k = find(abs(Cycle10.TestTime - 1800) < 5, 1);
+Cycle10 = Cycle10(1:k,:);
+diff = Cycle10.Temp1(1) - 24;
+Cycle10.Temp1 = Cycle10.Temp1 - diff;
 [problem,guess,options.phaseoptions]=BatteryCharging;          % Fetch the problem definition
 options.mp= settings_BatteryCharging;                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
@@ -24,7 +24,7 @@ for i=1:length(solution.phaseSol)
     x2=speval(sol,'X',2,tt);
     x3=speval(sol,'X',3,tt);
     u1=speval(sol,'U',1,tt);
-    outputV=problem.mp.data.ocvpoly(x1)+x2+problem.mp.data.R0*sol.p(i);
+    outputV=problem.mp.data.ocvpoly(x1)+x2+problem.mp.data.R0*solution.;
     
     figure(100)
     hold on
@@ -43,7 +43,7 @@ for i=1:length(solution.phaseSol)
    figure(102)
     hold on
     plot(tt,x3,'linewidth',2)
-    plot(RS_01_baseline_cycle.TestTime,RS_01_baseline_cycle.Temp1)
+    plot(Cycle10.TestTime,Cycle10.Temp1)
     xlabel('Time [s]')
     ylabel('Temperature [Deg]')
     grid on
@@ -58,7 +58,7 @@ for i=1:length(solution.phaseSol)
     figure(105)
     hold on
     plot(tt,outputV,'linewidth',2)
-     plot(RS_01_baseline_cycle.TestTime,RS_01_baseline_cycle.Volts)
+     plot(Cycle10.TestTime,Cycle10.Volts)
     xlabel('Time [s]')
     grid on
     ylabel('Voltage [I]')

@@ -12,7 +12,7 @@ p.c = 800;
 p.q = 1.54*60*60;
 p.vu = ocv_curve_2(1);
 p.vl = ocv_curve_2(0);
-p.ocv = @ocv_curve;
+p.ocv = @ocv_curve_2;
 R0 = p.r0;
 R1 = p.r1;
 

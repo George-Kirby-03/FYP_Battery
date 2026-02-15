@@ -19,11 +19,11 @@ function [problem,guess,phaseoptions] = BangBangTwoPhase
 % ICLOCS (Imperial College London Optimal Control) Version 2.5 
 % 1 Aug 2019
 % iclocs@imperial.ac.uk
-load("RS_OC.mat")
+load("RS_Param_Retry.mat")
 % load("tucker_poly.mat")
 % co = z;
-Vmax=polyval(co,1);
-Vmin=polyval(co,0);
+Vmax=ocv_curve_2(1);
+Vmin=ocv_curve_2(0);
 Temp_Max=45;
 problem.mp.data.N_phases=4;
 
@@ -58,18 +58,18 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=5400;
-problem.mp.data.R0=0.01;
-problem.mp.data.R1=0.08;
-problem.mp.data.C1=1000;
+problem.mp.data.Q=1.53*60*60;
+problem.mp.data.R0=0.075;
+problem.mp.data.R1=0.045;
+problem.mp.data.C1=800;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
 problem.mp.data.batt_m=42/1000;
-problem.mp.data.batt_Cp=1989.737;
-problem.mp.data.batt_h=34.67;
+problem.mp.data.batt_Cp=2652.737;
+problem.mp.data.batt_h=45.67;
 problem.mp.data.TempAmb=24;
 problem.mp.data.batt_A=0.003714;
-problem.mp.data.ocvpoly=co;
+problem.mp.data.ocvpoly=ocv_curve_2;
 % Define different phases of OCP
 
 % Configure 1 fixed SOC boundary
@@ -84,7 +84,8 @@ problem.mp.data.ocvpoly=co;
 % xful{4}=[0.8 0 20;0.8 0.35 Temp_Max];
 
 % Configure 2 free SOC boundary
-x0ul{1}=[0.06 0 problem.mp.data.TempAmb;0.06 0 problem.mp.data.TempAmb];
+start_soc = 0.06;
+x0ul{1}=[start_soc 0 problem.mp.data.TempAmb;start_soc 0 problem.mp.data.TempAmb];
 x0ul{2}=[0 0 0;1 0.25 Temp_Max];
 x0ul{3}=[0 0 0;1 0.25 Temp_Max];
 x0ul{4}=[0 0 0;1 0.25 Temp_Max];

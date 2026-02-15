@@ -48,7 +48,7 @@ current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
 %Creatingh the table entry for the iddata for the model
 t = linspace(0,tt(end),1500);
 %Q_heat = (voltage_model - OCV_x).*current_lut(t);
-Q_heat = 0.09*current_lut(t).^2;
+Q_heat = (0.075+0.045)*current_lut(t).^2;
 Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
 temp_lut = @(tn) interp1(tt, tp, tn, 'linear', 'extrap');
 
@@ -96,8 +96,8 @@ h  = hA/a
 params.Cp = Cp;
 params.h = 27;
 params.A = a;
-params.r0 = 0.01;
-params.r1 = 0.06;
+params.r0 = 0.045;
+params.r1 = 0.075;
 params.m = m;
 current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
 [t_sim, y_sim ] = ode45(@(t, y) Temp_dynamics(t , y, params, current_lut),[0 tt(end)], 0 );
