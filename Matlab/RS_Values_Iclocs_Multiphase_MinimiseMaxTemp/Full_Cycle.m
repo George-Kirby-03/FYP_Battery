@@ -17,6 +17,7 @@ Curr = 1.5;
 
 %% Now, charge CC, upto the point V_ulim is reached, this is when CV takes over
 
+figure()
 hr = 0.6; %%how long charge max
 
 
@@ -28,7 +29,10 @@ current_lut = @(t) interp1(tt, current_cc_charge, t, 'linear', 'extrap');
 x1=y(:,1);x2=y(:,2); %If Vlim is reached, this soc is not reliable
 vlim_sim_idx = find(y(:,3) > 0, 1, 'first');
 socu_sim_idx = find(y(:,1) >= 0.995, 1, 'first');
-plot(t_sim,(ocv_curve_2(x1)+x2+(current_lut(t_sim)*R0)),t_sim,current_lut(t_sim))
+hold on
+
+yyaxis left
+plot(t_sim(1:vlim_sim_idx),(ocv_curve_2(x1(1:vlim_sim_idx))+x2(1:vlim_sim_idx)+(current_lut(t_sim(1:vlim_sim_idx))*R0)))
 
 fprintf('##### CC Durations (cc rate of %.1f): \n',C)
 if isempty(vlim_sim_idx)
@@ -42,12 +46,16 @@ fprintf('Time for CC: %.2f\n',cc_times/60^2)
 fprintf('Running CV stage since full SoC not reached before cutoff voltage, (reached %.3f SoC)\n',x1(vlim_sim_idx))
 [t_sim, y] = ode15s(@(t, y) CV_dynamics(t, y, p), [0 tt(end)], [x1(vlim_sim_idx); x2(vlim_sim_idx); 0]);
 x1=y(:,1);x2=y(:,2);
-% current = diff(y(:,1).*p.q) ./ diff(t_sim);    
-% current = [current;0];
-% plot(t_sim,current)
-%fprintf('Last SoC: %.5f, sim time: %.2f \n',x1(end),t_sim(end));
+
 socu_sim_idx = find(y(:,1) > 0.99999, 1, 'first');
+socu_sim_idx = socu_sim_idx - 1;
 fprintf('Time for CV: %.2fs \n',t_sim(socu_sim_idx));
+plot(t_sim(1:socu_sim_idx) + cc_times, (ocv_curve_2(x1(1:socu_sim_idx))+x2(1:socu_sim_idx)+(current_lut(t_sim(1:socu_sim_idx))*R0)))
+
+yyaxis right
+current = (p.vu - p.ocv(y(:,1)) - y(:,2))./p.r0;
+plot([0 cc_times],[current_cc_charge(1) current_cc_charge(1)])
+plot(t_sim(1:socu_sim_idx) + cc_times, current(1:socu_sim_idx))
 cv_times = t_sim(socu_sim_idx);
 fprintf('Time to full-charge (~0.99): %.3fh \n', (cv_times+cc_times)./60^2)
 else
