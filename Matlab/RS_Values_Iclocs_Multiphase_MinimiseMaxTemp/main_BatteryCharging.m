@@ -8,13 +8,29 @@ load RS_Param_Retry.mat
 options.mp= settings_BatteryCharging;                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 solution.phaseSol{end}.tf
+features.minimisetempmax.time = [];
+features.minimisetempmax.x1 = [];
+features.minimisetempmax.x2 = [];
+features.minimisetempmax.x3 = [];
+features.minimisetempmax.u = [];
+features.minimisetempmax.v = [];
+
+
 %%
 for i=1:length(solution.phaseSol)
     sol=solution.phaseSol{i};
     xx=sol.T;
     x1=speval(sol,'X',1,xx);
     x2=speval(sol,'X',2,xx);
+    x3=speval(sol,'X',3,xx);
     outputV=problem.mp.data.ocvpoly(x1)+x2+problem.mp.data.R0*sol.p(i);
+    
+features.minimisetempmax.time = [features.minimisetempmax.time; xx];
+features.minimisetempmax.x1   = [features.minimisetempmax.x1; x1];
+features.minimisetempmax.x2   = [features.minimisetempmax.x2; x2];
+features.minimisetempmax.x3   = [features.minimisetempmax.x3; x3];
+features.minimisetempmax.u    = [features.minimisetempmax.u; ones(size(x1))*sol.p(i)];
+features.minimisetempmax.v    = [features.minimisetempmax.v; outputV];
     
     figure(100)
     hold on
