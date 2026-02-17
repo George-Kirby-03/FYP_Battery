@@ -1,0 +1,8 @@
+t = linspace(0,500,50);
+tp = 20*sin(t);
+
+
+histogram(tp,30,'Normalization','probability')
+title("Density functions of temperature rises")
+grid on
+xlabel("Temperature bins (From ambient)")
