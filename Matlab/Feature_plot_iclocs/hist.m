@@ -11,10 +11,8 @@ histogram(features.baseline.x3,18,'Normalization','probability')
 title("Density functions of temperature rises")
 grid on
 xlabel("\textbf{Temperature bins (From ambient 24$^{\circ}$)}",  "Interpreter", "latex", "FontSize", 15)
-legend(["Minimised Temperature", "Minimised Max Temperature", "Baseline"])
+legend(["Minimised Temperature", "Minimised Max Temperature", "Baseline"],"FontWeight","bold")
 title("\textbf{Histogram / Temperature binned density plots}", "Interpreter", "latex", "FontSize", 20)
-hAxes = findobj(gcf,"Type","axes")
-hAxes.FontWeight = "bold"
 
 %%
 tt = linspace(0, features.baseline.time(end), 2000);
@@ -24,8 +22,8 @@ temp_integral = trapz(tt, tempRise);
 avg_temp_baseline = temp_integral / tt(end);
 pol_baseline = interp1(t_unique, features.baseline.x2(idx), tt, 'linear');
 u = interp1(t_unique, features.baseline.u(idx), tt, 'linear');
-over_potential = pol_baseline + u*R0; 
-over_potential_integral = trapz(tt, over_potential);
+over_potential_baseline = pol_baseline + u*R0; 
+over_potential_integral = trapz(tt, over_potential_baseline);
 avg_over_potential_baseline = over_potential_integral / tt(end);
 
 tt = linspace(0, features.minimisetemp.time(end), 2000);
@@ -35,8 +33,8 @@ temp_integral = trapz(tt, tempRise);
 avg_temp_minimisetemp = temp_integral / tt(end);
 pol_minimisetemp = interp1(t_unique, features.minimisetemp.x2(idx), tt, 'linear');
 u = interp1(t_unique, features.minimisetemp.u(idx), tt, 'linear');
-over_potential = pol_minimisetemp + u*R0; 
-over_potential_integral = trapz(tt, over_potential);
+over_potential_minimisetemp = pol_minimisetemp + u*R0; 
+over_potential_integral = trapz(tt, over_potential_minimisetemp);
 avg_over_potential_minimisetemp = over_potential_integral / tt(end);
 
 tt = linspace(0, features.minimisetempmax.time(end), 2000);
@@ -46,8 +44,8 @@ temp_integral = trapz(tt, tempRise);
 avg_temp_minimisetempmax = temp_integral / tt(end);
 pol_minimisetempmax = interp1(t_unique, features.minimisetempmax.x2(idx), tt, 'linear');
 u = interp1(t_unique, features.minimisetempmax.u(idx), tt, 'linear');
-over_potential = pol_minimisetempmax + u*R0; 
-over_potential_integral = trapz(tt, over_potential);
+over_potential_minimisetempmax = pol_minimisetempmax + u*R0; 
+over_potential_integral = trapz(tt, over_potential_minimisetempmax);
 avg_over_potential_minimisetempmax = over_potential_integral / tt(end);
 
 x = ["Baseline"; "Minimise Temp"; "Minimise MaxTemp"];
@@ -56,17 +54,18 @@ y = [avg_temp_baseline-24 max(features.baseline.x3)-24 ;
     avg_temp_minimisetemp-24 max(features.minimisetemp.x3)-24 ; 
     avg_temp_minimisetempmax-24 max(features.minimisetempmax.x3)-24];
 bar(x,y)
-legend('Averaged Temperature', 'Maximum Temperature')
+legend('Averaged Temperature', 'Maximum Temperature',"FontWeight","bold")
 ylabel('Temperature Rise (°C)');
 title("\textbf{Temperature Rise During Charging}", "Interpreter", "latex", "FontSize", 20);
 grid on;
+hold off
 
 figure()
-y = [avg_over_potential_baseline max(pol_baseline) ; 
-    avg_over_potential_minimisetemp max(pol_minimisetemp) ; 
-    avg_over_potential_minimisetempmax max(pol_minimisetempmax)];
+y = [avg_over_potential_baseline max(over_potential_baseline) ; 
+    avg_over_potential_minimisetemp max(over_potential_minimisetemp) ; 
+    avg_over_potential_minimisetempmax max(over_potential_minimisetempmax)];
 bar(x,y)
-legend('Averaged Temperature', 'Maximum Temperature')
+legend('Averaged Overpotential', 'Maximum Overpotential',"FontWeight","bold")
 ylabel('Voltage (V)');
 title("\textbf{Overpotentials During Charging}", "Interpreter", "latex", "FontSize", 20);
 grid on;
