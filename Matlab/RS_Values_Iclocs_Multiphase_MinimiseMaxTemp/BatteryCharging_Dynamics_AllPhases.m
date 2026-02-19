@@ -37,7 +37,7 @@ dx(:,1) = u1./vdat.mp.Q;
 
 dx(:,2) = -x2./(vdat.mp.R1*vdat.mp.C1)+u1./vdat.mp.C1;
 
-dx(:,3) = 1./(vdat.mp.batt_m*vdat.mp.batt_Cp).*(u1.^2*vdat.mp.R0-vdat.batt_h*vdat.mp.batt_A*(x3-vdat.mp.TempAmb));
+dx(:,3) = 1./(vdat.mp.batt_m*vdat.mp.batt_Cp).*(u1.^2*(vdat.mp.R0+vdat.mp.R1)-vdat.batt_h*vdat.mp.batt_A*(x3-vdat.mp.TempAmb));
 
 
 
