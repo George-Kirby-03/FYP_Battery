@@ -9,14 +9,14 @@ options.mp= settings_BatteryCharging;                  % Get options and solver 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
 solution.phaseSol{end}.tf;
-features.minimisetemp.time = [];
-features.minimisetemp.x1 = [];
-features.minimisetemp.x2 = [];
-features.minimisetemp.x3 = [];
-features.minimisetemp.u = [];
-features.minimisetemp.v = [];
+features.minimisepaing.time = [];
+features.minimisepaing.x1 = [];
+features.minimisepaing.x2 = [];
+features.minimisepaing.x3 = [];
+features.minimisepaing.u = [];
+features.minimisepaing.v = [];
 
-
+-
 %%
 for i=1:length(solution.phaseSol)
     sol=solution.phaseSol{i};
@@ -34,12 +34,12 @@ for i=1:length(solution.phaseSol)
     end
     outputV=problem.mp.data.ocvpoly(x1)+x2+problem.mp.data.R0*sol.p(i);
     
-features.minimisetemp.time = [features.minimisetemp.time; xx];
-features.minimisetemp.x1   = [features.minimisetemp.x1; x1];
-features.minimisetemp.x2   = [features.minimisetemp.x2; x2];
-features.minimisetemp.x3   = [features.minimisetemp.x3; x3];
-features.minimisetemp.u    = [features.minimisetemp.u; ones(size(x1))*sol.p(i)];
-features.minimisetemp.v    = [features.minimisetemp.v; outputV];
+features.minimisepaing.time = [features.minimisepaing.time; xx];
+features.minimisepaing.x1   = [features.minimisepaing.x1; x1];
+features.minimisepaing.x2   = [features.minimisepaing.x2; x2];
+features.minimisepaing.x3   = [features.minimisepaing.x3; x3];
+features.minimisepaing.u    = [features.minimisepaing.u; ones(size(x1))*sol.p(i)];
+features.minimisepaing.v    = [features.minimisepaing.v; outputV];
 
     figure(100)
     hold on
