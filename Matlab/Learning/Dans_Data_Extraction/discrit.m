@@ -1,0 +1,31 @@
+function [A, B] = discrit(params,Ts)
+%% Function to discritise the A and B matrix for psuedo-state space Ax + Bu
+size = length(params);
+Cp = params(size);
+Ah = params(size - 1);
+R1 = params(size - 2);
+R0 = params(size - 3);
+C = params(size - 4);
+Q = params(size - 5);
+l1 = 1/(R1*C);
+l2 = Ah./Cp;
+b1 = 1./C;
+b2 = 1./Q;
+b3 = R0./Cp;
+b4 = 1/Cp;
+
+%%B matrix
+bt1 = (b1).*(1-exp(-l1.*Ts))./l1;
+bt2 = b2.*Ts;
+bt3 = ((b3./l2 + (b1.*b4)/(l1.*l2)).*(1-exp(-l2.*Ts))) - (((b1.*b4)./(l1.*(l2-l1))).*(exp(-l1*Ts)-exp(-l2*Ts)));
+bt4 = (((b4)./(l2-l1)).*(exp(-l1*Ts)-exp(-l2*Ts)));
+
+A = [exp(-l1*Ts) 0 0; 
+    0 1 0; 
+    0 0 exp(-l2*Ts)];
+B = [bt1 0 0; 
+    bt2 0 0; 
+    0 bt3 bt4];
+
+end
+

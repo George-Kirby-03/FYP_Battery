@@ -1,0 +1,94 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\setlength{\parskip}{0.8em plus 0.2em minus 0.1em}
+\setlength{\parindent}{0pt}
+\usepackage{booktabs}
+\usepackage{chemformula}
+\renewcommand{\arraystretch}{1.2}
+
+
+
+\linespread{1.5}
+\title{
+    \textbf{Notes FYP} \\[2em]
+}
+\author{George W. Kirby \\[2em] \textit{200328186} \\[2em] }
+\date{\today}
+
+\begin{document}
+\maketitle
+\vfill 
+\begin{center}
+    \textbf{Supervisor:} Dr. Ross Drummond 
+\end{center}
+\newpage
+
+
+
+\subsection{Normalising attia current profile}
+
+The battery chosen is different to the one from attia, and has a higher resistance and lower charging capaicity, therefore, the limits and most optimal profile for the attia has to be normalised to the battery we have. This isnt trivial, since there are many variables that are set in the attia framework and as many as possible should be approprately matched. The framework from attia is as follows the charging is broken into 5 segments, with the lower 4 been CC style, and the 4th as a CC-CV section. Each section is seperated by the SoC of which the charge value occupiys, each section takes up 20\% SoC, therfore the CC section values can be denoted as \textbf{CC1}, \textbf{CC2}, \textbf{CC3} and  \textbf{CC4}. 
+
+\textbf{CC1}, \textbf{CC2}and \textbf{CC3} are variables which can be directly optimised and controlled, subject to their respective upper bound which is limited in the attia case to not reach the batteries upper OCV voltage during the charging stages (in attia case this is 3.6V), and their is a constant lower bound for these three sections also. \textbf{CC4} has the same upper bound constraint definition, yet its defined value depends only on the given values for \textbf{CC1}, \textbf{CC2} and \textbf{CC3}. This allows the charge duration from SoC 0-80\% to be fixed whilst allowing the charging current during the SoC ranges to be modified. The equality that must be held (before variable constraints), given in attia, is given as ...
+$$ t_{0-80\%} = 0.2\left( \frac{1}{CC1} + \frac{1}{CC2} + \frac{1}{CC3} + \frac{1}{CC4}\right)$$
+
+To provide inequalities to help decide values, two cases were considered to help to help reduce descisions, since all $\mathbf{CC}_i$ sections have there maximum value limited ($\mathbf{CC}_{i,\max}$) physically, these can be calculated to help define the minimum bounds and $t_{0-80\%}$. 
+
+The first case considered is when $\mathbf{CC}_i$, $i = 1,2,3$, are at their maximum, since all currents are posotive values, the equality given above must mean that $\mathbf{CC}_4$ is at its minimum. This inequality narrows descision variables to only 2, with the equality given as $$\mathbf{CC}_{4,\min}\times\left(t_{0-80\%} - 0.2\sum_{i=1}^{3} \frac{1}{CC_i,max}\right) = 0.2$$. The maximum permissable current values can be worked out by finding for each stage along a charging profile, the current that can be applied to bring the OCV voltage to the upper bound (difference is just $IR_{0+1}$), using the OCV curve obtained gives the graph below, the values were obtained in C units: $\mathbf{CC}_{1,\max} = 3.4$, $\mathbf{CC}_{2,\max} = 2.9$, $\mathbf{CC}_{3,\max} = 2.8$ and $\mathbf{CC}_{4,\max} = 2.5$. Thus the equation has only two variables and can be written as  $\mathbf{CC}_{4,\min} = \frac{0.2}{t_{0-80\%} - 0.279}$
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../Matlab/Learning/Dans_Data_Extraction/Lab_cycles/Charge_peaks.png}
+    \caption{RS battery (our battery) C limits}
+\end{figure}
+
+In the second case, supose there is a current profile which is lowest for all $\mathbf{CC}_i$, $i = 1,2,3$ (which as mentioned is the same for those segments, thus is denoted as $\mathbf{CC}_{1:3,min}$), again due to the posotive nature of the currents, must mean $\mathbf{CC}_{4}$ is at its maximum. Since as before $\mathbf{CC}_{4,max}$ is known, a similar equation as before is calculated as $\mathbf{CC}_{1:3,min} = \frac{0.2\times3}{t_{0-80\%} - \frac{0.2}{\mathbf{CC}_{4,max}}} = \frac{0.6}{t_{0-80\%} - 0.08}$. These two equations can now be plotted to help decide values based on $t_{0-80\%}$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{../Images/msad.png}
+    \caption{Ffes }
+\end{figure}
+
+This shows that if the charging duration is increase, it allows for a greater range of the available currents at different SoC ranges which is advantaguous to find the optimal protocols, however this does increase charge time and lab time is of priority given the FYP time. 
+
+The above work shows how the minimum ranges for the segments can be derived, clearley, however these upper and lower bounds and times do not equate to Attias values - they only provide values in the same matter Attia derived theirs, and time still needs finding. A descision is now made on how to scale the charge protocols provided by attia, if the CC upper segments are scaled by the ratio of $\mathbf{CC}_{1,attia,max} / \mathbf{CC}_{1,RS,max}$, since both batteries are of similar chemistry, the ratio of upper CC limits nearly coicide with the RS battery. A table is shown below to highlights this. Only $\mathbf{CC}_{2}$ is slighly over the limit. 
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{CC\_max\ values} & $\mathbf{CC}_{1,\max}$ & $\mathbf{CC}_{2,\max}$ & $\mathbf{CC}_{3,\max}$ & $\mathbf{CC}_{4,\max}$ \\
+\midrule
+$CC_{rs max} \text{ Actual}$ & 3.4 & 2.9 & 2.8 & 2.5 \\
+$CC_{1,\text{attia},\max}/CC_{1,\text{rs},\max} \text{ Norm}$ & 3.4 & 2.97 & 2.38 & 2.04 \\
+\bottomrule
+\end{tabular}
+\vspace{3pt}
+\caption{Parameter values for different estimation configurations.}
+\label{tab:Cs}
+\end{table}
+
+The duration of $t_{0-80\%}$ in Attia is 10 minuets, looking at figure x, this clearley can not be achived, if, the scaling used in table Cs row 2 is used as the upper limits are slightly reduced futher, yeilding ever worse achivability. However by scaling the CC\_max that way, the CC values obtained by Attia can be siply each devided by the same scaling factor (2.35 in this case). This then forces the $t_{0-80\%}$ to be 23.5 minuets. For example, the best CC segments from attia are 5.2C-5.2C-4.8C-4.16C, since the scaling of CC\_max is 2.35, the CC segments for out battery can be 2.2C-2.2C-2C-1.3C at takes 23.5 minuets. This is acceptable, however, 23.5 minuets limits the lower bounds on the CC segments, thus reducing the possible combinations to try optimising. To show this, the dashed lines are added to figure x which use the normalised CC\_max values in table C, and at $t_{0-80\%}$ = 0.39 would give the lower limits of $\mathbf{CC}_{1;3min}$ (2.43C) and $\mathbf{CC}_{4min}$ (2.06C). This is a problem straight away, this gives 0 variance to $\mathbf{CC}_{4}$. This poses a problem in translating the Attia framework, the cycles could be futher reduced in current by a scale factor greater than that which can scale the CC\_max, but these optimum values were obtained with these limits in place. It is therefore a balance between matching the trend of the attia protocols, and current ranges to allow more variation. 
+
+An idea is to subjectivley choose $t_{0-80\%}$ from figure x, and for the attia protocols, scale the $\mathbf{CC}_{1;3}$ segments by a factor which causes $\mathbf{CC}_{1;4}$ to be as close as possible in ratio to that of $CC_{1,\text{attia},\max}/CC_{1,\text{rs},\max}$, the $\mathbf{CC}_{4}$ value is to be calculated inline with methods before and attia - constrained to meet 80\% SoC, in $t_{0-80\%}$ time. This can very simply represented at $t_{0-80\%} = 0.2/x_{scale}\times(\left( \sum_{i=1}^{3}\mathbf{CC}_{i}^{-1} \right) + \mathbf{CC}_{4}^{-1})$, which can be written in a graphical form as $$\mathbf{CC}_{4} = 0.2 / (x_{scale}t_{0-80\%} - 0.2\left( \sum_{i=1}^{3}\mathbf{CC}_{i}^{-1} \right))$$. The right hand side can be plotted and yeilds the following (Y value is $t_{0-80\%}$), the optimised choice is such that the scalar value in the feild is as close to $\mathbf{CC}_{4}$ of the chosen Attia profile (the most optimal version they found for example), so $\mathbf{CC}_{4} = 4.16$ in the chosen protocol, alongside the respective $\mathbf{CC}_{1;3}$ values, the point which is scaled given in the previous pharagraph is shown in red, but as mentioned it limits the potential currents for more optimisations and is too short of a charge time. The point decided keeps the scaling of  $\mathbf{CC}_{4}$ almost identical to that of the other segments, thus keeping the pattern correct, whilst choosing a scaling factor as close as possible to that in the previous pharagraph without been to short of charging. A balance was thus decided, with a $t_{0-80\%}$ of 0.55 chosen, this, refering back to the previous graph still allows for a large range of current choices with a low enough C\_min set of values. Thus, for the Attia optimal protocol, the CC values are \textbf{1.73-1.73-1.6-1.39}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{../../Matlab/Learning/Dans_Data_Extraction/Lab_cycles/Scaling found.png}
+    \caption{C4 Time Scaling balance}
+\end{figure}
+
+Lastly the final CV section is to be chosen, this could have been scaled with more reasoning, but for now a value of 0.5C (half of the Attia value was chosen for now to balance total charge duration and the scaling of the previous segments), Attia value was fixed to 1C.
+
+
+\nocite{*}
+\newpage
+
+
+\end{document}

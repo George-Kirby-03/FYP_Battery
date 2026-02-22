@@ -1,0 +1,6 @@
+function dx = battery_dynamics(t, y, Q, C, R0, R1, OCV_LUT)
+y=x
+    dx1 = current_bat./Q;
+    dx2 = -V_RC1./(R1.*C1) + current_bat./C1;
+    dx = [dx1; dx2];
+end

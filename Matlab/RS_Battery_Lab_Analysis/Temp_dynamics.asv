@@ -1,0 +1,6 @@
+function dx = US_dynamics(t, y, param, current_fun)
+R0 = param.r0;
+R1 = param.r1;
+current = current_fun(t);
+dx = []
+end

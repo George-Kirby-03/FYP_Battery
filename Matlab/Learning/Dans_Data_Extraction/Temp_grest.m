@@ -1,0 +1,114 @@
+%cd(fileparts(which('Solving.m')))
+clear
+close
+pwd
+%load("../../../cycle_exports\MOLI_cycle_2234.mat")
+%load("../../../cycle_exports/MOLI_28/MOLI_cycle_5.mat")
+load("./Characterisation Tests/charac_01.mat")
+%p = solution_unbound.p;
+[tt_unique, ia] = unique(tt);
+
+% Keep corresponding rows of the other matrices
+tp_unique = tp(ia, :);  
+u1_unique = u1(ia, :);
+y_unique  = y(ia, :);
+
+
+tt = tt_unique;
+tp = tp_unique - tp_unique(1);
+u1 = u1_unique;
+y  = y_unique;
+%% Using parameters extracted from ICLOC's, the state and outputs are simulated here %%
+yactual_lut = @(t) interp1(tt, y, t, 'linear', 'extrap');
+current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
+% [t, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; 0.05]);
+% x1=y_sim(:,1);x2=y_sim(:,2); R0 = p(end-1);
+% u2=current_lut(t);
+% polyss = flip(p(1:end-4));
+% OCV_x = polyval(polyss,x1);
+% voltage_model=OCV_x + x2 + R0.*u2;
+% figure
+% plot(t,voltage_model)
+% hold on
+% plot(t,yactual_lut(t))
+% title("Sim vs Real Voltage response")
+
+
+%Heat generation is approxomated as the Vout-Ocv * I, which can be
+%numerically found from the combination of states and input. The power out
+%over time is as follows:
+%dT = Q_heat/mCp - hA/mCp * (T - T_amb)
+%dT = Q_heat/mCp - hA/mCp * (T - T_amb)
+
+%Creatingh the table entry for the iddata for the model
+t = linspace(0,32879,1500);
+%Q_heat = (voltage_model - OCV_x).*current_lut(t);
+Q_heat = 0.075*current_lut(t).^2;
+Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
+temp_lut = @(tn) interp1(tt, tp, tn, 'linear', 'extrap');
+
+greyest_time_sampling = linspace(t(1),t(end),1500);
+
+% Sample the heat generation data for the specified time points
+U_sampled = Q_lut(greyest_time_sampling);
+%Current_sampled = current_lut(greyest_time_sampling);
+Temp_sampled = temp_lut(greyest_time_sampling);
+
+Data = array2table([U_sampled', Temp_sampled'],"VariableNames",["u1","y"]);
+Data_ts = table2timetable(Data,"RowTimes",seconds(greyest_time_sampling));
+smodle = iddata(Data_ts,'Name','Temperature Generation');
+
+plot(greyest_time_sampling,Temp_sampled)
+
+mCp = 20;
+hA = 0.1;
+parameters = {'specificheat*mass',mCp;'conduction*length',hA};
+init_sys = idgrey(@TempFnc,parameters,'c');
+
+opt = greyestOptions('Focus','simulation');
+sys = greyest(smodle,init_sys, opt);
+getpvec(sys)
+
+simulated_temp = lsim(sys, Q_lut(greyest_time_sampling)',greyest_time_sampling);
+plot(greyest_time_sampling,simulated_temp)
+hold on
+
+% 
+% u1=cc3(p,6,10,10,tt);
+% 
+% 
+% yactual_lut = @(t) interp1(tt, y, t, 'linear', 'extrap');
+% current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
+% [t, y_sim] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0; 0.05]);
+% x1=y_sim(:,1);x2=y_sim(:,2); R0 = p(end-1);
+% u2=current_lut(t);
+% polyss = flip(p(1:end-4));
+% OCV_x = polyval(polyss,x1);
+% voltage_model=OCV_x + x2 + R0.*u2;
+% figure
+% plot(t,voltage_model)
+% hold on
+% 
+% 
+% Q_heat = (voltage_model - OCV_x).*current_lut(t);
+% Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
+% 
+% greyest_time_sampling = linspace(t(1),t(end),1500);
+% 
+% simulated_temp = lsim(sys, Q_lut(greyest_time_sampling)',greyest_time_sampling);
+% plot(greyest_time_sampling,simulated_temp)
+% hold on
+
+
+
+
+
+
+function [A,B,C,D] = TempFnc(mCp,hA,Ts,aux)
+% ODE function for computing state-space matrices as functions of parameters
+A = [-hA/mCp];
+B = [1/mCp];
+C = eye(1);
+D = [0];
+end
+

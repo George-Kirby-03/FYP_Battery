@@ -1,0 +1,5 @@
+time = [0 20];
+cur = @(t) 0 * (t < 10) + 1 * (t >= 10) +  1 * (t >= 10);
+[t x] = ode45(@(t,y) battery_dynamics(t,y,5600,3000,0.03, cur), time, [0 0]);
+y = OCVModel(x(:,1)) + x(:,2) + 0.01*1;
+plot(t,y, t, cur(t))

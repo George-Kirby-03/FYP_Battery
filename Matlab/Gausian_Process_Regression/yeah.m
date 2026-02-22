@@ -1,0 +1,85 @@
+function gf
+    clear; clc; close all;
+
+    %% ---- Data ----
+    X = [-2; -1; 0; 1; 2; 3];
+    y = [0; 1; 0; -1; 0; 1.5];
+
+    alpha = 1;
+    l = 1;
+
+    %% ---- Build Covariance Matrix K ----
+    n = length(X);
+    K = zeros(n,n);
+    for i = 1:n
+        for j = 1:n
+            K(i,j) = kernel(X(i), X(j), alpha, l);
+        end
+    end
+
+    %% ---- Prediction Grid ----
+    Xs = linspace(-10,10,200)';
+    m = length(Xs);
+
+    %% ---- Compute Posterior (same as before) ----
+    mu_post = zeros(m,1);
+    var_post = zeros(m,1);
+    Kinv = inv(K);
+
+    for i = 1:m
+        kstar = zeros(n,1);
+        for j = 1:n
+            kstar(j) = kernel(Xs(i), X(j), alpha, l);
+        end
+
+        kss = kernel(Xs(i), Xs(i), alpha, l);
+
+        mu_post(i) = kstar' * Kinv * y;
+        var_post(i) = kss - kstar' * Kinv * kstar;
+    end
+
+    std_post = sqrt(var_post);
+    upper = mu_post + 1.96*std_post;
+    lower = mu_post - 1.96*std_post;
+
+    %% ---- Build full posterior covariance ----
+    Kss_full = zeros(m,m);
+    for i = 1:m
+        for j = 1:m
+            Kss_full(i,j) = kernel(Xs(i), Xs(j), alpha, l);
+        end
+    end
+
+    Kxs = zeros(n,m);
+    for i = 1:n
+        for j = 1:m
+            Kxs(i,j) = kernel(X(i), Xs(j), alpha, l);
+        end
+    end
+
+    Sigma_post = Kss_full - Kxs' * Kinv * Kxs;
+    Sigma_post = (Sigma_post + Sigma_post')/2;
+    Sigma_post = Sigma_post + 1e-6*eye(m);
+
+    %% ---- Sample random function ----
+    R = chol(Sigma_post,'lower');
+    sample_f = mu_post + R * randn(m,1);
+
+    %% ---- Plot ----
+    figure; hold on; grid on;
+    scatter(X,y,50,'r','filled')
+    plot(Xs, mu_post, 'b','LineWidth',2)
+    plot(Xs, sample_f, 'k--','LineWidth',1.5)
+    fill([Xs; flipud(Xs)], [upper; flipud(lower)], ...
+        [0.7 0.8 1], 'EdgeColor','none','FaceAlpha',0.4)
+
+    title('Gaussian Process Posterior with Sampled Function Draw')
+    xlabel('x'); ylabel('f(x)')
+    legend('Observations','Posterior Mean','Random Posterior Sample','95% Credible Interval')
+end
+
+
+%% ---------- LOCAL FUNCTION ----------
+function k = kernel(x,z,alpha,l)
+    k = alpha^2 * exp(-((x - z).^2) / (2*l^2));
+end
