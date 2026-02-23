@@ -1,0 +1,126 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{chemformula}
+\usepackage{amssymb}
+\usepackage{subfig}
+\setlength{\parskip}{0.8em plus 0.2em minus 0.1em}
+\setlength{\parindent}{0pt}
+\begin{document}
+
+
+\begin{titlepage}
+\centering
+
+{\Huge Final Report\par}
+\vspace{1cm}
+
+\includegraphics[width=0.25\textwidth]{../Images/UOS.png}\par
+\vspace{2cm}
+
+{\Large \textbf{Investigating optimal charging protocols for Lithium Batteries}\par}
+\vspace{2cm}
+
+George W. Kirby\par
+200328186\par
+
+\vfill
+
+Supervisor: Dr. Ross Drummond\par
+\today
+
+\end{titlepage}
+
+
+\section{Abstract}
+
+Sumarising the report. 
+
+\section{Acknowledgements}
+
+Will certainly be added! Ross Paing Yuanbo Matt Tom ... 
+
+\subsection{Introduction}
+
+\subsubsection{Background}
+
+Talking about the current growth of batteries, scarecity of materials ect (Most of the literature review i ended up writing was alot of this). Will talk about the structure of the report too - alongside the general goal of finding the optimal charging for a battery, and in the hopes of making it battery agnostic for all uses. Will mention that this approach takes the ecm model and data driven apraoches, since these methods can be used and parameters obtained in-situ, not the electrochemical model ect, due to parameters needed and missing complete models of degredations ect. 
+
+\subsubsection{Aims and objectives}
+
+\begin{itemize}
+\item Investigate ICLOCS2 for parameterising of batteries under real-time use
+\item Produce optimised charging protocols to improve battery longevity
+\item \textbf{Stretch} - Investigate machine learning methods to aid in charging protocols 
+\item Implament the charging protocols in the labs and analyise findings
+\end{itemize}
+
+\subsubsection{Scope of the study}
+
+Guidelines suggest this is describing limitations of the study, and to mention aspects that the project dosent cover. Can probably talk about this focusing on a single battery, sinlge temperature, controlling discharge, how optimal charging profiles may change depending on total duration ect. I belive this is to ensure constraints are made awear.
+
+\section{Literature Review}
+
+\subsection{Battery behaviour}
+
+Can include detailes about batteries themselfs (i.e degredaditon modes), structure and operation ect. Again i think my literature review paper mostly has this already in so should be a mostly copy and paste job.
+
+\subsection{Attia \& Tucker}
+
+Discus attias apprach to find optimal charhing, constraints they used. Alogside talking about tuckers minimimsation desgins. Stress this is a follow on from their 'future work' 
+
+\subsection{Battery Prediction}
+
+Discussu breifly papers ive read about machine learning for battery prediction, i.e seversons linear model. CNN's ect. Mention the avalability of data online ect. Good here to stress the current uses of AI here and limitations in data varations ect.
+
+\section{Modeling \& Optimisations}
+
+Talk about the general approach to this, i.e an overview that this is getting parameters needed, to produce optimal profiles.
+
+\subsection{Battery used}
+
+Short section on the details of the battery chosen for the tests - could even lean into the fact the battery chosen is fairly different to attia, further increasing change of discrepincey of different batteries. 
+
+\subsection{Paramiterisation}
+
+\subsubsection{Iclocs}
+
+Can talk about attempts to extract C, R's and OCV from say Dans data using iclocs, the stuggles and methods to help, such as trying to match temperature too, fixing OCV ect. Good to metion the time it takes too. I can mention \textit{why} this part is nescesary, ie for the parameters using in optimisations.
+
+\subsubsection{Thermal Modeling}
+
+Show my modeling for both the 0d lumped and my psuedo3d model, discuss how the 3d model dosent show a different behaviour, rather just a 'multiplied' version , atleast at the size of 18650, also talk about the 3d model requries more parameters that cant be obtained from normal cycling data.
+
+\subsection{Normalisation of Attia Baseline}
+
+Provide the work I did on taking the attia charging windows and its baseline to be translated onto out battery. I.e current limits and charge duations.
+
+\subsection{Generation of optimal profiles}
+
+Describe the details on objective functions, stages, linkages, boundary - path constraints ect.
+
+\section{Data driven Modeling}
+
+\textit{Hopefully} - Can produce atleast a simple model to take in the cycle and predict how many cycles to 80\% - i can get that made faily quickly - how well it works is likley poor. But the descriptions on convolutions or transformers, along with the basics of gradient decents could provide atleast some more maths to the project. As well as the structure of training + validating models.
+
+\section{Labs \& Experiment}
+
+Description of the setup and environemtn + details of the tester ect. 
+
+\section{Results}
+Provide the graphs of results, compare, ect. Hoepfully shows there all different!  As mentioned in the meeting, worst case, i can recreate the AI model in the Battery Life paper to show the trend downstream. 
+
+\section{Conclusion}
+
+\subsection{Meeting Objectives}
+
+Guidline stresses this part, and to clearly link back findings to the oroginal objectives
+
+\section{Future work}
+
+Not to sure yet, perhaps atleast provide some work for my hopes that i could incorpeate the Bayesion Optimisation in order to choose the next best protocol, but for differen batteries, but that would require seperating battery behaviour based on a few dimensions, and have them as additional inputs to the optimiser, the stuff i learend from memory about the BO including the 3d graphs i did and math, would allow me to show how it would work \textit{providing} some method can dimentionalise the batteries.
+
+\end{document}
