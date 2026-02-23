@@ -16,7 +16,7 @@ features.minimisepaing.x3 = [];
 features.minimisepaing.u = [];
 features.minimisepaing.v = [];
 
--
+
 %%
 for i=1:length(solution.phaseSol)
     sol=solution.phaseSol{i};
