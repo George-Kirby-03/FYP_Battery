@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage[margin=1in]{geometry}
+\usepackage{times}
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{chemformula}
@@ -9,7 +10,11 @@
 \usepackage{subfig}
 \setlength{\parskip}{0.8em plus 0.2em minus 0.1em}
 \setlength{\parindent}{0pt}
+\usepackage{booktabs}
+\usepackage{chemformula}
+\renewcommand{\arraystretch}{1.2}
 \begin{document}
+
 
 
 \begin{titlepage}
@@ -83,6 +88,24 @@ Talk about the general approach to this, i.e an overview that this is getting pa
 \subsection{Battery used}
 
 Short section on the details of the battery chosen for the tests - could even lean into the fact the battery chosen is fairly different to attia, further increasing change of discrepincey of different batteries. 
+
+\begin{table}[ht]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcccccc}
+\toprule
+$\textbf{Battery}$ &$\textbf{Size}$ & $\textbf{Anode}$ & $\textbf{Cathode}$ & $\textbf{Nominal Capacity}$ & $\textbf{AC Resistance}$ & $\mathbf{V_{lim}/V_{min}}$ \\
+\midrule
+Attia & 18650         & 5675 & \text{min bound} & 0.1   & 0.1   & 0.2 \\
+RSBattery & Fixed      & 5684 & 6085             & 0.24  & 0.133 & \text{d} \\
+\bottomrule
+\end{tabular}
+\vspace{2pt}
+\caption{Parameter values for different estimation configurations.}
+\label{tab:battery_params}
+\end{table}
+
 
 \subsection{Paramiterisation}
 
