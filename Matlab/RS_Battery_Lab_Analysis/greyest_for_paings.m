@@ -1,10 +1,10 @@
 clear 
 close all
 pwd
-load RS_Baseline_og_attia_normalised.mat
-Cycle10 = GK_RS_baseline_028;
-idx_start = find(abs(GK_RS_baseline_028.TestTime - 1423580)<10, 1);
-idx_finish = find(abs(GK_RS_baseline_028.TestTime - 1457730)<10, 1);
+load proc1.mat
+Cycle10 = proc1;
+idx_start = find(abs(Cycle10.TestTime - 22060)<10, 1);
+idx_finish = find(abs(Cycle10.TestTime - 45000)<10, 1);
 % Select the rows from (end - 599) up to the end
 Cycle10 = Cycle10(idx_start:idx_finish,:);
 %plot(Cycle10.TestTime,Cycle10.Volts,Cycle10.TestTime,Cycle10.Amps./2 + 3)
