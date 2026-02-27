@@ -4,6 +4,7 @@
 
 clear all;close all;format compact;
 load RS_Param_Retry.mat
+load proc1.mat
 [problem,guess,options.phaseoptions]=BatteryCharging;          % Fetch the problem definition
 options.mp= settings_BatteryCharging;                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
@@ -97,7 +98,7 @@ features.minimisepaing.v    = [features.minimisepaing.v; outputV];
 end
     
 %%
-load proc1.mat
+
 idx_start = find(abs(proc1.TestTime - 59240.2) < 1, 1);
 idx_end = find(abs(proc1.TestTime - 61299.7) < 1, 1);
 scaled_time = proc1.TestTime(idx_start:idx_end) - proc1.TestTime(idx_start);
