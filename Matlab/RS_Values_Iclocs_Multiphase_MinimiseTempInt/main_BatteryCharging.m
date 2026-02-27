@@ -118,21 +118,4 @@ temp_labs = interp1(scaled_time,proc3.Temp1(idx_start:idx_end),xx_total);
     legend(["0-20% Sim", "20-40% Sim", "40-60% Sim", "60-80% Sim", "Lab Results"], "FontSize", 11, "FontWeight", "bold", "Position", [0.7997 0.6698 0.0972 0.1029])
     title('\textbf{V_{out} for minimising temperature state}', 'Interpreter', 'latex', 'FontSize', 19)
 
-     2040Sim = findobj(gcf, 'DisplayName', '20-40% Sim')
-     2040Sim.LineWidth = 4.5000
-     2040Sim.LineStyle = '--'
-
-    020Sim = findobj(gcf, 'DisplayName', '0-20% Sim')
-    020Sim.LineWidth = 4.5000
-    020Sim.LineStyle = '--'
-
-     4060Sim = findobj(gcf, 'DisplayName', '40-60% Sim')
-    4060Sim.LineWidth = 4.5000
-    4060Sim.LineStyle = '--'
-
-    6080Sim = findobj(gcf, 'DisplayName', '60-80% Sim')
-    6080Sim.LineWidth = 4.5000
-    6080Sim.LineStyle = '--'
-
-    LabResults = findobj(gcf, 'DisplayName', 'Lab Results')
-    LabResults.LineWidth = 4
+     
