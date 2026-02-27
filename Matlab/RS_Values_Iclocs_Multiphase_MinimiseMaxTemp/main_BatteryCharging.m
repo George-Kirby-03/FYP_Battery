@@ -4,6 +4,7 @@
 
 clear all;close all;format compact;
 load RS_Param_Retry.mat
+
 [problem,guess,options.phaseoptions]=BatteryCharging;          % Fetch the problem definition
 options.mp= settings_BatteryCharging;                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);

@@ -4,6 +4,7 @@
 
 clear all;close all;format compact;
 load RS_Param_Retry.mat
+load lab_results.mat
 [problem,guess,options.phaseoptions]=BatteryCharging;          % Fetch the problem definition
 options.mp= settings_BatteryCharging;                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
@@ -17,9 +18,11 @@ features.minimisetemp.v = [];
 
 
 %%
+xx_total = [];
 for i=1:length(solution.phaseSol)
     sol=solution.phaseSol{i};
     xx=sol.T;
+    xx_total = [xx_total; xx];
     x1=speval(sol,'X',1,xx);
     x2=speval(sol,'X',2,xx);
     x3=speval(sol,'X',3,xx);
@@ -68,8 +71,6 @@ features.minimisetemp.v    = [features.minimisetemp.v; outputV];
     grid on
     ylabel('Input Current [I]')
 
-
-
     figure(104)
     hold on
     plot(xx,outputV,'linewidth',2)
@@ -92,5 +93,46 @@ features.minimisetemp.v    = [features.minimisetemp.v; outputV];
     grid on
 
 end
-    
 
+idx_start = find(abs(proc3.TestTime - 39960.8) < 1, 1);
+idx_end = find(abs(proc3.TestTime - 41904.4) < 1, 1);
+scaled_time = proc3.TestTime(idx_start:idx_end) - proc3.TestTime(idx_start);
+volts_labs = interp1(scaled_time,proc3.Volts(idx_start:idx_end),xx_total);
+current_labs = interp1(scaled_time,proc3.Amps(idx_start:idx_end),xx_total);    
+temp_labs = interp1(scaled_time,proc3.Temp1(idx_start:idx_end),xx_total);
+
+   figure(102)
+    hold on
+    plot(xx_total,temp_labs,'linewidth',2)
+    xlabel('Time [s]')
+    ylabel('Temperature [Deg]')
+    grid on
+
+
+    figure(104)
+    hold on
+    plot(xx_total,volts_labs,'linewidth',2)
+    xlabel('Time [s]')
+    grid on
+    ylabel('Vout [V]')
+    legend(["0-20% Sim", "20-40% Sim", "40-60% Sim", "60-80% Sim", "Lab Results"], "FontSize", 11, "FontWeight", "bold", "Position", [0.7997 0.6698 0.0972 0.1029])
+    title('\textbf{V_{out} for minimising temperature state}', 'Interpreter', 'latex', 'FontSize', 19)
+
+     2040Sim = findobj(gcf, 'DisplayName', '20-40% Sim')
+     2040Sim.LineWidth = 4.5000
+     2040Sim.LineStyle = '--'
+
+    020Sim = findobj(gcf, 'DisplayName', '0-20% Sim')
+    020Sim.LineWidth = 4.5000
+    020Sim.LineStyle = '--'
+
+     4060Sim = findobj(gcf, 'DisplayName', '40-60% Sim')
+    4060Sim.LineWidth = 4.5000
+    4060Sim.LineStyle = '--'
+
+    6080Sim = findobj(gcf, 'DisplayName', '60-80% Sim')
+    6080Sim.LineWidth = 4.5000
+    6080Sim.LineStyle = '--'
+
+    LabResults = findobj(gcf, 'DisplayName', 'Lab Results')
+    LabResults.LineWidth = 4
