@@ -1,3 +1,4 @@
+ 
 function poly = polymaker(polycount, range, lower_bound)
 %POLYMAKER Quick Function To Produce the Polynomial Coefficent & indexes
 %NOTE: R0, R1, C, Q in that order AFTER

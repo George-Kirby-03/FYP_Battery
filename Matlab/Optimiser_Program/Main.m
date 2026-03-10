@@ -16,29 +16,13 @@
 
 table = readtable("GK_RS15_03_proc1_0000 - 025 (1).csv");
 
-table1 = readtable("GK_RS15_07_proc3_0000 - 031 (1).csv");
 
-%Find a good start to the cycle
-idx_start = find(table1.Step == 5, 1);
-if table1.Step(idx_start(1)-1) == 12
-    idx_cycle_start = idx_start(1) - 10;
-else
-    idx_next_try = find(table1.Step(idx_start:end) ~= 5,1);
-    idx_start = find(table1.Step(idx_next_try+1:end) == 5, 1);
-    idx_cycle_start = idx_start(1) - 5;
-end
-%Find where the next step 12 occurs, the get the idx of the first for
-%current to go 0 (once cv is done)
-idx_last = find(table1.Step(idx_start:end) == 12, 1);
-idx_cycle_end = find(table1.Amps(idx_last:end) < 0.01,1);
-idx_last
-table1.TestTime(idx_last)
-idx_cycle_end
-idx_cycle_end = idx_cycle_end + 3000;
+[V,I,T,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv",1);
+plot(Ts,V,Ts,I,Ts,T)
 
-plot(table1.TestTime(idx_cycle_start:idx_cycle_end),table1.Volts(idx_cycle_start:idx_cycle_end),table1.TestTime(idx_cycle_start:idx_cycle_end),table1.Step(idx_cycle_start:idx_cycle_end))
-
-
+% 3 structs, one is settings to set voltage lims, polylength and end/start conditions, other is
+% estimates on parameters and the last is a struct to specify what
+% parameters to fix or find
 
 %% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
 %% If they are different, it may be wise to optimised against the hot internals rather than use the 0D lumped Cp & H produced

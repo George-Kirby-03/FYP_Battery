@@ -17,18 +17,7 @@
 table = readtable("GK_RS15_03_proc1_0000 - 025 (1).csv");
 
 table1 = readtable("GK_RS15_07_proc3_0000 - 031 (1).csv");
-
-idx_start = find(table1.Step == 5, 2);
-if table1.Step(idx_start-1) == 12
-    idx_cycle_start = idx_start - 10;
-elseif 
-end
-idx_end = find(abs(proc1.TestTime - 61299.7) < 1, 1);
-scaled_time = proc1.TestTime(idx_start:idx_end) - proc1.TestTime(idx_start);
-volts_labs = interp1(scaled_time,proc1.Volts(idx_start:idx_end),xx_total);
-current_labs = interp1(scaled_time,proc1.Amps(idx_start:idx_end),xx_total);    
-temp_labs = interp1(scaled_time,proc1.Temp1(idx_start:idx_end),xx_total);
-
+[V,I,T,Ts] = get_cycle(csvfile,cycle_no)
 
 %% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
 %% If they are different, it may be wise to optimised against the hot internals rather than use the 0D lumped Cp & H produced
