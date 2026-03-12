@@ -41,12 +41,26 @@ if ~(enforce.capacitance == 0 && enforce.R0 == 0 && enforce.R1 == 0 ) && (enforc
     error('Not all dynamics are fixed, either fix all or none')
 elseif ~(enforce.Cp == 0 && enforce.h == 0) && (enforce.Cp == 0 || enforce.h == 0)
     error('Not all temperature parms are fixed, either fix all or none')
-else
+elseif enforce.Cp == 0 && enforce.Q == 0
     problem.data.poly = polymaker(polycount,400,1,1,v_low,dynamics);
+    problem.data.needs_temp_dynamics = 1;
+
+elseif enforce.Cp == 1 && enforce.Q == 0
+    problem.data.poly = polymaker(polycount,400,1,0,v_low,dynamics);
+    problem.data.needs_temp_dynamics = 0;
+
+elseif enforce.Cp == 0 && enforce.Q == 1
+    problem.data.poly = polymaker(polycount,400,0,1,v_low,dynamics);
+    problem.data.needs_temp_dynamics = 1;
+    problem.data.const_val.Q = dynamics.capacity;
+
+elseif enforce.Cp == 1 && enforce.Q == 1
+    problem.data.poly = polymaker(polycount,400,0,0,v_low,dynamics);
+    problem.data.needs_temp_dynamics = 0;
+     problem.data.const_val.Q = dynamics.capacity;
+
 end
 
-problem.data.poly = polymaker(polycount,400,1,1,v_low,dynamics);
-problem.data.poly = polymaker(polycount,400,1,1,v_low,dynamics);
 problem.data.poly.v_lim = settings.v_lim;
 
 %%dynamic params
@@ -91,17 +105,22 @@ problem.parameters.pl=[problem.data.poly.xl 1.3*3600 200 0.009 0.003 0.01 40];
 problem.parameters.pu=[problem.data.poly.xu 1.8*3600 6000 0.9 0.9 0.09 200];
 guess.parameters=[problem.data.poly.xe problem.data.poly.dynams];
 
+%% Just using as reference to know which memmbers to use here
+% cycle_file struct
+% settings struct = struct('polycount',8,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05)
+% dynamics struct = struct('capacity',1.5*3600,'capacitance',300,'R0',0.05,'R1',0.05,'Cp',160,'h',20)
+% enforce struct = struct('capacity',0,'capacitance',0,'R0',0,'R1',0,'Cp',0,'h',0)
 
 % Initial conditions for system.
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.2 -0.05 0]; 
-problem.states.x0u=[0.6 0.05 0.1]; 
+problem.states.x0l=[settings.start_soc - settings.range, -0.3, -2]; 
+problem.states.x0u=[settings.start_soc + settings.range, 0.3 2]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 -0.8 -0.5];
-problem.states.xu=[1.1 0.8 8];
+problem.states.xl=[settings.end_soc - settings.range, -0.8 -0.5];
+problem.states.xu= [settings.end_soc + settings.range, 0.8 30];
 
 % State error bounds
 problem.states.xErrorTol_local=[1e-6 1e-6 1e-6];
@@ -112,11 +131,11 @@ problem.states.xErrorTol_integral=[1e-6 1e-6 1e-6];
 problem.states.xConstraintTol=[1e-4 1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.1 -0.05 -0.5];
-problem.states.xfu=[0.4 0.08 2];
+problem.states.xfl=[settings.end_soc - settings.range, -0.3 -0.5];
+problem.states.xfu=[settings.end_soc + settings.range, 0.3 10];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[0.4 0.3];
+guess.states(:,1)=[1 1];
 guess.states(:,2)=[0 0.01];
 guess.states(:,3)=[0 0];
 
