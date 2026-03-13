@@ -33,10 +33,11 @@ cycle.ts = Ts - Ts(1); % start from t=0
 cycle.tp = T - T(1);
 
 settings.v_lim = 3.65;
+settings.v_low = 2.5;
 
 
 [problem,guess]=BatteryEstimation_temp(cycle,settings);          % Fetch the problem definition
-options= problem.settings(290);                  % Get options and solver settings 
+options= problem.settings(220);                  % Get options and solver settings 
 [solution,MRHistory]=solveMyProblem( problem,guess,options);
 
 %% figure%

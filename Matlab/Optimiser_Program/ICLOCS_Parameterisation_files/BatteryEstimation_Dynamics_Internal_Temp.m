@@ -37,11 +37,11 @@ SOC = x(:,1); V_RC1 = x(:,2);
 % Take input measurement directly from Lookup table
 current_bat = vdat.InputCurrent(t);
 
-if vdat.needs_capacity_dynamics == 0
-    Q = vdat.const_val.Q;
-else
+%if vdat.needs_capacity_dynamics == 0
+ %   Q = vdat.const_val.Q;
+%else
     Q=p(:,vdat.poly.Q); 
-end
+%end
 
 C1=p(:,vdat.poly.C); R0=p(:,vdat.poly.R0); R1=p(:,vdat.poly.R1); 
 
@@ -49,10 +49,11 @@ dx(:,1) = current_bat./Q;
 
 dx(:,2) = -V_RC1./(R1.*C1) + current_bat./C1;
 
-if vdat.needs_temp_dynamics == 1
+%if vdat.needs_temp_dynamics == 1
     T = x(:,3);
-    hA = p(:,vdat.poly.h); mCp = p(:,vdat.poly.Cp);
+    hA = p(:,vdat.poly.h); 
+    mCp = p(:,vdat.poly.Cp);
     dx(:,3) = -(hA./mCp).*(T) + (R0./mCp).*(current_bat).^2 + (1./(mCp)).*V_RC1.*current_bat; 
-end
+%end
 
 %------------- END OF CODE --------------%

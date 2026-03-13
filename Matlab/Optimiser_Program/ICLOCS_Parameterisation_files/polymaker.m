@@ -15,7 +15,7 @@ poly.xe = rand(1,polycount);
 poly.xu = ones(1,polycount)*range;
 if lower_bound ~= 0
     poly.xl(1) = lower_bound - 0.05;
-    poly.xe(1) = poly.xl(1);
+    poly.xe(1) = lower_bound;
     poly.xu(1) = poly.xe(1) + 0.05; 
 end
 poly.R0 = polycount+1;
