@@ -19,6 +19,10 @@
 % estimates on parameters and the last is a struct to specify what
 % parameters to fix or find
 
+
+addpath(genpath('ICLOCS_Parameterisation_files'))
+addpath(genpath('Greyest_Parameterisation_files'))
+
 [V,I,T,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv");
 cycle.volts = V;
 cycle.amps = I;
@@ -27,15 +31,14 @@ cycle.tp = T - T(1);
 
 settings.v_lim = 3.65;
 settings.v_low = 2.5;
+dynamics  = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
+
+sim_handler = Cycle_Parmeterisation(cycle,dynamics,settings);
+%Parameterisation_Analysis(sim_handler);
+sim_handler = Greyest_Parameterisation(sim_handler);
+%Greyest_Analysis(sim_handler);
 
 
-sim_handler = Cycle_Parametrisation(settings,dynamics,enforce);
-Parameterisation_Analysis(sim_handler);
-sim_handler = Greyest_Thermal(sim_handler);
-Greyest_Analysis(sim_handler);
-
-%optional
-Full_thermal_simulation(sim_handler);
 
 
 
@@ -43,7 +46,8 @@ Full_thermal_simulation(sim_handler);
 %% If they are different, it may be wise to optimised against the hot internals rather than use the 0D lumped Cp & H produced
 %% From above
 
-
+%optional
+Full_thermal_simulation(sim_handler);
 
 
 %% Code to produce graphs to help make charge discharge descisions based from the framework used in Attias paper, 
@@ -62,9 +66,9 @@ sim_handler.rest_period_charge = 0.1;
 %% minimising Paings Cost Function, and hopefully, one from AI / use to predict life cycle 
 
 
-Paings_model = Optimum_Generator(sim_handler,0);
-Min_maxtemp = Optimum_Generator(sim_handler,1);
-Min_temp = Optimum_Generator(sim_handler,2);
+Paings_model = Optimum_Generator(sim_handler,'Paings');
+Min_maxtemp = Optimum_Generator(sim_handler,'Min_Maxtemp');
+Min_temp = Optimum_Generator(sim_handler,'Min_Temp');
 
 
 

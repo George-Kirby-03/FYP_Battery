@@ -315,7 +315,7 @@ else
     temp_lambda = vdat.temp_weighting;
     temp_model=x(:,3);
     stageCost = (1-v_lim_lambda-temp_lambda)*(voltage_model-voltage_measured).^2 + (v_lim_lambda)*(coef-v_lim_u).^2 + (temp_lambda)*(temp_measured-temp_model).^2;
-end %-v_lim_lambda-temp_lambda
+end 
 
 %------------- END OF CODE --------------
 
