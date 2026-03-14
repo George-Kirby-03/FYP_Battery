@@ -15,9 +15,9 @@ y = Cycle10.Volts;
 
 %Code from previous tests on dans, data, kept in for extra redundancy;
 [tt_unique, ia] = unique(tt);
-tp_unique = tp(ia,:);  
-u1_unique = u1(ia,:);
-y_unique  = y(ia,:);
+tp_unique = tp(ia, :);  
+u1_unique = u1(ia, :);
+y_unique  = y(ia, :);
 
 
 tt = tt_unique - tt_unique(1);

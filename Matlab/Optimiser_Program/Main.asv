@@ -16,8 +16,59 @@
 
 table = readtable("GK_RS15_03_proc1_0000 - 025 (1).csv");
 
-table1 = readtable("GK_RS15_07_proc3_0000 - 031 (1).csv");
-[V,I,T,Ts] = get_cycle(csvfile,cycle_no)
+
+[V,I,T,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv",1);
+plot(Ts,V,Ts,I,Ts,T)
+
+% 3 structs, one is settings to set voltage lims, polylength and end/start conditions, other is
+% estimates on parameters and the last is a struct to specify what
+% parameters to fix or find
+
+[V,I,T,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv",1);
+cycle.volts = V;
+cycle.amps = I;
+cycle.ts = Ts - Ts(1); % start from t=0
+cycle.tp = T - T(1);
+
+settings.v_lim = 3.65;
+settings.v_low = 2.5;
+
+arguments
+cycle_file struct
+settings struct = struct('polycount',13,'v_low',2.5,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05)
+dynamics struct = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1)
+enforce struct = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05)
+end
+
+y = cycle_file.volts;
+u1 = cycle_file.amps;
+tt = cycle_file.ts - cycle_file.ts(1);
+
+settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05);
+dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
+enforce_default = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05);
+
+if isfield(cycle_file,'tp')
+    tp = cycle_file.tp; 
+else
+    tp = 0;
+end
+
+[problem,guess]=BatteryEstimation_temp(cycle,settings);          
+options= problem.settings(250); 
+[solution,MRHistory]=solveMyProblem(problem,guess,options);
+
+
+
+sim_handler = Cycle_Parametrisation(settings,dynamics,enforce);
+Parameterisation_Analysis(sim_handler);
+sim_handler = Greyest_Thermal(sim_handler);
+Greyest_Analysis(sim_handler);
+
+%optional
+Full_thermal_simulation(sim_handler);
+
+
 
 %% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
 %% If they are different, it may be wise to optimised against the hot internals rather than use the 0D lumped Cp & H produced
@@ -33,11 +84,18 @@ table1 = readtable("GK_RS15_07_proc3_0000 - 031 (1).csv");
 %% For this projects setting, the duration of 0-100% SoC charge has been determined and documented in the thesis, raw values
 %% are used here but can be obtained from the graphs produced above too 
 
+sim_handler.discharge_rate = 2;
+sim_handler.rest_period_discharge = 0.2;
+sim_handler.rest_period_charge = 0.1;
+
 
 %% The optimised protocols can now be produced, below calcuates the optimal stages for minimising Max Temp, minimising Temp state,
 %% minimising Paings Cost Function, and hopefully, one from AI / use to predict life cycle 
 
 
+Paings_model = Optimum_Generator(sim_handler,0);
+Min_maxtemp = Optimum_Generator(sim_handler,1);
+Min_temp = Optimum_Generator(sim_handler,2);
 
 
 

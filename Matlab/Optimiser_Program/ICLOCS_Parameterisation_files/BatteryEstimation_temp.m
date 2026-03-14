@@ -22,8 +22,8 @@ function [problem,guess] = BatteryEstimation_temp(cycle_file,settings,dynamics,e
 % Load the measurement from Data (George Kirby FYP)
 arguments
         cycle_file struct
-        settings struct = struct('polycount',9,'v_low',2.5,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05)
-        dynamics struct = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',20)
+        settings struct = struct('polycount',13,'v_low',2.5,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05)
+        dynamics struct = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1)
         enforce struct = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05)
 end
 
@@ -31,8 +31,8 @@ y = cycle_file.volts;
 u1 = cycle_file.amps;
 tt = cycle_file.ts - cycle_file.ts(1);
 
-settings_default = struct('polycount',9,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05);
-dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',20);
+settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05);
+dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
 enforce_default = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05);
 
 if isfield(cycle_file,'tp')
@@ -62,6 +62,7 @@ for i = 1:length(entries)
     end
 end
 
+problem.data.dynamics = dynamics;
 
 % OCV Poly values
 polycount = settings.polycount;
@@ -77,7 +78,6 @@ elseif enforce.Cp == 0 && enforce.Q == 0 && length(tp) > 2
     problem.data.poly = polymaker(polycount,400,1,1,v_low,dynamics);
     problem.data.needs_temp_dynamics = 1;
     problem.data.needs_capacity_dynamics = 1;
-    disp('this should be running')
 
 elseif enforce.Cp == 1 && enforce.Q == 0
     problem.data.poly = polymaker(polycount,400,1,0,v_low,dynamics);
@@ -150,11 +150,11 @@ guess.tf=tt(end);
 % Parameters bounds. pl=< p <=pu
 % Order must match polymaker: [poly, R0, R1, C, Q, Cp, h]
 
-problem.parameters.pl=[problem.data.poly.xl, 0.009, 0.003, 200,  1.0*3600, 80, 0.01];
-problem.parameters.pu=[problem.data.poly.xu, 0.15,   0.15,   2000, 1.8*3600, 300, 5];
+problem.parameters.pl=[problem.data.poly.xl, 0.009, 0.003, 200,  1.0*3600, 60, 0.01];
+problem.parameters.pu=[problem.data.poly.xu, 0.15, 0.15, 2000, 1.8*3600, 300, 5];
 
 % Guess the parameters
-guess.parameters=[problem.data.poly.xe, 0.05, 0.05, 300, 1.2*3600, 160, 1];
+guess.parameters=[problem.data.poly.xe, problem.data.poly.dynams];
 
 %% Just using as reference to know which memmbers to use here
 % cycle_file struct
@@ -166,8 +166,8 @@ guess.parameters=[problem.data.poly.xe, 0.05, 0.05, 300, 1.2*3600, 160, 1];
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.88, -0.3, -2]; 
-problem.states.x0u=[1, 0.3 2]; 
+problem.states.x0l=[0.88, -0.01, -2]; 
+problem.states.x0u=[0.99, 0.01 2]; 
 
 % State bounds. xl=< x <=xu
 problem.states.xl=[0, -0.8 -0.5];
@@ -182,11 +182,11 @@ problem.states.xErrorTol_integral=[1e-6 1e-6 1e-6];
 problem.states.xConstraintTol=[1e-4 1e-4 1e-4];
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[0.96, -0.3 -0.5];
-problem.states.xfu=[1, 0.3 10];
+problem.states.xfl=[0.91, -0.05 -0.5];
+problem.states.xfu=[1, 0.05 10];
 
 % Guess the state trajectories with [x0 xf]
-guess.states(:,1)=[0.95 0.95];
+guess.states(:,1)=[0.90 0.95];
 guess.states(:,2)=[0 0];
 guess.states(:,3)=[0 0];
 
@@ -309,11 +309,10 @@ coef = sum(p(:,1:vdat.poly.poly_length), 2);
 v_lim_lambda = vdat.coef_weighting;
 
 if vdat.needs_temp_dynamics == 0   
-    stageCost = (1-v_lim_lambda)*(voltage_model-voltage_measured).^2;% + (v_lim_lambda)*(coef-v_lim_u).^2;
+    stageCost = (1-v_lim_lambda)*(voltage_model-voltage_measured).^2 + (v_lim_lambda)*(coef-v_lim_u).^2;
 else
     temp_measured=vdat.OutputTemp(t);
     temp_lambda = vdat.temp_weighting;
-    temp_lambda = 0.01;
     temp_model=x(:,3);
     stageCost = (1-v_lim_lambda-temp_lambda)*(voltage_model-voltage_measured).^2 + (v_lim_lambda)*(coef-v_lim_u).^2 + (temp_lambda)*(temp_measured-temp_model).^2;
 end %-v_lim_lambda-temp_lambda
