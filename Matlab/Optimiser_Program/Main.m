@@ -22,6 +22,7 @@
 
 addpath(genpath('ICLOCS_Parameterisation_files'))
 addpath(genpath('Greyest_Parameterisation_files'))
+load RS_LiPo_extracted.mat
 
 [V,I,T,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv");
 cycle.volts = V;
@@ -29,11 +30,16 @@ cycle.amps = I;
 cycle.ts = Ts - Ts(1); % start from t=0
 cycle.tp = T - T(1);
 
+% settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05);
+% dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
+% enforce_default = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05);
+
+settings.polycount = 0;
 settings.v_lim = 3.65;
 settings.v_low = 2.5;
 dynamics  = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
 
-sim_handler = Cycle_Parmeterisation(cycle,dynamics,settings);
+sim_handler = Cycle_Parmeterisation(cycle,dynamics,settings,[],ocv_curve_2);
 %Parameterisation_Analysis(sim_handler);
 sim_handler = Greyest_Parameterisation(sim_handler);
 %Greyest_Analysis(sim_handler);

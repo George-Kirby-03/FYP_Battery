@@ -1,4 +1,4 @@
-function [problem,guess] = BatteryEstimation_temp(cycle_file,settings,dynamics,enforce)
+function [problem,guess] = BatteryEstimation_temp(cycle_file,settings,dynamics,enforce,ocv_curve)
 %DoubleIntergratorTracking - Double Integrator Tracking Problem
 %
 % Syntax:  [problem,guess] = DoubleIntergratorTracking
@@ -22,9 +22,10 @@ function [problem,guess] = BatteryEstimation_temp(cycle_file,settings,dynamics,e
 % Load the measurement from Data (George Kirby FYP)
 arguments
         cycle_file struct
-        settings struct = struct('polycount',13,'v_low',2.5,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05)
-        dynamics struct = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1)
-        enforce struct = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05)
+        settings struct
+        dynamics struct
+        enforce struct 
+        ocv_curve = 0
 end
 
 y = cycle_file.volts;
@@ -41,28 +42,41 @@ else
     tp = 0;
 end
 
-entries = fieldnames(settings_default);
+entries = fieldnames(settings);
 for i = 1:length(entries)
-    if ~isfield(settings, entries{i})
-        settings.(entries{i}) = settings_default.(entries{i});
+    if isfield(settings_default, entries{i})
+        settings_default.(entries{i}) = settings.(entries{i});
     end
 end
 
-entries = fieldnames(dynamics_default);
+entries = fieldnames(dynamics);
 for i = 1:length(entries)
-    if ~isfield(settings, entries{i})
-        dynamics.(entries{i}) = dynamics_default.(entries{i});
+    if isfield(dynamics, entries{i})
+        dynamics_default.(entries{i}) = dynamics.(entries{i});
     end
 end
 
-entries = fieldnames(enforce_default);
+entries = fieldnames(enforce);
 for i = 1:length(entries)
-    if ~isfield(settings, entries{i})
-        enforce.(entries{i}) = enforce_default.(entries{i});
+    if isfield(enforce_default, entries{i})
+        enforce_default.(entries{i}) = enforce.(entries{i});
     end
 end
+
+enforce = enforce_default;
+dynamics = dynamics_default;
+settings = settings_default;
 
 problem.data.dynamics = dynamics;
+
+if isfloat(ocv_curve) && (settings.polycount == 0)
+    error('0 polycount given but no ocv_curve supplied')
+elseif ~isfloat(ocv_curve) && (settings.polycount == 0)
+    disp('Using Supplied OCV_Curve')
+    problem.data.ocv_curve = ocv_curve;
+else
+    disp('Calculating OCV curve')
+end
 
 % OCV Poly values
 polycount = settings.polycount;
@@ -102,7 +116,7 @@ problem.data.temp_weighting = enforce.temp_strength;
 
 problem.data.poly.v_lim = settings.v_lim;
 
-if settings.v_lim == 0
+if settings.v_lim == 0 || ~isfloat(ocv_curve)
     problem.data.coef_weighting = 0;
 else
     problem.data.coef_weighting = enforce.v_lim_strength;
@@ -292,10 +306,7 @@ voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
 voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
-%voltage_model = p(:,1) + p(:,2).*x1 + p(:,3).*x1.^2 + p(:,4).*x1.^3 + x2 + R0.*u1;
-% for i=1:poly_length
-%     x = x + p(:,i).*x1.^(i-1);
-% end
+
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
 
@@ -303,10 +314,9 @@ v_lim_u = vdat.poly.v_lim;
 
 % Polysumation, to fix the ocv(1)
 coef = sum(p(:,1:vdat.poly.poly_length), 2);
+v_lim_lambda = vdat.coef_weighting;
 
 %Different stage costs needed for the different options
-
-v_lim_lambda = vdat.coef_weighting;
 
 if vdat.needs_temp_dynamics == 0   
     stageCost = (1-v_lim_lambda)*(voltage_model-voltage_measured).^2 + (v_lim_lambda)*(coef-v_lim_u).^2;

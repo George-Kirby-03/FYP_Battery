@@ -1,4 +1,4 @@
-function [problem,guess] = BatteryEstimation_temp(cycle_file,settings,dynamics,enforce)
+function [problem,guess] = BatteryEstimation_temp(cycle_file,settings,dynamics,enforce,ocv_curve)
 %DoubleIntergratorTracking - Double Integrator Tracking Problem
 %
 % Syntax:  [problem,guess] = DoubleIntergratorTracking
@@ -22,9 +22,10 @@ function [problem,guess] = BatteryEstimation_temp(cycle_file,settings,dynamics,e
 % Load the measurement from Data (George Kirby FYP)
 arguments
         cycle_file struct
-        settings struct = struct('polycount',13,'v_low',2.5,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05)
-        dynamics struct = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1)
-        enforce struct = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05)
+        settings struct
+        dynamics struct
+        enforce struct 
+        ocv_curve = 0
 end
 
 y = cycle_file.volts;
@@ -62,7 +63,19 @@ for i = 1:length(entries)
     end
 end
 
+
+
+
 problem.data.dynamics = dynamics;
+
+if isfloat(ocv_curve) && (settings.polycount == 0)
+    error('0 polycount given but no ocv_curve supplied')
+elseif ~isfloat(ocv_curve) && (settings.polycount == 0)
+    message('Using Supplied OCV_Curve')
+    problem.data.ocv_curve = ocv_curve;
+else
+    message('Calculating OCV curve')
+end
 
 % OCV Poly values
 polycount = settings.polycount;
@@ -78,7 +91,6 @@ elseif enforce.Cp == 0 && enforce.Q == 0 && length(tp) > 2
     problem.data.poly = polymaker(polycount,400,1,1,v_low,dynamics);
     problem.data.needs_temp_dynamics = 1;
     problem.data.needs_capacity_dynamics = 1;
-    problem.data.foward_data.r
 
 elseif enforce.Cp == 1 && enforce.Q == 0
     problem.data.poly = polymaker(polycount,400,1,0,v_low,dynamics);
@@ -103,7 +115,7 @@ problem.data.temp_weighting = enforce.temp_strength;
 
 problem.data.poly.v_lim = settings.v_lim;
 
-if settings.v_lim == 0
+if settings.v_lim == 0 || ~isfloat(ocv_curve)
     problem.data.coef_weighting = 0;
 else
     problem.data.coef_weighting = enforce.v_lim_strength;
@@ -293,10 +305,6 @@ voltage_measured=vdat.OutputVoltage(t);
 
 % Compute the output voltage of the Model
 voltage_model= polymodel(vdat,p,x1) + x2 + R0.*u1;
-%voltage_model = p(:,1) + p(:,2).*x1 + p(:,3).*x1.^2 + p(:,4).*x1.^3 + x2 + R0.*u1;
-% for i=1:poly_length
-%     x = x + p(:,i).*x1.^(i-1);
-% end
 % Compute the stage cost as the difference squared (try to make the output
 % voltage of the model match the measurement, for the same input)
 
@@ -304,20 +312,18 @@ v_lim_u = vdat.poly.v_lim;
 
 % Polysumation, to fix the ocv(1)
 coef = sum(p(:,1:vdat.poly.poly_length), 2);
+v_lim_lambda = vdat.coef_weighting;
 
 %Different stage costs needed for the different options
 
-v_lim_lambda = vdat.coef_weighting;
-
 if vdat.needs_temp_dynamics == 0   
-    stageCost = (1-v_lim_lambda)*(voltage_model-voltage_measured).^2;% + (v_lim_lambda)*(coef-v_lim_u).^2;
+    stageCost = (1-v_lim_lambda)*(voltage_model-voltage_measured).^2 + (v_lim_lambda)*(coef-v_lim_u).^2;
 else
     temp_measured=vdat.OutputTemp(t);
     temp_lambda = vdat.temp_weighting;
-    temp_lambda = 0.005;
     temp_model=x(:,3);
     stageCost = (1-v_lim_lambda-temp_lambda)*(voltage_model-voltage_measured).^2 + (v_lim_lambda)*(coef-v_lim_u).^2 + (temp_lambda)*(temp_measured-temp_model).^2;
-end %-v_lim_lambda-temp_lambda
+end 
 
 %------------- END OF CODE --------------
 

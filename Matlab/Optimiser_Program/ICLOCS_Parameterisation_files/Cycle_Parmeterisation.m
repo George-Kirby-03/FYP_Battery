@@ -13,7 +13,8 @@ arguments (Output)
     sim_handler
 end
 
-[problem,guess]=BatteryEstimation_temp(cycle,settings);          % Fetch the problem definition
+
+[problem,guess]=BatteryEstimation_temp(cycle,settings,dynamics,enforce,ocv_curve);          % Fetch the problem definition
 options=problem.settings(250);                  % Get options and solver settings 
 [solution,~]=solveMyProblem( problem,guess,options);
 
@@ -35,6 +36,7 @@ if isfloat(ocv_curve)
 else
     sim_handler.ocv_curve.curvefun = ocv_curve;
 end
+
 
 
 end
