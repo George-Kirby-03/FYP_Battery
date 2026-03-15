@@ -31,19 +31,24 @@ cycle.amps = I;
 cycle.ts = Ts - Ts(1); % start from t=0
 cycle.tp = T - T(1);
 
-% settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05);
+% settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05,'iterations',250);
 % dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
 % enforce_default = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05);
 
-settings.polycount = 0;
+% If you want to pass a predifined OCV_curve, set the polycount to 0 and
+% supply OCV_Curve as last parameter in Cycle_Parameterisation, vlims will
+% be ignored if you do
+
+settings.iterations = 100; 
+settings.polycount = 8;
 settings.v_lim = 3.65;
 settings.v_low = 2.5;
 dynamics  = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
 
-sim_handler = Cycle_Parmeterisation(cycle,dynamics,settings,[],ocv_curve_2);
-%Parameterisation_Analysis(sim_handler);
+sim_handler = Cycle_Parmeterisation(cycle,dynamics,settings,[],[]);
+% Parameterisation_Analysis(sim_handler); (Not made yet)
 sim_handler = Greyest_Parameterisation(sim_handler);
-%Greyest_Analysis(sim_handler);
+% Greyest_Analysis(sim_handler); (Not made yet)
 
 
 
@@ -54,7 +59,7 @@ sim_handler = Greyest_Parameterisation(sim_handler);
 %% From above
 
 %optional
-Full_thermal_simulation(sim_handler);
+%Full_thermal_simulation(sim_handler);
 
 
 %% Code to produce graphs to help make charge discharge descisions based from the framework used in Attias paper, 
@@ -64,18 +69,28 @@ Full_thermal_simulation(sim_handler);
 %% For this projects setting, the duration of 0-100% SoC charge has been determined and documented in the thesis, raw values
 %% are used here but can be obtained from the graphs produced above too 
 
-sim_handler.discharge_rate = 2;
-sim_handler.rest_period_discharge = 0.2;
-sim_handler.rest_period_charge = 0.1;
+%sim_handler.discharge_rate = 2;
+%sim_handler.rest_period_discharge = 0.2;
+%sim_handler.rest_period_charge = 0.1;
 
 
 %% The optimised protocols can now be produced, below calcuates the optimal stages for minimising Max Temp, minimising Temp state,
 %% minimising Paings Cost Function, and hopefully, one from AI / use to predict life cycle 
 
+%OPTIONAL function to use a predifned ocv_curve for otpimsations if one
+%wanst given during the parametrisation stage
 
-Paings_model = Optimum_Generator(sim_handler,'Paings');
-Min_maxtemp = Optimum_Generator(sim_handler,'Min_Maxtemp');
-Min_temp = Optimum_Generator(sim_handler,'Min_Temp');
+sim_handler = ocv_fun_injection(sim_handler,ocv_curve_2);
+
+%Optimiser settings to configure
+optim_settings.Tmax=80;
+optim_settings.Tamb=20;
+optim_settings.tf=1860;
+
+%Paings_model = Optimum_Generator(sim_handler,'Paings'); (Not made yet)
+sim_handler = Optimum_Generator(sim_handler,optim_settings,'Min_Maxtemp');
+main_BatteryCharging(sim_handler)
+%Min_temp = Optimum_Generator(sim_handler,'Min_Temp'); (Not made yet)
 
 
 

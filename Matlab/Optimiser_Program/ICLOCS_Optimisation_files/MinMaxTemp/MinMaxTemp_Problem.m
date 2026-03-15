@@ -51,15 +51,15 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=sim_handler.current_sol.Q;
-problem.mp.data.R0=sim_handler.current_sol.R0;
-problem.mp.data.R1=sim_handler.current_sol.R1;
-problem.mp.data.C1=sim_handler.current_sol.C;
+problem.mp.data.Q=sim_handle.current_sol.Q;
+problem.mp.data.R0=sim_handle.current_sol.R0;
+problem.mp.data.R1=sim_handle.current_sol.R1;
+problem.mp.data.C1=sim_handle.current_sol.C;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
 problem.mp.data.batt_m=1;
-problem.mp.data.batt_Cp=sim_handler.current_sol.Cp;
-problem.mp.data.batt_h=sim_handler.current_sol.h;
+problem.mp.data.batt_Cp=sim_handle.current_sol.Cp;
+problem.mp.data.batt_h=sim_handle.current_sol.h;
 problem.mp.data.TempAmb=sim_handle.optim_params.Tamb;
 problem.mp.data.batt_A=1;
 problem.mp.data.ocvpoly=ocv_curve_2;

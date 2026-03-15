@@ -32,7 +32,7 @@ y = cycle_file.volts;
 u1 = cycle_file.amps;
 tt = cycle_file.ts - cycle_file.ts(1);
 
-settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05);
+settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05,'iterations',250);
 dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
 enforce_default = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05);
 
@@ -74,6 +74,11 @@ if isfloat(ocv_curve) && (settings.polycount == 0)
 elseif ~isfloat(ocv_curve) && (settings.polycount == 0)
     disp('Using Supplied OCV_Curve')
     problem.data.ocv_curve = ocv_curve;
+    if settings.v_lim ~= 0 || settings.v_low ~= 0
+        warning('Voltage limits given but also ocv_curve, ignoring limits')
+    end
+    settings.v_lim = ocv_curve(1);
+    settings.v_low = ocv_curve(0);
 else
     disp('Calculating OCV curve')
 end
@@ -145,7 +150,7 @@ problem.analyticDeriv.hessianLagrangian=[];
 problem.analyticDeriv.jacConst=[];
 
 % Settings file
-problem.settings=@settings_BatteryEstimation;
+problem.settings=@(varargin) settings_BatteryEstimation(settings.iterations,varargin{:});
 
 
 %Initial Time. t0<tf

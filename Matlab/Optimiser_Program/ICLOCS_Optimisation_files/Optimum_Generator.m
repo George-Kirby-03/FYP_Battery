@@ -1,4 +1,4 @@
-function [outputArg1] = Optimum_Generator(sim_handler,optimisation_parameters,optimisation_goal)
+function sim_handler = Optimum_Generator(sim_handler,optimisation_parameters,optimisation_goal)
 %OPTIMUM_GENERATOR undefined
 %   undefined
 arguments (Input)
@@ -13,12 +13,12 @@ else
 end
 if strcmpi(optimisation_goal,'Paings')
 elseif strcmpi(optimisation_goal,'Min_Maxtemp')
-   
+   results = Run_MinMaxTemp(sim_handler);
+   sim_handler.MinMaxTemp = results;
 elseif strcmpi(optimisation_goal,'Min_Temp')
 else
     error("No valid optimisation strategy selected, choose either: Paings, Min_Maxtemp or Min_temp")
-outputArg1 = 2;
-
+end
 end
 
 

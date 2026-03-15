@@ -1,4 +1,7 @@
-function options = settings_DoubleIntegratorTracking(varargin)
+function options = settings_BatteryEstimation(iterations,varargin)
+
+%GK - slight modification to the function fingerpitn, added manual
+%itterations parameter for ease of selection 
 
 %SETTINGS - General and solver-specific settings are selected here
 % Unless specified otherwise the options are set using 0 => no and 1 => yes
@@ -149,7 +152,7 @@ options.NLPsolver='ipopt';
 %---------------------------------------
 options.ipopt.tol=1e-9;                        % Desired convergence tolerance (relative). The default value is  1e-8. 
 options.ipopt.print_level=5;                   % Print level. The valid range for this integer option is [0,12] and its default value is 5.
-options.ipopt.max_iter= 250;                   % Maximum number of iterations. The default value is 3000.
+options.ipopt.max_iter= iterations;                   % Maximum number of iterations. The default value is 3000.
  
 options.ipopt.mu_strategy ='adaptive';         % Determines which barrier parameter update strategy is to be used. 
                                                % The default value for this string option is "monotone".
@@ -267,7 +270,7 @@ options.regstrategy='off';
 % Auto selection of h/hp method based on input formulation of the settings function call
 %---------------------------------------
 % LEAVE THIS PART UNCHANGED AND USE FUNCTION SYNTAX (AS DESCRIBED ON THE TOP) TO DEFINE THE ITEGRATION NODES
-if nargin==2
+if nargin==3 %%minor modification here due to the added itteration input
     if strcmp(varargin{2},'h')
         options.nodes=varargin{1}; 
         options.discretization='hermite';

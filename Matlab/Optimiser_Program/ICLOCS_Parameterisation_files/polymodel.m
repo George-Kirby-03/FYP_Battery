@@ -5,7 +5,7 @@ function x = polymodel(data,p,x1,sol)
         data
         p
         x1
-        sol = 0   % Default value
+        sol = 0  
     end
 
 x = 0;
