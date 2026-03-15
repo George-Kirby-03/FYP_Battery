@@ -60,16 +60,16 @@ problem.states.x0u=x0ul{i}(2,:);
 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 0 0 0.1];
-problem.states.xu=[1 0.4 Temp_Max inf];
+problem.states.xl=[0 0 0];
+problem.states.xu=[1 0.4 Temp_Max];
 
 
 % State error bounds
-problem.states.xErrorTol_local=[1e-3 1e-3 1e-3 1e-3];
-problem.states.xErrorTol_integral=[1e-2 1e-2 1e-3 1e-3];
+problem.states.xErrorTol_local=[1e-3 1e-3 1e-3];
+problem.states.xErrorTol_integral=[1e-2 1e-2 1e-3];
 
 % State constraint error bounds
-problem.states.xConstraintTol=[1e-2 1e-2 1e-3 1e-3];
+problem.states.xConstraintTol=[1e-2 1e-2 1e-3];
 
 
 % Terminal state bounds. xfl=< xf <=xfu
@@ -80,7 +80,6 @@ problem.states.xfu=xful{i}(2,:);
 guess.states(:,1)=[0.25*(i-1) 0.25*i];
 guess.states(:,2)=[0 0.25];
 guess.states(:,3)=[25 Temp_Max];
-guess.states(:,4)=[0.1 1];
 
 
 % Number of control actions N 
@@ -113,9 +112,9 @@ problem.setpoints.inputs=[];
 problem.constraints.ng_eq=0;
 problem.constraints.gTol_eq=[];
 
-problem.constraints.gl=[problem_mp.data.Vmin ];
-problem.constraints.gu=[problem_mp.data.Vmax ];
-problem.constraints.gTol_neq=[0.01 ];
+problem.constraints.gl=[problem_mp.data.Vmin -inf];
+problem.constraints.gu=[problem_mp.data.Vmax 0];
+problem.constraints.gTol_neq=[0.01 0.01];
 
 
 
@@ -176,31 +175,8 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 %------------- BEGIN CODE --------------
 
 
-%stageCost = 0*t;
-% stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
-SOC = x(:,1);V_RC = x(:,2);Temp_batt=x(:,3);Big_I=x(:,4);I=u(:,1);
-
-T=Temp_batt+273;
-% I_Crate= I/3600.*vdat.Q/3600;
-% Bcyc = 3.16e3;  
-% Ecyc = 3.17e4; alpha = 370.3; R = 8.3144; zcyc = 0.55;
-% B_tilda = -Ecyc/R+alpha/R.*abs(I_Crate);
-% stageCost = Bcyc.*(Big_I.^(zcyc-1).*exp(B_tilda./T).*((0)-(Big_I.*B_tilda.*dx3)+(0)))./(T.^2);   
-
-Ea=25000;
-z=0.54;
-R=8.341;
-B=0.1614;
-
-dx3 = 1./(vdat.mp.batt_m*vdat.mp.batt_Cp).*(I.^2*(vdat.mp.R0+vdat.mp.R1)-vdat.batt_h*vdat.mp.batt_A*(Temp_batt-vdat.mp.TempAmb));
-
-
-stageCost = B*exp(-Ea./R./T).*Big_I.^z.*(Ea/R*dx3./(T.^2)+z*I/3600./Big_I);
-    
-
-
-stageCost = stageCost*10000000;%min Paing
-stageCost = stageCost.^2*10000000; %min Paing sq
+stageCost = 0*t;
+%stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
 %------------- END OF CODE --------------
 
 
@@ -228,9 +204,9 @@ function boundaryCost=E_unscaled(x0,xf,u0,uf,p,t0,tf,vdat)
 boundaryCost=0;
 
 %boundaryCost = (xf(3)).^2; %For each stage, i belive this should minimise temp rise from the ambient
-  % if vdat.iPhase==vdat.mp.N_phases 
-  %     boundaryCost = p(end);
-  % end
+  if vdat.iPhase==vdat.mp.N_phases 
+      boundaryCost = p(end);
+  end
 
 %------------- END OF CODE --------------
 

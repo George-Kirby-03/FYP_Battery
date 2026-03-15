@@ -31,7 +31,7 @@ function [dx,g_neq] = BatteryCharging_Dynamics_AllPhases(x,u,p,t,vdat)
 %
 %------------- BEGIN CODE --------------
 
-x1 = x(:,1);x2 = x(:,2);x3=x(:,3);u1 = p(:,vdat.iPhase); 
+x1 = x(:,1);x2 = x(:,2);x3=x(:,3);u1 = p(:,vdat.iPhase);
 
 dx(:,1) = u1./vdat.mp.Q;
 
@@ -39,9 +39,9 @@ dx(:,2) = -x2./(vdat.mp.R1*vdat.mp.C1)+u1./vdat.mp.C1;
 
 dx(:,3) = 1./(vdat.mp.batt_m*vdat.mp.batt_Cp).*(u1.^2*(vdat.mp.R0+vdat.mp.R1)-vdat.batt_h*vdat.mp.batt_A*(x3-vdat.mp.TempAmb));
 
-dx(:,4) = u1/3600;
+
 
 %g_neq=3.64+0.55*x1-0.72*x1.^2+0.75*x1.^3+x2+vdat.mp.R0*u1;
-g_neq= [vdat.ocvpoly(x1)+x2+vdat.mp.R0*u1]; %Simpler poly that used in other simulations, charging shouldnt be hitting the Vout Limit anyways to 80% SoC
+g_neq= [vdat.ocvpoly(x1)+x2+vdat.mp.R0*u1 x3-p(:,end)]; %Simpler poly that used in other simulations, charging shouldnt be hitting the Vout Limit anyways to 80% SoC
 %g_neq= [polyval(vdat.ocvpolytucke+x2+vdat.mp.R0*u1 x3-p(:,end)];
 %------------- END OF CODE --------------

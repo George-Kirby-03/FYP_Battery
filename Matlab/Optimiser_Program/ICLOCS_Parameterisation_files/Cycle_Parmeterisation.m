@@ -32,9 +32,13 @@ for i=1:length(dynamics_vars)
 end
 
 if isfloat(ocv_curve)
-    sim_handler.ocv_curve.polys = solution.p(1:(problem.data.poly.poly_length));
+    sim_handler.ocv_curve_dat.polys = solution.p(1:(problem.data.poly.poly_length));
+    temp.poly.xe = ones(1,length(problem.data.poly.xe));
+    sim_handler.ocv_curve = @(x1) polymodel(temp,sim_handler.ocv_curve_dat.polys,x1,1);
 else
-    sim_handler.ocv_curve.curvefun = ocv_curve;
+    sim_handler.ocv_curve_dat.curvefun = ocv_curve;
+    temp.ocv_curve = sim_handler.ocv_curve_dat.curvefun;
+    sim_handler.ocv_curve = @(x1) polymodel(temp,0,x1,1);
 end
 
 

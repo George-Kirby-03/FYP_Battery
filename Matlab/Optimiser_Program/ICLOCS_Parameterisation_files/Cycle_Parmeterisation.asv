@@ -13,7 +13,7 @@ arguments (Output)
     sim_handler
 end
 
-message(['Passed'])
+
 [problem,guess]=BatteryEstimation_temp(cycle,settings,dynamics,enforce,ocv_curve);          % Fetch the problem definition
 options=problem.settings(250);                  % Get options and solver settings 
 [solution,~]=solveMyProblem( problem,guess,options);
@@ -32,9 +32,10 @@ for i=1:length(dynamics_vars)
 end
 
 if isfloat(ocv_curve)
-    sim_handler.ocv_curve.polys = solution.p(1:(problem.data.poly.poly_length));
+    sim_handler.ocv_curve_dat.polys = solution.p(1:(problem.data.poly.poly_length));
+    sim_handler.ocv_curve = @() polymodel(data,)
 else
-    sim_handler.ocv_curve.curvefun = ocv_curve;
+    sim_handler.ocv_curve_dat.curvefun = ocv_curve;
 end
 
 

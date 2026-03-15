@@ -22,6 +22,7 @@
 
 addpath(genpath('ICLOCS_Parameterisation_files'))
 addpath(genpath('Greyest_Parameterisation_files'))
+addpath(genpath('ICLOCS_Optimisation_files'))
 load RS_LiPo_extracted.mat
 
 [V,I,T,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv");
