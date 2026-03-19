@@ -32,7 +32,7 @@ y = cycle_file.volts;
 u1 = cycle_file.amps;
 tt = cycle_file.ts - cycle_file.ts(1);
 
-settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05,'iterations',250);
+settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05,'iterations',250,'nodes',200);
 dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
 enforce_default = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.05);
 

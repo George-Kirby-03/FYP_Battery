@@ -14,13 +14,13 @@ arguments (Output)
 end
 
 
-[problem,guess]=BatteryEstimation_temp(cycle,settings,dynamics,enforce,ocv_curve);          % Fetch the problem definition
-if isfield(settings,'iterations')
-    iters = settings.iterations;
+[problem,guess]=BatteryEstimation_temp(cycle,settings,dynamics,enforce,ocv_curve);   
+if isfield(settings,'nodes')
+    nodes = settings.nodes;
 else
-    iters = 150;
+    nodes = 200;
 end
-options=problem.settings(iters);                  % Get options and solver settings 
+options=problem.settings(nodes);                  % Get options and solver settings 
 [solution,~]=solveMyProblem( problem,guess,options);
 
 sim_handler.original_data = cycle;

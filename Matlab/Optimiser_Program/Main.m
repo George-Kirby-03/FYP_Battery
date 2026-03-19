@@ -25,11 +25,11 @@ addpath(genpath('Greyest_Parameterisation_files'))
 addpath(genpath('ICLOCS_Optimisation_files'))
 load RS_LiPo_extracted.mat
 
-[V,I,T,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv");
-cycle.volts = V;
-cycle.amps = I;
-cycle.ts = Ts - Ts(1); % start from t=0
-cycle.tp = T - T(1);
+[V,I,T,Ts] = get_cycle("GK_RS15_01_baseline_0000 - 027.csv",1);
+cycle.volts = V{1};
+cycle.amps = I{1};
+cycle.ts = Ts{1} - Ts{1}(1); % start from t=0
+cycle.tp = T{1} - T{1}(1);
 
 % settings_default = struct('polycount',13,'v_low',0,'v_lim',0,'start_soc',0,'end_soc',1,'range',0.05,'iterations',250);
 % dynamics_default = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
@@ -38,14 +38,14 @@ cycle.tp = T - T(1);
 % If you want to pass a predifined OCV_curve, set the polycount to 0 and
 % supply OCV_Curve as last parameter in Cycle_Parameterisation, vlims will
 % be ignored if you do
-
-settings.iterations = 100; 
-settings.polycount = 8;
+settings.nodes = 200;
+settings.iterations = 200; 
+settings.polycount = 14;
 settings.v_lim = 3.65;
 settings.v_low = 2.5;
-dynamics  = struct('Q',1.5*3600,'C',300,'R0',0.05,'R1',0.05,'Cp',160,'h',1);
-
-sim_handler = Cycle_Parmeterisation(cycle,dynamics,settings,[],[]);
+dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.05,'Cp',160,'h',1);
+enforce.temp_strength = 0.0001;
+sim_handler = Cycle_Parmeterisation(cycle,dynamics,settings,enforce,[]);
 % Parameterisation_Analysis(sim_handler); (Not made yet)
 sim_handler = Greyest_Parameterisation(sim_handler);
 % Greyest_Analysis(sim_handler); (Not made yet)
