@@ -51,7 +51,7 @@ else
         idx_discharge_start = find(table1.Amps < -0.01, 1);
         idx_discharge_start = idx_discharge_start - 10;
        % time0 = table1.TestTime(idx_discharge_start);
-        if idx_discharge_start < 1
+        if isempty(idx_discharge_start)
             break
         end
         idx_charge_start = find(table1.Amps(idx_discharge_start:end) > 0.01, 1);
