@@ -1,0 +1,32 @@
+ 2.6729e+03
+45.3040
+
+fidged 
+problem.mp.data.batt_Cp=2.0e+03;
+problem.mp.data.batt_h=35.3040;
+
+params.Cp = 2.6e+03;
+params.h = 38.3040;
+
+
+problem.mp.data.batt_Cp=2.4e+03;
+problem.mp.data.batt_h=34.3040;
+
+
+Paings original...  (protocol 1)
+2C (from 0-20%SoC), then 1.8C (from 20-40% SoC), then 1.65C(from 40 - 60% SoC), then 0.9C(from 60 - 80% SoC)
+
+Paings (modified Cp H)... 
+2C (from 0-20%SoC), then 1.8C (from 20-40% SoC), then 1.6C(from 40 - 60% SoC), then 0.97C(from 60 - 80% SoC)
+
+Minimising max_temp original...  (protocol 2)
+2C (from 0-20%SoC), then 1.4C (from 20-40% SoC), then 1.35C(from 40 - 60% SoC), then 1.35C(from 60 - 80% SoC)
+
+Minimising max_temp (modified Cp H)... 
+2C (from 0-20%SoC), then 1.4C (from 20-40% SoC), then 1.33C(from 40 - 60% SoC), then 1.33C(from 60 - 80% SoC)
+
+Minimising temp intergral original...  (protocol 3)
+1.3C (from 0-20%SoC), then 1.45C (from 20-40% SoC), then 1.75C(from 40 - 60% SoC), then 1.53C(from 60 - 80% SoC)
+
+Minimising temp intergral (modified Cp H)... 
+1.3C (from 0-20%SoC), then 1.45C (from 20-40% SoC), then 1.73C(from 40 - 60% SoC), then 1.53C(from 60 - 80% SoC)

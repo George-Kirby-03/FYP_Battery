@@ -1,4 +1,4 @@
-function [V,I,T,Ts] = get_cycle(csvfile,mode)
+function [V,I,T,Ah,Ts] = get_cycle(csvfile,mode)
 %GET_CYCLE undefined
 %   undefined
 arguments (Input)
@@ -10,6 +10,7 @@ arguments (Output)
     V
     I
     T
+    Ah
     Ts
 end
 
@@ -40,6 +41,7 @@ while true
     V{i}  = table1.Volts(idx_cycle_start:idx_cycle_end);
     I{i}  = table1.Amps(idx_cycle_start:idx_cycle_end);
     T{i}  = table1.Temp1(idx_cycle_start:idx_cycle_end);
+    Ah{i} = table1.Amp_hr(idx_cycle_start:idx_cycle_end);
     Ts{i} = table1.TestTime(idx_cycle_start:idx_cycle_end);    
     %Truncate and repeat
     table1 = table1(idx_cycle_end:end,:);
@@ -62,9 +64,10 @@ else
         V{i} = table1.Volts(idx_discharge_start:idx_end);
         I{i}  = table1.Amps(idx_discharge_start:idx_end);
         T{i}  = table1.Temp1(idx_discharge_start:idx_end);
+        Ah{i} = table1.Amp_hr(idx_discharge_start:idx_end);
         Ts{i} = table1.TestTime(idx_discharge_start:idx_end); 
         table1 = table1(idx_end+1:end,:);
-        i = i+1
+        i = i+1;
     end
 end
 end

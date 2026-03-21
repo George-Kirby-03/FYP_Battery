@@ -25,24 +25,25 @@ addpath(genpath('Greyest_Parameterisation_files'))
 addpath(genpath('ICLOCS_Optimisation_files'))
 load RS_LiPo_extracted.mat
 
-[V,I,T,Ts] = get_cycle("GK_RS15_01_baseline_0000 - 027.csv",1);
+[V,I,T,Ah,Ts] = get_cycle("GK_RS15_08_proc3_0000 - 032.csv",1);
 sim_handler = cell(1, size(V,2)-1);
 
 
-settings.nodes = 220;
+settings.nodes = 230;
 settings.iterations = 200; 
 settings.polycount = 14;
 settings.v_lim = 3.65;
 settings.v_low = 2.5;
 
 dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.05,'Cp',160,'h',1);
-enforce.temp_strength = 0.00001;
+enforce.temp_strength = 0;
 
-idx = find(mod(1:size(V,2)-1, 10) == 0);
+idx = find(mod(1:size(V,2)-1, 5) == 0);
 V = V(idx);
 I = I(idx);
 Ts = Ts(idx);
 T = T(idx);
+Ah = Ah(idx);
 
 
 parfor i = 1:length(idx)
@@ -51,6 +52,7 @@ parfor i = 1:length(idx)
     cycle.amps = I{i};
     cycle.ts = Ts{i} - Ts{i}(1);
     cycle.tp = T{i} - T{i}(1);
+    cycle.Ah = Ah{i};
 
     tmp = Cycle_Parmeterisation(cycle,dynamics,settings,enforce,[]);
     tmp = Greyest_Parameterisation(tmp);
