@@ -1,8 +1,8 @@
-load int_temp.mat
-%load baseline1-800.mat
+%load int_temp.mat
+load baseline1-800.mat
+%load paings1-200.mat
 
-
-for k = 1:39
+for k = 1:88
    Qs(k) =  sim_handler{k}.current_sol.Q;
    R0s(k) =  sim_handler{k}.current_sol.R0;
    R1s(k) =  sim_handler{k}.current_sol.R1;
@@ -10,6 +10,7 @@ for k = 1:39
    Cps(k) =  sim_handler{k}.current_sol.Cp;
    Hs(k) =  sim_handler{k}.current_sol.h;
    Ah(k) = max(sim_handler{k}.original_data.Ah)*3600;
+   Sum_res(k) = R0s(k) + R1s(k);
    cycle(k) = k*5;
 
 end
@@ -61,3 +62,6 @@ R0filt = findobj(gcf,"DisplayName","R0 filt");
 R0filt.LineWidth = 3;
 R1filt = findobj(gcf,"DisplayName","R1 filt");
 R1filt.LineWidth = 3;
+
+figure 
+plot(cycle,Sum_res)
