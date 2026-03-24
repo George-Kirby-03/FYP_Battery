@@ -94,14 +94,7 @@ plot(cycle_1,Ah_proc1/max(Ah_proc1))
 
 figure()
 hold on
-plot(cycle_b,Sum_rb/max(Sum_rb))
-plot(cycle_3,Sum_r3/max(Sum_r3))
-plot(cycle_2,Sum_r2/max(Sum_r2))
-plot(cycle_1,Sum_r1/max(Sum_r1))
-
-figure()
-hold on
-plot(cycle_b,Sum_rb)
-plot(cycle_3,Sum_r3)
-plot(cycle_2,Sum_r2)
-plot(cycle_1,Sum_r1)
+plot(cycle_b,Ah_b/max(Ah_b))
+plot(Sum_r1,Ah_proc3/max(Ah_proc3))
+plot(cycle_2,Ah_proc2/max(Ah_proc2))
+plot(cycle_1,Ah_proc1/max(Ah_proc1))
