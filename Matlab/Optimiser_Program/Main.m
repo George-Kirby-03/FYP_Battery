@@ -25,7 +25,7 @@ addpath(genpath('Greyest_Parameterisation_files'))
 addpath(genpath('ICLOCS_Optimisation_files'))
 load RS_LiPo_extracted.mat
 
-[V,I,T,Ah,Ts] = get_cycle("GK_RS15_08_proc3_0000 - 032.csv",1);
+[V,I,T,Ah,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (2).csv",1);
 sim_handler = cell(1, size(V,2)-1);
 
 
@@ -61,7 +61,7 @@ parfor i = 1:length(idx)
 end
 
 
-
+save ptoc3-31.mat sim_handler
 
 
 %% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
