@@ -1,4 +1,4 @@
-load int_temp.mat
+load MAX_TEMP_B2.mat
 
 k = 1;
 while true
