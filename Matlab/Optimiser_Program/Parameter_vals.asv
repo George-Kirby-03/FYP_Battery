@@ -1,0 +1,31 @@
+load paings1-200.mat
+
+k = numel(sim_handler);
+
+count = 0;
+idx = 0;
+
+Ah_proc2 = [];
+Cap_proc2 = [];
+cycle_2 = [];
+Sum_r2 = [];
+
+for i = k:-1:1 
+   
+    if isfield(sim_handler{i}, "current_sol")
+        
+        idx = idx + 1;
+        
+        Ah_proc2(idx) = max(sim_handler{i}.original_data.Ah) * 3600;
+        Cap_proc2(idx) = sim_handler{i}.current_sol.Q;
+        cycle_2(idx) = i * 5;
+        Sum_r2(idx) = sim_handler{i}.current_sol.R0 + sim_handler{i}.current_sol.R1;
+        
+        count = count + 1;
+        
+        if count == 5
+            break   % stop after 5 valid entries
+        end
+    end
+end
+

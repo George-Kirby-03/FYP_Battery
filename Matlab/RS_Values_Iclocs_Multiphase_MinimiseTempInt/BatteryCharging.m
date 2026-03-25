@@ -40,9 +40,9 @@ problem.mp.parameters.pu=[10*15*ones(1,problem.mp.data.N_phases) ];
 guess.mp.parameters=[zeros(1,problem.mp.data.N_phases)];
 
 % Bounds for linkage boundary constraints bll =< bclink(x0,xf,u0,uf,p,t0,tf,vdat) =< blu
-problem.mp.constraints.bll.linear=[zeros(1,(problem.mp.data.N_phases-1)*4)];
-problem.mp.constraints.blu.linear=[zeros(1,(problem.mp.data.N_phases-1)*4)];
-problem.mp.constraints.blTol.linear=[0.01*ones(1,(problem.mp.data.N_phases-1)*4)];
+problem.mp.constraints.bll.linear=[zeros(1,(problem.mp.data.N_phases-1)*3)];
+problem.mp.constraints.blu.linear=[zeros(1,(problem.mp.data.N_phases-1)*3)];
+problem.mp.constraints.blTol.linear=[0.01*ones(1,(problem.mp.data.N_phases-1)*3)];
 
 problem.mp.constraints.bll.nonlinear=[];
 problem.mp.constraints.blu.nonlinear=[];
@@ -52,41 +52,41 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=1.524*60*60;
-problem.mp.data.R0=0.0675;
-problem.mp.data.R1=0.0198;
-problem.mp.data.C1=787;
+problem.mp.data.Q=1.53*60*60;
+problem.mp.data.R0=0.075;
+problem.mp.data.R1=0.045;
+problem.mp.data.C1=800;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
-problem.mp.data.batt_m=1;
-problem.mp.data.batt_Cp=81.95;
-problem.mp.data.batt_h=0.1009;
+problem.mp.data.batt_m=42/1000;
+problem.mp.data.batt_Cp=2.4e+03;
+problem.mp.data.batt_h=34.3040;
 problem.mp.data.TempAmb=24;
-problem.mp.data.batt_A=1;
+problem.mp.data.batt_A=0.003714;
 problem.mp.data.ocvpoly=ocv_curve_2;
 % Define different phases of OCP
 
 % Configure 1 fixed SOC boundary
-x0ul{1}=[0 0 problem.mp.data.TempAmb 0.1;0 0 problem.mp.data.TempAmb 0.1];
-x0ul{2}=[0.2 0 0 0.1;0.2 0.35 Temp_Max inf];
-x0ul{3}=[0.4 0 0 0.1;0.4 0.35 Temp_Max inf];
-x0ul{4}=[0.6 0 0 0.1;0.6 0.35 Temp_Max inf];
+x0ul{1}=[0 0 problem.mp.data.TempAmb;0 0 problem.mp.data.TempAmb];
+x0ul{2}=[0.2 0 0;0.2 0.35 Temp_Max];
+x0ul{3}=[0.4 0 0;0.4 0.35 Temp_Max];
+x0ul{4}=[0.6 0 0;0.6 0.35 Temp_Max];
 
 xful{1}=x0ul{2};
 xful{2}=x0ul{3};
 xful{3}=x0ul{4};
-xful{4}=[0.8 0 20 0.1;0.8 0.35 Temp_Max inf];
+xful{4}=[0.8 0 20;0.8 0.35 Temp_Max];
 
 % Configure 2 free SOC boundary
-% x0ul{1}=[0 0 15 0.1;0 0 15 0.1];
-% x0ul{2}=[0 0 0 0.1;1 0.25 Temp_Max inf];
-% x0ul{3}=[0 0 0 0.1;1 0.25 Temp_Max inf];
-% x0ul{4}=[0 0 0 0.1 ;1 0.25 Temp_Max inf];
+% x0ul{1}=[0 0 15;0 0 15];
+% x0ul{2}=[0 0 0;1 0.25 Temp_Max];
+% x0ul{3}=[0 0 0;1 0.25 Temp_Max];
+% x0ul{4}=[0 0 0;1 0.25 Temp_Max];
 % 
 % xful{1}=x0ul{2};
 % xful{2}=x0ul{3};
 % xful{3}=x0ul{4};
-% xful{4}=[0.8 0 0 0.1;0.8 0.25 Temp_Max inf];
+% xful{4}=[0.8 0 0;0.8 0.25 Temp_Max];
 
 
 for i=1:problem.mp.data.N_phases
@@ -120,9 +120,9 @@ function [blc_linear, blc_nonlinear]=bclink(x0,xf,u0,uf,p,t0,tf,vdat)
 %
 %------------- BEGIN CODE --------------
 N_phases=vdat.N_phases;
-blc_linear=zeros(4*(N_phases-1),1);
+blc_linear=zeros(3*(N_phases-1),1);
 for i=1:N_phases-1
-    blc_linear(1+(i-1)*4:i*4)=[xf{i}(1)-x0{i+1}(1);xf{i}(2)-x0{i+1}(2);xf{i}(3)-x0{i+1}(3);xf{i}(4)-x0{i+1}(4)];
+    blc_linear(1+(i-1)*3:i*3)=[xf{i}(1)-x0{i+1}(1);xf{i}(2)-x0{i+1}(2);xf{i}(3)-x0{i+1}(3)];
 end
 blc_nonlinear=[];
 %------------- END OF CODE --------------
