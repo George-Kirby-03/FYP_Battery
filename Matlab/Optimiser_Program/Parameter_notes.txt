@@ -1,0 +1,43 @@
+C - 1.5A
+
+Protocol 1 (Paings):
+Original (for both batteries):
+Q:   C:   R0+R1:    H:     Cp:
+C1: 2  C2: 1.8 C3: 1.65 C4: 0.9
+
+200th (for battery A):
+Q:   C:   R0+R1:    H:     Cp:
+C1:  C2:  C3:  C4:
+
+200th (for battery B):
+Q:   C:   R0+R1:    H:     Cp:
+C1:  C2:  C3:  C4:
+
+
+Protocol 2 (Minimising max_temp) :
+Original (for both batteries):
+Q:   C:   R0+R1:    H:     Cp:
+C1: 2  C2: 1.4 C3: 1.35  C4: 1.35
+
+200th (for battery A):
+Q:   C:   R0+R1:    H:     Cp:
+C1:  C2:  C3:  C4:
+
+200th (for battery B):
+Q:   C:   R0+R1:    H:     Cp:
+C1:  C2:  C3:  C4:
+
+
+
+Protocol 3 (Minimising temp intergral):
+Original (for both batteries):
+Q:   C:   R0+R1:    H:     Cp:
+C1:  1.3  C2: 1.45  C3: 1.75  C4:  1.53
+
+200th (for battery A):
+Q:   C:   R0+R1:    H:     Cp:
+C1:  C2:  C3:  C4:
+
+200th (for battery B):
+Q:   C:   R0+R1:    H:     Cp:
+C1:  C2:  C3:  C4:

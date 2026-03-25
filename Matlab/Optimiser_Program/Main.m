@@ -25,14 +25,14 @@ addpath(genpath('Greyest_Parameterisation_files'))
 addpath(genpath('ICLOCS_Optimisation_files'))
 load RS_LiPo_extracted.mat
 
-[V,I,T,Ah,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (2).csv",1);
+[V,I,T,Ah,Ts] = get_cycle("GK_RS15_06_proc2_0000 - 030.csv",1);
 sim_handler = cell(1, size(V,2)-1);
 
 
 settings.nodes = 230;
 settings.iterations = 200; 
 settings.polycount = 14;
-settings.v_lim = 3.65;
+settings.v_lim = 3.6;
 settings.v_low = 2.5;
 
 dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.05,'Cp',160,'h',1);
@@ -46,7 +46,7 @@ T = T(idx);
 Ah = Ah(idx);
 
 
-parfor i = 1:length(idx)
+parfor (i = 1:length(idx),32)
     cycle = [];
     cycle.volts = V{i};
     cycle.amps = I{i};
@@ -61,7 +61,7 @@ parfor i = 1:length(idx)
 end
 
 
-save ptoc3-31.mat sim_handler
+save ptoc1-25.mat sim_handler
 
 
 %% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
