@@ -52,17 +52,17 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=1.53*60*60;
-problem.mp.data.R0=0.075;
-problem.mp.data.R1=0.045;
-problem.mp.data.C1=800;
+problem.mp.data.Q=1.49*60*60;
+problem.mp.data.R0=0.0719;
+problem.mp.data.R1=0.0192;
+problem.mp.data.C1=808;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
-problem.mp.data.batt_m=42/1000;
-problem.mp.data.batt_Cp=2.4e+03;
-problem.mp.data.batt_h=34.3040;
+problem.mp.data.batt_m=1;
+problem.mp.data.batt_Cp=75.87;
+problem.mp.data.batt_h=0.1045;
 problem.mp.data.TempAmb=24;
-problem.mp.data.batt_A=0.003714;
+problem.mp.data.batt_A=1;
 problem.mp.data.ocvpoly=ocv_curve_2;
 % Define different phases of OCP
 

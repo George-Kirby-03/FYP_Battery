@@ -2,7 +2,7 @@ C - 1.5A
 
 Protocol 1 (Paings):
 Original (for both batteries):
-Q:   C:   R0+R1:    H:     Cp:
+Q: 5.5e03  C: 800  R0: 0.075  R1:  0.045  H:  0.128   Cp: 102.9  %(was slighlty tweaked as mentioned)
 C1: 2  C2: 1.8 C3: 1.65 C4: 0.9
 
 200th (for battery A):
@@ -11,33 +11,33 @@ C1: 2.735  C2: 2.487  C3: 1.182  C4: 0.913
 
 200th (for battery B):
 Q: 5.476e03  C: 821  R0: 0.0730  R1:  0.0148  H:  0.117   Cp: 89.6991
-C1:  C2:  C3:  C4:
+C1: 2.719  C2: 2.473  C3: 1.313 C4: 0.8489
 
 
 Protocol 2 (Minimising max_temp) :
 Original (for both batteries):
-Q:   C:   R0+R1:    H:     Cp:
+Q: 5.51e03  C: 800  R0: 0.075  R1:  0.045  H:  0.1274  Cp: 100.8
 C1: 2  C2: 1.4 C3: 1.35  C4: 1.35
 
 200th (for battery A):
 Q: 5.35e03  C: 866  R0: 0.0707  R1:  0.0217  H:  0.1336   Cp: 86.31
-C1:  C2:  C3:  C4:
+C1: 2.1 C2: 1.27 C3: 1.27  C4: 1.27
 
 200th (for battery B):
 Q: 5.346e03  C: 691  R0: 0.071  R1:  0.0196  H:  0.108   Cp: 76.86
-C1:  C2:  C3:  C4:
+C1: 2.02 C2: 1.3 C3: 1.3  C4: 1.3
 
 
 
 Protocol 3 (Minimising temp intergral):
 Original (for both batteries):
-Q:   C:   R0+R1:    H:     Cp:
+Q: 5.55e03  C: 800  R0: 0.075  R1:  0.045  H:  0.128  Cp: 100.8
 C1:  1.3  C2: 1.45  C3: 1.75  C4:  1.53
 
 200th (for battery A):
 Q: 5.333e03  C: 848  R0: 0.0737  R1:  0.0161  H:  0.0904   Cp: 66.25
-C1:  C2:  C3:  C4:
+C1: 1.193 C2: 1.377 C3: 1.815 C4: 1.48
 
 200th (for battery B):
 Q: 5.369e03  C: 808  R0: 0.0719  R1:  0.0192  H:  0.1045   Cp: 75.87
-C1:  C2:  C3:  C4:
+C1: 1.2  C2: 1.387  C3: 1.824 C4: 1.49
