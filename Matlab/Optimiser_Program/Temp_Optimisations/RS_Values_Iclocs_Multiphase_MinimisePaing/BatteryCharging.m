@@ -28,8 +28,8 @@ Temp_Max=45;
 problem.mp.data.N_phases=4;
 
 % Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
-problem.mp.time.t_min=[0 1 2 3 1980];     
-problem.mp.time.t_max=[0 1500 1500 1500 1980]; 
+problem.mp.time.t_min=[0 1 2 3 1800];     
+problem.mp.time.t_max=[0 1500 1500 1500 1800]; 
 guess.mp.time=[0 50 100 300 600];
 
 % Parameters bounds. pl=< p <=pu
@@ -75,7 +75,7 @@ x0ul{4}=[0.6 0 0 0.1;0.6 0.35 Temp_Max inf];
 xful{1}=x0ul{2};
 xful{2}=x0ul{3};
 xful{3}=x0ul{4};
-xful{4}=[0.8 0 20 0.1;0.8 0.35 Temp_Max inf];
+xful{4}=[0.8 0 20 0.1;0.8 0.35 27.4 inf];
 
 % Configure 2 free SOC boundary
 % x0ul{1}=[0 0 15 0.1;0 0 15 0.1];

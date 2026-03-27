@@ -178,7 +178,7 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 
 %stageCost = 0*t;
 % stageCost = x(:,3); %- vdat.TempAmb;  %Minimising temperature (i hope)
-SOC = x(:,1);V_RC = x(:,2);Temp_batt=x(:,3);Big_I=x(:,4);I=u(:,1);
+SOC = x(:,1);V_RC = x(:,2);Temp_batt=x(:,3);Big_I=x(:,4);I = p(:,vdat.iPhase);
 
 T=Temp_batt+273;
 % I_Crate= I/3600.*vdat.Q/3600;
