@@ -202,6 +202,9 @@ function boundaryCost=E_unscaled(x0,xf,u0,uf,p,t0,tf,vdat)
 %------------- BEGIN CODE --------------
 
 boundaryCost=0;
+  if vdat.iPhase==vdat.mp.N_phases 
+      boundaryCost = p(end);
+  end
 
 %boundaryCost = (xf(3)).^2; %For each stage, i belive this should minimise temp rise from the ambient
   % if vdat.iPhase==vdat.mp.N_phases 

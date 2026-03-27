@@ -52,7 +52,7 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=1.521*60*60;
+problem.mp.data.Q=1.52*60*60;
 problem.mp.data.R0=0.073;
 problem.mp.data.R1=0.0148;
 problem.mp.data.C1=821;
