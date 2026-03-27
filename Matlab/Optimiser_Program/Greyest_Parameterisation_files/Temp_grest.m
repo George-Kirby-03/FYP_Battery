@@ -1,10 +1,8 @@
-%cd(fileparts(which('Solving.m')))
-clear
-close
-pwd
-%load("../../../cycle_exports\MOLI_cycle_2234.mat")
-%load("../../../cycle_exports/MOLI_28/MOLI_cycle_5.mat")
-load("./Characterisation Tests/charac_01.mat")
+tp = T{end-6};
+u1 = I{end-6};
+y = V{end-6};
+tt = Ts{end-6};
+%load("./Characterisation Tests/charac_01.mat")
 %p = solution_unbound.p;
 [tt_unique, ia] = unique(tt);
 
@@ -14,7 +12,7 @@ u1_unique = u1(ia, :);
 y_unique  = y(ia, :);
 
 
-tt = tt_unique;
+tt = tt_unique - tt_unique(1);
 tp = tp_unique - tp_unique(1);
 u1 = u1_unique;
 y  = y_unique;
@@ -41,9 +39,9 @@ current_lut = @(t) interp1(tt, u1, t, 'linear', 'extrap');
 %dT = Q_heat/mCp - hA/mCp * (T - T_amb)
 
 %Creatingh the table entry for the iddata for the model
-t = linspace(0,32879,1500);
+t = linspace(0,tt(end),1500);
 %Q_heat = (voltage_model - OCV_x).*current_lut(t);
-Q_heat = 0.075*current_lut(t).^2;
+Q_heat = 0.0873*current_lut(t).^2;
 Q_lut = @(tn) interp1(t, Q_heat, tn, 'linear', 'extrap');
 temp_lut = @(tn) interp1(tt, tp, tn, 'linear', 'extrap');
 
@@ -58,8 +56,6 @@ Data = array2table([U_sampled', Temp_sampled'],"VariableNames",["u1","y"]);
 Data_ts = table2timetable(Data,"RowTimes",seconds(greyest_time_sampling));
 smodle = iddata(Data_ts,'Name','Temperature Generation');
 
-plot(greyest_time_sampling,Temp_sampled)
-
 mCp = 20;
 hA = 0.1;
 parameters = {'specificheat*mass',mCp;'conduction*length',hA};
@@ -72,6 +68,8 @@ getpvec(sys)
 simulated_temp = lsim(sys, Q_lut(greyest_time_sampling)',greyest_time_sampling);
 plot(greyest_time_sampling,simulated_temp)
 hold on
+plot(greyest_time_sampling,Temp_sampled,'Color','b')
+
 
 
 % 

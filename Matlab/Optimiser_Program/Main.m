@@ -25,7 +25,7 @@ addpath(genpath('Greyest_Parameterisation_files'))
 addpath(genpath('ICLOCS_Optimisation_files'))
 load RS_LiPo_extracted.mat
 
-[V,I,T,Ah,Ts] = get_cycle("GK_RS15_07_proc3_0000 - 031 (1).csv",1);
+[V,I,T,Ah,Ts] = get_cycle("C:\Users\jekir\Documents\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_03_proc1_0000 - 025.csv",1);
 sim_handler = cell(1, size(V,2)-1);
 
 
