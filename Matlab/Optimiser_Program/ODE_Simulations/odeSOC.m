@@ -17,11 +17,6 @@ charge_protocol.discharge_charge_rest = ;
 charge_protocol.ambient_temp = ;
 
 
-sim_result = odeSOC(sim_handler,charge_protocol);
-
-
-
-
 if ~isfield(charge_protocol,'discharge_segments') || (isempty(charge_protocol.discharge_segments))
     fprintf("No discharge segment specified, will only charge\n")
     no_discharge = 1;
@@ -75,8 +70,7 @@ end
 
 %Joining the Discharge and Charge profiles
 
-total_socs =[];
-total_currents = [];
+
 if no_discharge == 0 && no_charge == 1
     total_socs = charge_protocol.discharge_segments;
     total_currents = charge_protocol.discharge_currents;
@@ -93,14 +87,14 @@ end
 segments = length(total_socs);
 
 
-prev_conditions.soc = total_socs(1);
-prev_conditions.polV = 0;
-prev_conditions.T = charge_protocol.ambient_tem
+init_conditions.soc = total_socs(1);
+init_conditions.polV = 0;
+init_conditions.T = charge_protocol.ambient_temp;
 
 for k = 1:(segments-1)
     % Simulate the ODE for the current segment
     soc_delta = total_socs(k+1) - total_socs(k);
     current = total_currents(k)*sign(soc_delta);
-    sim_results(k) = CC_Dynamics(si);
-
+    [seg_time{k}, seg_states{k}] = CCCV_Simulate(sim_handler,soc_delta,current,init_conditions,charge_protocol.CV_cutoff);
 end
+
