@@ -1,0 +1,97 @@
+function [outputArg1,outputArg2] = CV_Simulate(sim_handler,SoC_Delta,Current,init_conditions,CV_cutoff)
+%CV_SIMULATE Summary of this function goes here
+%   Detailed explanation goes here
+arguments (Input)
+    sim_handler struct
+    SoC_Delta double
+    Current double
+    init_conditions struct
+    CV_cutoff double
+end
+    %Figuring out the time duration for the simulation, fastest duration
+    %would be with no CV limit part, i.e Q*SoC_Delta/(Current) 's 
+    Tf = sim_handler.current_sol.Q * SoC_Delta / Current;
+    % init_conditions.soc = total_socs(1);
+    % init_conditions.polV = 0;
+    % init_conditions.T = charge_protocol.ambient_temp;
+    
+    [t_cc, x_cc] = ode45(@(t,y) CV_dynamics(t,y,sim_handler), [0 Tf], [cell2mat(struct2cell(init_conditions)); 0]);
+    vlim_sim_idx = find(x_cc(:,4) > 0, 1, 'first');
+    if ~isempty(vlim_sim_idx) %Vlim likley hit, find time instance and run CV dynamics from this point untill SoC end reached
+        %Getting battery state at the Vlim point
+        x_cc_end = x_cc(vlim_sim_idx,:);
+        %Longest duration CV could take is calculated by assuming cc charge
+        %of 
+        soc_remaining = abs(init_conditions.soc - x_cc(vlim_sim_idx,1));
+        Tf_lim = sim_handler.current_sol.Q *  soc_remaining / CV_cutoff;
+        [t_cv, x_cv] = ode45(@(t,y) CV_dynamics(t,y,sim_handler), [x_cc_end Tf_lim], x_cc_end);
+        SoC_final = SoC_delta + init_conditions.soc;
+        SoC_end_sim_idx = find(x_cv(:,1) >= SoC_final, 1, 'first');
+            if isempty(SoC_end_sim_idx)
+                error("Wasnt able to charge this segment even with CV")
+            end
+        % Append the CV section to the valid CC section
+        
+
+    end
+
+% tt = linspace(0,hr*60*60,200);
+% C = 0.5;
+% current_cc_charge = C*Curr*ones(200,1);
+% current_lut = @(t) interp1(tt, current_cc_charge, t, 'linear', 'extrap');
+% [t_sim, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [0.8; 0; 0]);
+% x1=y(:,1);x2=y(:,2); %If Vlim is reached, this soc is not reliable
+% vlim_sim_idx = find(y(:,3) > 0, 1, 'first');
+% socu_sim_idx = find(y(:,1) >= 0.995, 1, 'first');
+% hold on
+% 
+% yyaxis left
+% plot(t_sim(1:vlim_sim_idx),(ocv_curve_2(x1(1:vlim_sim_idx))+x2(1:vlim_sim_idx)+(current_lut(t_sim(1:vlim_sim_idx))*R0)))
+% 
+% fprintf('##### CC Durations (cc rate of %.1f): \n',C)
+% if isempty(vlim_sim_idx)
+%      fprintf('Charge time not reached, max SoC: %.2f\n',x1(end,1))
+%      cc_times = tt(end);
+%      cv_times = 0;
+% elseif (~isempty(vlim_sim_idx) && (x1(vlim_sim_idx) < 0.999))  % && (~isempty(socu_sim_idx) && (vlim_sim_idx < socu_sim_idx))) %If vlim is reached before SoC, its clipped and needs CV
+% cc_times = t_sim(vlim_sim_idx);
+% %voltage_model = polyval(ocv_curve,x1) + x2 + R0.*C*Curr;
+% fprintf('Time for CC: %.2f\n',cc_times/60^2)
+% fprintf('Running CV stage since full SoC not reached before cutoff voltage, (reached %.3f SoC)\n',x1(vlim_sim_idx))
+% [t_sim, y] = ode15s(@(t, y) CV_dynamics(t, y, p), [0 tt(end)], [x1(vlim_sim_idx); x2(vlim_sim_idx); 0]);
+% x1=y(:,1);x2=y(:,2);
+% 
+% socu_sim_idx = find(y(:,1) > 0.99999, 1, 'first');
+% socu_sim_idx = socu_sim_idx - 1;
+% fprintf('Time for CV: %.2fs \n',t_sim(socu_sim_idx));
+% plot(t_sim(1:socu_sim_idx) + cc_times, (ocv_curve_2(x1(1:socu_sim_idx))+x2(1:socu_sim_idx)+(current_lut(t_sim(1:socu_sim_idx))*R0)))
+% 
+% yyaxis right
+% current = (p.vu - p.ocv(y(:,1)) - y(:,2))./p.r0;
+% plot([0 cc_times],[current_cc_charge(1) current_cc_charge(1)])
+% plot(t_sim(1:socu_sim_idx) + cc_times, current(1:socu_sim_idx))
+% cv_times = t_sim(socu_sim_idx);
+% fprintf('Time to full-charge (~0.99): %.3fh \n', (cv_times+cc_times)./60^2)
+% else
+%     fprintf('Oh shit')
+% end
+
+end
+
+function dx = CV_dynamics(t, y, sim_handler)
+R0 = param.r0;
+R1 = param.r1;
+C = param.c;
+Q = param.q;
+v_ulim = param.vu;
+v_llim = param.vl;
+ocv_curve = param.ocv;
+
+current = (v_ulim - ocv_curve(y(1)) - y(2))./R0;
+
+dx1 = current./Q;
+dx2 = -y(2)./(R1.*C) + current./C;
+dx3 = 0;
+dx = [dx1; dx2; dx3;];
+
+end

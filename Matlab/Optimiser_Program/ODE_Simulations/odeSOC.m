@@ -92,10 +92,15 @@ end
 
 segments = length(total_socs);
 
+
+prev_conditions.soc = total_socs(1);
+prev_conditions.polV = 0;
+prev_conditions.T = charge_protocol.ambient_tem
+
 for k = 1:(segments-1)
     % Simulate the ODE for the current segment
     soc_delta = total_socs(k+1) - total_socs(k);
     current = total_currents(k)*sign(soc_delta);
-    sim_results(k) = sim_handler.simulate(currentSegment, charge_protocol);
+    sim_results(k) = CC_Dynamics(si);
 
 end
