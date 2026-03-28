@@ -12,12 +12,8 @@
 %final SoC wont be 0, 
 
  
-%Specifies the capacity used in calculating charge throughput, if
-%Discharged is selected, the total capacity drained during the discharge
-%stage is used as the battery capacity for the SoC values for charging, i.e
-%no matter the battery full capacity, if only 100Q was discharged, a 10%
-%SoC segment in charging corresponds to 10Q input
-charge_protocol.capacity_selection = 'Discharged'; %or 'Absolute'
+%Specifies the capacity used in calculating charge throughput, for exa
+charge_protocol.capacity_selection = 'Discharged';
 
 charge_protocol.charge_segments = [0,20,40,60,80,100]; %Specify as many segments
 charge_protocol.charge_currents = [2,3,4,5,6]; %Specify current per segment
