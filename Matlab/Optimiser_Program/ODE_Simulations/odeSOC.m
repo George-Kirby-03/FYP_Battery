@@ -7,14 +7,14 @@ arguments (Input)
     sim_handler struct
     charge_protocol struct
 end
-
-charge_protocol.charge_segments = [0,20,40,60,80,100];
-charge_protocol.charge_currents = [];
-charge_protocol.CV_cutoff = ;
-charge_protocol.discharge_segments = [100 0];
-charge_protocol.discharge_currents = ;
-charge_protocol.discharge_charge_rest = ;
-charge_protocol.ambient_temp = ;
+% 
+% charge_protocol.charge_segments = [0,20,40,60,80,100];
+% charge_protocol.charge_currents = [];
+% charge_protocol.CV_cutoff = ;
+% charge_protocol.discharge_segments = [100 0];
+% charge_protocol.discharge_currents = ;
+% charge_protocol.discharge_charge_rest = ;
+% charge_protocol.ambient_temp = ;
 
 
 if ~isfield(charge_protocol,'discharge_segments') || (isempty(charge_protocol.discharge_segments))
@@ -75,8 +75,13 @@ if no_discharge == 0 && no_charge == 1
     total_socs = charge_protocol.discharge_segments;
     total_currents = charge_protocol.discharge_currents;
 elseif no_discharge == 0 && no_charge == 0
-    total_socs = charge_protocol.discharge_segments + charge_protocol.charge_segments(2:end);
-    total_currents = charge_protocol.discharge_currents + charge_protocol.charge_currents(2:end);
+    if (charge_protocol.discharge_charge_res ~= 0)
+        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments];
+        total_currents = [charge_protocol.discharge_currents, 0, charge_protocol.charge_currents];
+    else
+        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments(2:end)];
+        total_currents = [charge_protocol.discharge_currents, charge_protocol.charge_currents];
+    end
 elseif no_discharge == 1 && no_charge == 0
     total_socs = charge_protocol.charge_segments;
     total_currents = charge_protocol.charge_currents;
@@ -91,10 +96,16 @@ init_conditions.soc = total_socs(1);
 init_conditions.polV = 0;
 init_conditions.T = charge_protocol.ambient_temp;
 
+
 for k = 1:(segments-1)
     % Simulate the ODE for the current segment
     soc_delta = total_socs(k+1) - total_socs(k);
     current = total_currents(k)*sign(soc_delta);
-    [seg_time{k}, seg_states{k}] = CCCV_Simulate(sim_handler,soc_delta,current,init_conditions,charge_protocol.CV_cutoff);
+    [seg_time{k}, seg_states{k}, I{k}] = CCCV_Simulate(sim_handler,soc_delta,current,init_conditions,charge_protocol.CV_cutoff);
 end
+sim_results.time = cell2mat(seg_time);
+sim_results.states = cell2mat(seg_states);
+sim_results.I = cell2mat(I);
 
+V_out= sim_handler.ocv_curve(sim_results.states(:,1)) + (sim_handler.current_sol.R0)*(sim_results.I).^2 + sim_results.states(:);
+sim_results.V = V_out;

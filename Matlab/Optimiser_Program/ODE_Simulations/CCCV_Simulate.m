@@ -1,4 +1,4 @@
-function [t_soc, x_soc] = CCCV_Simulate(sim_handler,SoC_Delta,Current,init_conditions,CV_cutoff,rest_time)
+function [t_soc, x_soc, I] = CCCV_Simulate(sim_handler,SoC_Delta,Current,init_conditions,CV_cutoff,rest_time)
 %CV_SIMULATE Summary of this function goes here
 %   Detailed explanation goes here
 arguments (Input)
@@ -13,7 +13,8 @@ end
    % If current is 0 for segment, will be rest stage, just run dynamics for
    % rest time and return
    if Current == 0
-        [t_soc, x_soc] = ode45(@(t,y) CC_dynamics(t,y,sim_handler,0), [0 rest_time],init_conditions);
+        [t_soc, x_soc] = ode45(@(t,y) CC_dynamics(t,y,sim_handler,0), [0 rest_time], init_conditions);
+        I = zeros(size(t_soc,1),1);
    return 
    end
 
@@ -23,7 +24,6 @@ end
     % init_conditions.soc = total_socs(1);
     % init_conditions.polV = 0;
     % init_conditions.T = charge_protocol.ambient_temp;
-    
     [t_cc, x_cc] = ode45(@(t,y) CC_dynamics(t,y,sim_handler,Current), [0 Tf], [cell2mat(struct2cell(init_conditions)); 0]);
     vlim_sim_idx = find(x_cc(:,4) > 0.001, 1, 'first');
     if ~isempty(vlim_sim_idx) %Vlim likley hit, find time instance and run CV dynamics from this point untill SoC end reached
@@ -34,6 +34,7 @@ end
         soc_remaining = abs(init_conditions.soc - x_cc(vlim_sim_idx-1,1));
         Tf_lim = sim_handler.current_sol.Q *  soc_remaining / CV_cutoff;
         [t_cv, x_cv] = ode45(@(t,y) CV_dynamics(t,y,sim_handler,CV_cutoff), [x_cc_end Tf_lim], x_cc_end);
+        I_cv = (v_ulim - ocv_curve(x_cv(:,1)) - x_cv(:,2))./sim_handler.current_sol.R0;
         SoC_final = SoC_delta + init_conditions.soc;
         SoC_end_sim_idx = find(x_cv(:,1) >= SoC_final, 1, 'first');
             if isempty(SoC_end_sim_idx)
@@ -41,16 +42,22 @@ end
                 cv_cutoff_sim_idx = find(x_cv(:,4) > 0.001, 1, 'first');
                 if ~isempty(cv_cutoff_sim_idx)
                     fprintf("CV Cuttoff Current reached (this should only occur at the end near 100 SoC)");
+                     t_soc = [t_cc(1:vlim_sim_idx-1) t_cv(1:cv_cutoff_sim_idx)];
+                     x_soc = [x_cc(1:vlim_sim_idx-1,1:3) x_cv(1:cv_cutoff_sim_idx,1:3)];
+                     I = [Current*ones(size(t_cc(1:vlim_sim_idx-1),1),1); I_cv(1:cv_cutoff_sim_idx)]; 
+                else
+                    error("Somethign went wrong in simulation")
                 end
             else
-                error("Something went wrong")
+                % Append the CV section to the valid CC section
+                t_soc = [t_cc(1:vlim_sim_idx-1) t_cv(1:SoC_end_sim_idx)];
+                x_soc = [x_cc(1:vlim_sim_idx-1,1:3) x_cv(1:SoC_end_sim_idx,1:3)];
+                I = [Current*ones(size(t_cc(1:vlim_sim_idx-1),1),1); I_cv(1:SoC_end_sim_idx)]; 
             end
-        % Append the CV section to the valid CC section
-        t_soc = [t_cc(1:vlim_sim_idx-1) t_cv(1:SoC_end_sim_idx)];
-        x_soc = [x_cc(1:vlim_sim_idx-1,1:3) x_cv(1:SoC_end_sim_idx,1:3)];
     else
          t_soc = t_cc;
          x_soc = x_cc(:,1:3);
+         I = Current*ones(size(t_soc,1),1);
     end
 
 end
