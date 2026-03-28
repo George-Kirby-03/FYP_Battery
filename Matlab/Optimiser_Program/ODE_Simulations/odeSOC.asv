@@ -95,8 +95,8 @@ segments = length(total_socs);
 stage_init_conditions.soc = total_socs(1);
 stage_init_conditions.Vpol = 0;
 stage_init_conditions.T = charge_protocol.ambient_temp;
-
 stage_start_time = 0;
+
 
 for k = 1:(segments-1)
     % Simulate the ODE for the current segment
@@ -106,23 +106,12 @@ for k = 1:(segments-1)
         current,stage_init_conditions,charge_protocol);
     stage_init_conditions.soc = seg_states{k}(end,1);
     stage_init_conditions.Vpol = seg_states{k}(end,2);
-    if k>1
-        if seg_time{k}(1) == seg_time{k-1}(end)
-            seg_time{k} = seg_time{k}(2:end);
-            seg_states{k} = seg_states{k}(2:end,:);
-            I{k} = I{k}(2:end);
-        end
-    end
     seg_time{k} = seg_time{k} + stage_start_time;
-    stage_start_time = seg_time{k}(end);
+    stage_start_time = seg_time{k}(end) + stage_start_time;
 end
-
-
 sim_results.time = cell2mat(seg_time);
 sim_results.states = cell2mat(seg_states);
 sim_results.I = cell2mat(I);
 
-V_out= sim_handler.ocv_curve(sim_results.states(:,1)) + ... 
-    (sim_handler.current_sol.R0)*(sim_results.I).^2 + sim_results.states(:);
-
+V_out= sim_handler.ocv_curve(sim_results.states(:,1)) + (sim_handler.current_sol.R0)*(sim_results.I).^2 + sim_results.states(:);
 sim_results.V = V_out;
