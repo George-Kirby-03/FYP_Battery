@@ -1,0 +1,99 @@
+function sim_results = odeSOC(sim_handler,charge_protocol)
+%ODESOC Summary of this function goes here
+%   Detailed explanation goes here
+%   Set such that if the terminal rises above the max (SoC(1)), CV will
+%   occur until the next soc has been reached
+arguments (Input)
+    sim_handler struct
+    charge_protocol struct
+end
+
+charge_protocol.charge_segments = [0,20,40,60,80,100];
+charge_protocol.charge_currents = [];
+charge_protocol.CV_cutoff = ;
+charge_protocol.discharge_segments = [100 0];
+charge_protocol.discharge_currents = ;
+charge_protocol.discharge_charge_rest = ;
+charge_protocol.ambient_temp = ;
+
+
+sim_result = odeSOC(sim_handler,charge_protocol);
+
+
+
+
+if ~isfield(charge_protocol,'discharge_segments') || (isempty(charge_protocol.discharge_segments))
+    fprintf("No discharge segment specified, will only charge\n")
+    no_discharge = 1;
+elseif isfield(charge_protocol,'discharge_currents') && ((length(charge_protocol.discharge_currents)-1) == length(charge_protocol.discharge_currents))
+    segments = length(charge_protocol.discharge_segments) - 1;
+    for k = 1:segments
+        if charge_protocol.discharge_segments(k) <= charge_protocol.discharge_segments(k+1)
+            error("Incorrect Discharge Protocol Given, needs monotonic decrease SoC")
+        end
+    end
+    no_discharge = 0;
+else
+    error("Incorrect discharge Protocol Given, check currents and segment lengths")
+end
+
+
+if ~isfield(charge_protocol,'charge_segments') || (isempty(charge_protocol.charge_segments))
+    fprintf("No charge segment specified, will only discharge\n")
+    no_charge = 1;
+elseif isfield(charge_protocol,'charge_currents') && ((length(charge_protocol.charge_currents)-1) == length(charge_protocol.charge_segments))
+    segments = length(charge_protocol.charge_segments) - 1;
+    for k = 1:segments
+        if charge_protocol.charge_segments(k) >= charge_protocol.charge_segments(k+1)
+            error("Incorrect Charge Protocol Given, needs monotonic increase SoC")
+        end
+    end
+    if ~no_discharge
+        if charge_protocol.discharge_segments(end) ~= charge_protocol.charge_segments(1)
+            error("Discharge end SoC is different to Charge start SoC")
+        end
+    end
+    no_charge = 0;
+else
+    error("Incorrect Charge Protocol Given, check currents and segment lengths")
+end
+
+if ~isfield(charge_protocol,'CV_cutoff') || (charge_protocol.CV_cutoff == 0)
+    fprintf("No / 0 CV_cutoff current set, using default 50mA")
+    charge_protocol.CV_cutoff = 0.05;
+end
+
+if ~isfield(charge_protocol,'ambient_temp') || (ambient_temp == 0)
+    fprintf("No / 0 ambient temperature set, using default 24 deg")
+    charge_protocol.ambient_temp = 24;
+end
+
+if ~isfield(charge_protocol,'discharge_charge_rest') || (charge_protocol.discharge_charge_rest == 0)
+    fprintf("No / 0 discharge to charge rest time set, using 0 seconds")
+    charge_protocol.discharge_charge_rest = 0;
+end
+
+%Joining the Discharge and Charge profiles
+
+total_socs =[];
+total_currents = [];
+if no_discharge == 0 && no_charge == 1
+    total_socs = charge_protocol.discharge_segments;
+    total_currents = charge_protocol.discharge_currents;
+elseif no_discharge == 0 && no_charge == 0
+    total_socs = charge_protocol.discharge_segments + charge_protocol.charge_segments(2:end);
+    total_currents = charge_protocol.discharge_currents + ;
+elseif no_discharge == 1 && no_charge == 0
+    total_socs = charge_protocol.charge_segments;
+else
+    error("No charge or discharge given")
+end
+
+segments = length(total_socs);
+
+for k = 1:(segments-1)
+    % Simulate the ODE for the current segment
+    current_segment = total_socs(k:k+1);
+    sim_results(k) = sim_handler.simulate(currentSegment, charge_protocol);
+
+end

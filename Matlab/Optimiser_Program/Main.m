@@ -61,7 +61,17 @@ parfor (i = 1:length(idx),10)
 end
 
 
+% ODE45 Simulation example with simulate functions
+charge_protocol.charge_segments = [0,20,40,60,80,100];
+charge_protocol.charge_currents = [];
+charge_protocol.CV_cutoff = ;
+charge_protocol.discharge_segments = [100 0];
+charge_protocol.discharge_currents = ;
+charge_protocol.discharge_charge_rest = ;
+charge_protocol.ambient_temp = ;
 
+
+sim_result = odeSOC(sim_handler,charge_protocol);
 
 %% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
 %% If they are different, it may be wise to optimised against the hot internals rather than use the 0D lumped Cp & H produced

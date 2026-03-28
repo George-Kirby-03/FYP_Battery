@@ -14,6 +14,15 @@ p.vl = p.ocv(0);
 R0 = p.r0;
 R1 = p.r1;
 Curr = 1.5;
+% ODE45 Simulation example with simulate functions
+charge_protocol.charge_segments = [0,20,40,60,80,100];
+charge_protocol.charge_currents = [];
+charge_protocol.CV_cutoff = ;
+charge_protocol.discharge_segments = [100 0];
+charge_protocol.discharge_currents = ;
+charge_protocol.discharge_charge_rest = ;
+charge_protocol.ambient_temp = ;
+
 
 %% Now, charge CC, upto the point V_ulim is reached, this is when CV takes over
 
