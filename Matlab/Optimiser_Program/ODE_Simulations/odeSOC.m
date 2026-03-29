@@ -20,7 +20,7 @@ end
 if ~isfield(charge_protocol,'discharge_segments') || (isempty(charge_protocol.discharge_segments))
     fprintf("No discharge segment specified, will only charge\n")
     no_discharge = 1;
-elseif isfield(charge_protocol,'discharge_currents') && ((length(charge_protocol.discharge_currents)-1) == length(charge_protocol.discharge_currents))
+elseif isfield(charge_protocol,'discharge_currents') && ((length(charge_protocol.discharge_segments)-1) == length(charge_protocol.discharge_currents))
     segments = length(charge_protocol.discharge_segments) - 1;
     for k = 1:segments
         if charge_protocol.discharge_segments(k) <= charge_protocol.discharge_segments(k+1)
@@ -36,7 +36,7 @@ end
 if ~isfield(charge_protocol,'charge_segments') || (isempty(charge_protocol.charge_segments))
     fprintf("No charge segment specified, will only discharge\n")
     no_charge = 1;
-elseif isfield(charge_protocol,'charge_currents') && ((length(charge_protocol.charge_currents)-1) == length(charge_protocol.charge_segments))
+elseif isfield(charge_protocol,'charge_currents') && ((length(charge_protocol.charge_segments)-1) == length(charge_protocol.charge_currents))
     segments = length(charge_protocol.charge_segments) - 1;
     for k = 1:segments
         if charge_protocol.charge_segments(k) >= charge_protocol.charge_segments(k+1)
@@ -58,7 +58,7 @@ if ~isfield(charge_protocol,'CV_cutoff') || (charge_protocol.CV_cutoff == 0)
     charge_protocol.CV_cutoff = 0.05;
 end
 
-if ~isfield(charge_protocol,'ambient_temp') || (ambient_temp == 0)
+if ~isfield(charge_protocol,'ambient_temp') || (charge_protocol.ambient_temp == 0)
     fprintf("No / 0 ambient temperature set, using default 24 deg")
     charge_protocol.ambient_temp = 24;
 end
@@ -72,18 +72,18 @@ end
 
 
 if no_discharge == 0 && no_charge == 1
-    total_socs = charge_protocol.discharge_segments;
+    total_socs = charge_protocol.discharge_segments * 0.01;
     total_currents = charge_protocol.discharge_currents;
 elseif no_discharge == 0 && no_charge == 0
-    if (charge_protocol.discharge_charge_res ~= 0)
-        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments];
+    if (charge_protocol.discharge_charge_rest ~= 0)
+        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments] * 0.01;
         total_currents = [charge_protocol.discharge_currents, 0, charge_protocol.charge_currents];
     else
-        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments(2:end)];
+        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments(2:end)] * 0.01;
         total_currents = [charge_protocol.discharge_currents, charge_protocol.charge_currents];
     end
 elseif no_discharge == 1 && no_charge == 0
-    total_socs = charge_protocol.charge_segments;
+    total_socs = charge_protocol.charge_segments * 0.01;
     total_currents = charge_protocol.charge_currents;
 else
     error("No charge or discharge given")
@@ -100,12 +100,14 @@ stage_start_time = 0;
 
 for k = 1:(segments-1)
     % Simulate the ODE for the current segment
+    fprintf("Stage %d start....",k)
     soc_delta = total_socs(k+1) - total_socs(k);
     current = total_currents(k)*sign(soc_delta);
     [seg_time{k}, seg_states{k}, I{k}] = CCCV_Simulate(sim_handler,soc_delta, ...
         current,stage_init_conditions,charge_protocol);
     stage_init_conditions.soc = seg_states{k}(end,1);
     stage_init_conditions.Vpol = seg_states{k}(end,2);
+    seg_time{k} = seg_time{k} + stage_start_time;
     if k>1
         if seg_time{k}(1) == seg_time{k-1}(end)
             seg_time{k} = seg_time{k}(2:end);
@@ -113,16 +115,16 @@ for k = 1:(segments-1)
             I{k} = I{k}(2:end);
         end
     end
-    seg_time{k} = seg_time{k} + stage_start_time;
     stage_start_time = seg_time{k}(end);
+    fprintf("   Stage %d done! \n",k)
 end
 
 
-sim_results.time = cell2mat(seg_time);
-sim_results.states = cell2mat(seg_states);
-sim_results.I = cell2mat(I);
+sim_results.time = vertcat(seg_time{:});
+sim_results.states = vertcat(seg_states{:});
+sim_results.I = vertcat(I{:});
 
-V_out= sim_handler.ocv_curve(sim_results.states(:,1)) + ... 
-    (sim_handler.current_sol.R0)*(sim_results.I).^2 + sim_results.states(:);
+V_out = sim_handler.ocv_curve(sim_results.states(:,1)) + ... 
+        (sim_handler.current_sol.R0).*(sim_results.I) + sim_results.states(:,2);
 
 sim_results.V = V_out;
