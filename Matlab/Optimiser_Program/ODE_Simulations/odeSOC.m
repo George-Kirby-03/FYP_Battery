@@ -100,25 +100,43 @@ stage_init_conditions.Vpol = 0;
 stage_init_conditions.T = charge_protocol.ambient_temp;
 
 stage_start_time = 0;
+soc_discharged = 0;
+soc_end_discharge = 0;
+num_dis_segs = length(charge_protocol.discharge_segments) - 1;
+has_rest = (charge_protocol.discharge_charge_rest ~= 0);
+charge_start_k = num_dis_segs + has_rest + 1;
 
 for k = 1:(segments-1)
-    % Simulate the ODE for the current segment
-    fprintf("Stage %d start....",k)
+    fprintf("Stage %d start....\n", k)
    
-    soc_delta = total_socs(k+1) - stage_init_conditions.soc;
-    current = total_currents(k)*sign(soc_delta);
+    target_soc = total_socs(k+1);
+    % If discharged mode is chosen, the charging SoC amounts are realtive
+    % to the discharged capacity, not the total battery capacity
+    if strcmp(charge_protocol.capacity_selection,'Discharged') && (k >= charge_start_k)
+        if k == charge_start_k
+            soc_end_discharge = stage_init_conditions.soc;
+            soc_discharged = total_socs(1) - soc_end_discharge; 
+        end
+        %Next charge cycles SoC requests need to be mapped to relate to
+        %Discharge Q, logic here is old delta becomes new delta = old delta
+        %* discharge SoC  . then is added on from the last discharge SoC
+        %point, this way, if last SoC is say 30 and so is inital SoC, they
+        %will both be true regardless if discharge is not fully 0 for
+        %example
+        target_soc = soc_end_discharge + (total_socs(k+1) * soc_discharged);
+    end
+
+    soc_delta = target_soc - stage_init_conditions.soc
+    current = total_currents(k)*sign(soc_delta)
     [seg_time{k}, seg_states{k}, I{k}] = CCCV_Simulate(sim_handler,soc_delta, ...
         current,stage_init_conditions,charge_protocol);
-
-     if strcmp(charge_protocol.capacity_selection,'Discharge') && (k == length(charge_protocol.discharge_segments) - 1)
-         sim_handler.current_sol.Q = 
-     end
 
 
     stage_init_conditions.soc = seg_states{k}(end,1);
     stage_init_conditions.Vpol = seg_states{k}(end,2);
     stage_init_conditions.T = seg_states{k}(end,3);
     seg_time{k} = seg_time{k} + stage_start_time;
+
     if k>1
         if seg_time{k}(1) == seg_time{k-1}(end)
             seg_time{k} = seg_time{k}(2:end);

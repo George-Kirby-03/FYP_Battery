@@ -57,7 +57,7 @@ ambient_temp = charge_protocol.ambient_temp;
         I_cv = (v_target - sim_handler.ocv_curve(x_cv(:,1)) - x_cv(:,2)) ./ sim_handler.current_sol.R0;
         SoC_final = SoC_delta + init_conditions.soc;
         cv_cutoff_sim_idx = find(x_cv(:,4) > 0.001, 1, 'first');
-        SoC_end_sim_idx = find(abs(x_cv(:,1) - SoC_final)<0.005, 1, 'first');
+        SoC_end_sim_idx = find(abs(x_cv(:,1) - SoC_final)<0.001, 1, 'first');
         if ~isempty(SoC_end_sim_idx) && isempty(cv_cutoff_sim_idx)
             fprintf("Segment was able to complete within CV constriant \n")
             t_soc = [t_cc(1:vlim_sim_idx-1); t_cv(1:SoC_end_sim_idx)];
