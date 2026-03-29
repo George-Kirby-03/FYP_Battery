@@ -89,8 +89,11 @@ else
     error("No charge or discharge given")
 end
 
-segments = length(total_socs);
+if no_discharge == 1 && strcmp(charge_protocol.capacity_selection,'Discharge')
+    error("Discharge capacity set as relative SoC, but no discharge sequence given")
+end
 
+segments = length(total_socs);
 
 stage_init_conditions.soc = total_socs(1);
 stage_init_conditions.Vpol = 0;
@@ -101,12 +104,20 @@ stage_start_time = 0;
 for k = 1:(segments-1)
     % Simulate the ODE for the current segment
     fprintf("Stage %d start....",k)
-    soc_delta = total_socs(k+1) - total_socs(k);
+   
+    soc_delta = total_socs(k+1) - stage_init_conditions.soc;
     current = total_currents(k)*sign(soc_delta);
     [seg_time{k}, seg_states{k}, I{k}] = CCCV_Simulate(sim_handler,soc_delta, ...
         current,stage_init_conditions,charge_protocol);
+
+     if strcmp(charge_protocol.capacity_selection,'Discharge') && (k == length(charge_protocol.discharge_segments) - 1)
+         sim_handler.current_sol.Q = 
+     end
+
+
     stage_init_conditions.soc = seg_states{k}(end,1);
     stage_init_conditions.Vpol = seg_states{k}(end,2);
+    stage_init_conditions.T = seg_states{k}(end,3);
     seg_time{k} = seg_time{k} + stage_start_time;
     if k>1
         if seg_time{k}(1) == seg_time{k-1}(end)
@@ -115,7 +126,9 @@ for k = 1:(segments-1)
             I{k} = I{k}(2:end);
         end
     end
+
     stage_start_time = seg_time{k}(end);
+
     fprintf("   Stage %d done! \n",k)
 end
 

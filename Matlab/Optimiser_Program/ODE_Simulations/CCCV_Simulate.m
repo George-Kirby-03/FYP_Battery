@@ -13,11 +13,12 @@ CV_cutoff = charge_protocol.CV_cutoff;
 rest_time = charge_protocol.discharge_charge_rest;
 discharge_CV = charge_protocol.discharge_CV;
 charge_CV = charge_protocol.charge_CV;
+ambient_temp = charge_protocol.ambient_temp;
 
    % If current is 0 for segment, will be rest stage, just run dynamics for
    % rest time and return
    if Current == 0
-        [t_soc, x_soc] = ode45(@(t,y) CC_dynamics(t,y,sim_handler,0), [0 rest_time], [cell2mat(struct2cell(init_conditions));0]);
+        [t_soc, x_soc] = ode45(@(t,y) CC_dynamics(t,y,sim_handler,0,ambient_temp), [0 rest_time], [cell2mat(struct2cell(init_conditions));0]);
         x_soc = x_soc(:,1:3);
         I = zeros(size(t_soc,1),1);
    return 
@@ -29,7 +30,7 @@ charge_CV = charge_protocol.charge_CV;
     % init_conditions.soc = total_socs(1);
     % init_conditions.polV = 0;
     % init_conditions.T = charge_protocol.ambient_temp;
-    [t_cc, x_cc] = ode45(@(t,y) CC_dynamics(t,y,sim_handler,Current), [0 Tf], [cell2mat(struct2cell(init_conditions)); 0]);
+    [t_cc, x_cc] = ode45(@(t,y) CC_dynamics(t,y,sim_handler,Current,ambient_temp), [0 Tf], [cell2mat(struct2cell(init_conditions)); 0]);
     vlim_sim_idx = find(x_cc(:,4) > 0.001, 1, 'first');
     if ~isempty(vlim_sim_idx)
         if (SoC_delta < 0 && strcmp(discharge_CV,'False')) || ...
@@ -47,7 +48,7 @@ charge_CV = charge_protocol.charge_CV;
         %of 
         soc_remaining = abs(init_conditions.soc + SoC_delta - x_cc_end(1));
         Tf_lim = sim_handler.current_sol.Q * soc_remaining  / CV_cutoff;
-        [t_cv, x_cv] = ode45(@(t,y) CV_dynamics(t,y,sim_handler,CV_cutoff,sign(SoC_delta)), [t_cc(vlim_sim_idx-1) Tf_lim], x_cc_end);
+        [t_cv, x_cv] = ode45(@(t,y) CV_dynamics(t,y,sim_handler,CV_cutoff,sign(SoC_delta),ambient_temp), [t_cc(vlim_sim_idx-1) Tf_lim], x_cc_end);
         if SoC_delta > 0
              v_target = sim_handler.ocv_curve(1); 
         else
@@ -82,7 +83,7 @@ charge_CV = charge_protocol.charge_CV;
 end
 
 
-function dx = CC_dynamics(t, y, sim_handler, current)
+function dx = CC_dynamics(t, y, sim_handler, current, amb_temp)
 R0 = sim_handler.current_sol.R0;
 R1 = sim_handler.current_sol.R1;
 C = sim_handler.current_sol.C;
@@ -105,12 +106,12 @@ if (v > v_ulim) && current > 0
 end
 dx1 = current./Q;
 dx2 = -y(2)./(R1.*C) + current./C;
-dx3 = -(h/Cp)*y(3) + (R0/Cp)*current^2 + (1./(Cp))*y(2)*current;
+dx3 = -(h/Cp)*(y(3)-amb_temp) + (R0/Cp)*current^2 + (1./(Cp))*y(2)*current;
 dx = [dx1; dx2; dx3; dx4];
 end
 
 
-function dx = CV_dynamics(t, y, sim_handler, cv_cutoff, direction)
+function dx = CV_dynamics(t, y, sim_handler, cv_cutoff, direction, amb_temp)
 
 R0 = sim_handler.current_sol.R0;
 R1 = sim_handler.current_sol.R1;
@@ -129,7 +130,6 @@ else
     v_target = v_llim;
 end
 current = (v_target - ocv_curve(y(1)) - y(2)) ./ R0;
-
 dx4 = 0;
 
 if direction > 0
@@ -143,7 +143,7 @@ else
 end
 dx1 = current./Q;
 dx2 = -y(2)./(R1.*C) + current./C;
-dx3 = -(h/Cp)*y(3) + (R0/Cp)*current^2 + (1./(Cp))*y(2)*current;
+dx3 = -(h/Cp)*(y(3)-amb_temp) + (R0/Cp)*current^2 + (1./(Cp))*y(2)*current;
 dx = [dx1; dx2; dx3; dx4];
 
 end
