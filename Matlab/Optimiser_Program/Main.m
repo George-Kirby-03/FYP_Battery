@@ -119,15 +119,15 @@ load RS_LiPo_extracted.mat %Contains the found OCV curve to optionally be inject
 
 load baseline1-800.mat
 
-avg_sim_handle_b1 = sim_average(sim_handler,10,'End');
+%avg_sim_handle_b1 = sim_average(sim_handler,5,'End');
 
 %avg_sim_handle_b1 = ocv_fun_injection(avg_sim_handle_b1,ocv_curve_2);
 
 charge_protocol.capacity_selection = 'Discharged'; % or 'Absolute'
-charge_protocol.charge_segments = [0 20 40 60 80 100]; %Specify as many segments as needed
-charge_protocol.charge_currents = [1.73 1.73 1.6 1.39 0.5] * 1.5; %Specify current per segment in c here
+charge_protocol.charge_segments = [10 20 40 60 80 100]; %Specify as many segments as needed
+charge_protocol.charge_currents = [1.73 1.73 1.3 1.39 0.5] * 1.5; %Specify current per segment in c here
 charge_protocol.CV_cutoff = 1.5/20; %Segment CV stage (if met) will stop once current falls to this limit
-charge_protocol.discharge_segments = [100 0]; %Specify as many segments as needed
+charge_protocol.discharge_segments = [100 10]; %Specify as many segments as needed
 charge_protocol.discharge_currents = [2.5]*1.5; %Specify current per segment in c here
 charge_protocol.discharge_charge_rest = 60*30; %If set, there will be a rest period between charge and discharge ...
 charge_protocol.discharge_CV = 'False'; %False will mean once a discharge segment reaches vlim, it will switch to the next.

@@ -21,7 +21,7 @@ addpath(genpath('../Misc_functions'))
 charge_protocol.capacity_selection = 'Discharged'; %or 'Absolute'
 
 charge_protocol.charge_segments = [0 20 40 60 80 100]; %Specify as many segments
-charge_protocol.charge_currents = [1.3 1.45 6 1.52 0.5] * 1.5; %Specify current per segment in c here
+charge_protocol.charge_currents = [2.62 2.18 1.63 0.92 0.5] * 1.5; %Specify current per segment in c here
 charge_protocol.CV_cutoff = 0.05; %Segment CV stage (if met) will stop once current falls to this limit
 charge_protocol.discharge_segments = [100 0];
 charge_protocol.discharge_currents = [2.5]*1.5;
