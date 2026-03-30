@@ -48,7 +48,9 @@ ambient_temp = charge_protocol.ambient_temp;
         %of 
         soc_remaining = abs(init_conditions.soc + SoC_delta - x_cc_end(1));
         Tf_lim = sim_handler.current_sol.Q * soc_remaining  / CV_cutoff;
-        [t_cv, x_cv] = ode45(@(t,y) CV_dynamics(t,y,sim_handler,CV_cutoff,sign(SoC_delta),ambient_temp), [t_cc(vlim_sim_idx-1) Tf_lim], x_cc_end);
+        t_start_cv = t_cc(vlim_sim_idx-1);
+        t_end_cv = t_start_cv + Tf_lim;
+        [t_cv, x_cv] = ode45(@(t,y) CV_dynamics(t,y,sim_handler,CV_cutoff,sign(SoC_delta),ambient_temp), [t_start_cv t_end_cv], x_cc_end);
         if SoC_delta > 0
              v_target = sim_handler.ocv_curve(1); 
         else
@@ -64,21 +66,47 @@ ambient_temp = charge_protocol.ambient_temp;
              SoC_end_sim_idx = find(x_cv(:,1) <= SoC_final, 1, 'first');
         end
 
-        if ~isempty(SoC_end_sim_idx) && ~isempty(cv_cutoff_sim_idx) && (SoC_end_sim_idx <= cv_cutoff_sim_idx)
-            fprintf("Segment was able to complete within CV constriant \n")
-            t_soc = [t_cc(1:vlim_sim_idx-1); t_cv(1:SoC_end_sim_idx)];
-            x_soc = [x_cc(1:vlim_sim_idx-1,1:3); x_cv(1:SoC_end_sim_idx,1:3)];
-            I = [Current*ones(size(t_cc(1:vlim_sim_idx-1),1),1); I_cv(1:SoC_end_sim_idx)]; 
-            return
-        elseif (~isempty(SoC_end_sim_idx) && ~isempty(cv_cutoff_sim_idx) && (SoC_end_sim_idx > cv_cutoff_sim_idx)) || (~isempty(cv_cutoff_sim_idx))
-            t_soc = [t_cc(1:vlim_sim_idx-1); t_cv(1:cv_cutoff_sim_idx)];
-            x_soc = [x_cc(1:vlim_sim_idx-1,1:3); x_cv(1:cv_cutoff_sim_idx,1:3)];
-            I = [Current*ones(size(t_cc(1:vlim_sim_idx-1),1),1); I_cv(1:cv_cutoff_sim_idx)]; 
-            fprintf("Segment was not able to be completed within CV constriant, finished early (should only happen at the end charge or discharge) \n")
-            return
+        cv_cutoff_sim_idx = find(x_cv(:,4) > 0.001, 1, 'first');
+        
+        % (Assuming you implemented the directional check from the previous fix)
+        if SoC_delta > 0
+            SoC_end_sim_idx = find(x_cv(:,1) >= SoC_final, 1, 'first');
         else
-            error("Errros")
+            SoC_end_sim_idx = find(x_cv(:,1) <= SoC_final, 1, 'first');
         end
+
+        % Determine the true stopping point based on what happened first
+        if ~isempty(SoC_end_sim_idx) && isempty(cv_cutoff_sim_idx)
+            % Hit SoC target, never hit CV cutoff
+            end_idx = SoC_end_sim_idx;
+            fprintf("Segment completed target SoC in CV.\n")
+            
+        elseif isempty(SoC_end_sim_idx) && ~isempty(cv_cutoff_sim_idx)
+            % Hit CV cutoff, never hit SoC target
+            end_idx = cv_cutoff_sim_idx;
+            fprintf("Segment cut early due to CV current cutoff.\n")
+            
+        elseif ~isempty(SoC_end_sim_idx) && ~isempty(cv_cutoff_sim_idx)
+            % Both triggered. Pick whichever happened FIRST.
+            end_idx = min(SoC_end_sim_idx, cv_cutoff_sim_idx);
+            if end_idx == SoC_end_sim_idx
+                fprintf("Segment completed target SoC in CV.\n")
+            else
+                fprintf("Segment cut early due to CV current cutoff.\n")
+            end
+            
+        else
+            % Neither triggered! The maximum time (Tf_lim) ran out.
+            % We will use the entire simulated array.
+            end_idx = length(t_cv);
+            fprintf("Warning: CV stage hit maximum time limit before SoC or Cutoff.\n")
+        end
+        
+        % Construct the final output arrays
+        t_soc = [t_cc(1:vlim_sim_idx-1); t_cv(1:end_idx)];
+        x_soc = [x_cc(1:vlim_sim_idx-1,1:3); x_cv(1:end_idx,1:3)];
+        I = [Current*ones(size(t_cc(1:vlim_sim_idx-1),1),1); I_cv(1:end_idx)]; 
+        return
     else
          t_soc = t_cc;
          x_soc = x_cc(:,1:3);
