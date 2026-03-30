@@ -14,27 +14,17 @@ Ah_proc = [];
 Cap_proc = [];
 Sum_r = [];
 
-if strcmpi(direction, 'End')
-    indices = k:-1:1;
-elseif strcmpi(direction, 'Start')
-    indices = 1:k;
-else
-    error('Invalid direction avergaing window');
-end
-
-for i = indices 
+for i = k:-1:1 
     if isfield(sim_handler{i}, "current_sol")
         idx = idx + 1;
         Ah_proc(idx) = max(sim_handler{i}.original_data.Ah) * 3600;
         Cap_proc(idx) = sim_handler{i}.current_sol.Q;
-        cycle(idx) = i * 5;
         Sum_r(idx) = sim_handler{i}.current_sol.R0 + sim_handler{i}.current_sol.R1;
         R0(idx) = sim_handler{i}.current_sol.R0;
         R1(idx) = sim_handler{i}.current_sol.R1;
         C(idx) = sim_handler{i}.current_sol.C;
         Cp(idx) = sim_handler{i}.current_sol.Cp;
         h(idx) = sim_handler{i}.current_sol.h;
-        last_i = i; 
         ends = ends + 1;
         if ends == window
             break   
@@ -50,7 +40,7 @@ C_avg = mean(C);
 Cp_avg = mean(Cp);
 h_avg = mean(h);
 
-avg_sim_handle = sim_handler{last_i};
+avg_sim_handle = sim_handler{idx};
 avg_sim_handle.current_sol.Q = Q_avg;
 avg_sim_handle.current_sol.C = C_avg;
 avg_sim_handle.current_sol.R0 = R0_avg;
@@ -60,9 +50,9 @@ avg_sim_handle.current_sol.TP = TP_avg;
 avg_sim_handle.current_sol.Cp = Cp_avg;
 avg_sim_handle.current_sol.h = h_avg;
 
-append = sprintf('AVERAGED. Window: %d , Direction: %s',window,direction);
+append = sprintf('AVERAGED; WINDOW: %d DIRECTION: %s',window,direction);
 if isfield(avg_sim_handle,'notes')
-    avg_sim_handle.notes = [avg_sim_handle.notes, ' || ', append];
+    avg_sim_handle.notes = [avg_sim_handle.notes, append];
 else
     avg_sim_handle.notes = append;
 end

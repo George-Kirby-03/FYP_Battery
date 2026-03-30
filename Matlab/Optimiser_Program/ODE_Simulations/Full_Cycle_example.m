@@ -1,7 +1,7 @@
 % load in the sim_handle
 
 % ODE45 Simulation example 
-addpath(genpath('Misc_functions'))
+addpath(genpath('../Misc_functions'))
 %Here
 
 %Currently, if CV segments for charge or discharge are diabled, if limits

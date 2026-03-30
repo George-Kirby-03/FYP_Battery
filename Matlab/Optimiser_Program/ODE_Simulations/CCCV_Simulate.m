@@ -52,19 +52,25 @@ ambient_temp = charge_protocol.ambient_temp;
         if SoC_delta > 0
              v_target = sim_handler.ocv_curve(1); 
         else
-              v_target = sim_handler.ocv_curve(0); 
+             v_target = sim_handler.ocv_curve(0); 
         end
         I_cv = (v_target - sim_handler.ocv_curve(x_cv(:,1)) - x_cv(:,2)) ./ sim_handler.current_sol.R0;
+
         SoC_final = SoC_delta + init_conditions.soc;
         cv_cutoff_sim_idx = find(x_cv(:,4) > 0.001, 1, 'first');
-        SoC_end_sim_idx = find(abs(x_cv(:,1) - SoC_final)<0.001, 1, 'first');
-        if ~isempty(SoC_end_sim_idx) && isempty(cv_cutoff_sim_idx)
+        if SoC_delta > 0
+             SoC_end_sim_idx = find(x_cv(:,1) >= SoC_final, 1, 'first');
+        else
+             SoC_end_sim_idx = find(x_cv(:,1) <= SoC_final, 1, 'first');
+        end
+
+        if ~isempty(SoC_end_sim_idx) && ~isempty(cv_cutoff_sim_idx) && (SoC_end_sim_idx <= cv_cutoff_sim_idx)
             fprintf("Segment was able to complete within CV constriant \n")
             t_soc = [t_cc(1:vlim_sim_idx-1); t_cv(1:SoC_end_sim_idx)];
             x_soc = [x_cc(1:vlim_sim_idx-1,1:3); x_cv(1:SoC_end_sim_idx,1:3)];
             I = [Current*ones(size(t_cc(1:vlim_sim_idx-1),1),1); I_cv(1:SoC_end_sim_idx)]; 
             return
-        elseif ~isempty(cv_cutoff_sim_idx)
+        elseif (~isempty(SoC_end_sim_idx) && ~isempty(cv_cutoff_sim_idx) && (SoC_end_sim_idx > cv_cutoff_sim_idx)) || (~isempty(cv_cutoff_sim_idx))
             t_soc = [t_cc(1:vlim_sim_idx-1); t_cv(1:cv_cutoff_sim_idx)];
             x_soc = [x_cc(1:vlim_sim_idx-1,1:3); x_cv(1:cv_cutoff_sim_idx,1:3)];
             I = [Current*ones(size(t_cc(1:vlim_sim_idx-1),1),1); I_cv(1:cv_cutoff_sim_idx)]; 

@@ -126,8 +126,8 @@ for k = 1:(segments-1)
         target_soc = soc_end_discharge + (total_socs(k+1) * soc_discharged);
     end
 
-    soc_delta = target_soc - stage_init_conditions.soc
-    current = total_currents(k)*sign(soc_delta)
+    soc_delta = target_soc - stage_init_conditions.soc;
+    current = total_currents(k)*sign(soc_delta);
     [seg_time{k}, seg_states{k}, I{k}] = CCCV_Simulate(sim_handler,soc_delta, ...
         current,stage_init_conditions,charge_protocol);
 
