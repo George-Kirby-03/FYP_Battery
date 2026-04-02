@@ -28,7 +28,7 @@ addpath(genpath('Misc_functions'))
 
 load RS_LiPo_extracted.mat %Contains the found OCV curve to optionally be injected inplace of ICLOCS parameterised OCV
 % 
- [V,I,T,Ah,Ts] = get_cycle("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_08_proc3_0000 - 032 (2).csv",1);
+ [V,I,T,Ah,Ts] = get_cycle("C:\Users\jekir\Documents\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_03_proc1_0000 - 025 (1).csv",1);
  sim_handler = cell(1, size(V,2)-1);
 % 
 settings.nodes = 230;
@@ -48,7 +48,7 @@ T = T(idx);
 Ah = Ah(idx);
 
 
-parfor (i = 1:length(idx),32)
+parfor (i = 1:length(idx),16)
     cycle = [];
     cycle.volts = V{i};
     cycle.amps = I{i};
@@ -61,7 +61,7 @@ parfor (i = 1:length(idx),32)
 
     sim_handler{i} = tmp;
 end
-save MinTempInt-a.mat sim_handler
+save Paing25-200.mat sim_handler
 % %Alternativley loading presimulated cycles here
 % %load baseline1-800.mat
 % 
