@@ -52,14 +52,14 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=5.45e03;
-problem.mp.data.R0=0.0687;
+problem.mp.data.Q=5.46e03;
+problem.mp.data.R0=0.069;
 problem.mp.data.R1=0.0186;
 problem.mp.data.C1=794;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
 problem.mp.data.batt_m=1;
-problem.mp.data.batt_Cp=81.6;
+problem.mp.data.batt_Cp=82;
 problem.mp.data.batt_h=0.1023;
 problem.mp.data.TempAmb=24;
 problem.mp.data.batt_A=1;
@@ -75,7 +75,7 @@ x0ul{4}=[0.6 0 0 0.1;0.6 0.35 Temp_Max inf];
 xful{1}=x0ul{2};
 xful{2}=x0ul{3};
 xful{3}=x0ul{4};
-xful{4}=[0.8 0 27.3 0.1;0.8 0.35 27.9 inf];
+xful{4}=[0.8 0 27.3 0.1;0.8 0.35 27.8 inf];
 
 % Configure 2 free SOC boundary
 % x0ul{1}=[0 0 15 0.1;0 0 15 0.1];
