@@ -28,8 +28,8 @@ Temp_Max=45;
 problem.mp.data.N_phases=4;
 
 % Initial and final time for different phases. Let t_min(end)=t_max(end) if tf is fixed.
-problem.mp.time.t_min=[0 1 2 3 1980];     
-problem.mp.time.t_max=[0 1500 1500 1500 1980]; 
+problem.mp.time.t_min=[0 1 2 3 1800];     
+problem.mp.time.t_max=[0 1500 1500 1500 1800]; 
 guess.mp.time=[0 50 100 300 600];
 
 % Parameters bounds. pl=< p <=pu
@@ -52,17 +52,17 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=1.53*60*60;
-problem.mp.data.R0=0.075;
-problem.mp.data.R1=0.045;
-problem.mp.data.C1=800;
+problem.mp.data.Q=5.45e03;
+problem.mp.data.R0=0.0687;
+problem.mp.data.R1=0.0186;
+problem.mp.data.C1=794;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
-problem.mp.data.batt_m=42/1000;
-problem.mp.data.batt_Cp=2652.737;
-problem.mp.data.batt_h=45.67;
+problem.mp.data.batt_m=1;
+problem.mp.data.batt_Cp=81.6;
+problem.mp.data.batt_h=0.1023;
 problem.mp.data.TempAmb=24;
-problem.mp.data.batt_A=0.003714;
+problem.mp.data.batt_A=1;
 problem.mp.data.ocvpoly=ocv_curve_2;
 % Define different phases of OCP
 
@@ -75,7 +75,7 @@ x0ul{4}=[0.6 0 0 0.1;0.6 0.35 Temp_Max inf];
 xful{1}=x0ul{2};
 xful{2}=x0ul{3};
 xful{3}=x0ul{4};
-xful{4}=[0.8 0 20 0.1;0.8 0.35 Temp_Max inf];
+xful{4}=[0.8 0 27.3 0.1;0.8 0.35 27.9 inf];
 
 % Configure 2 free SOC boundary
 % x0ul{1}=[0 0 15 0.1;0 0 15 0.1];
