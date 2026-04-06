@@ -1,0 +1,4 @@
+%% This is desgined to get the images for the OCV graph used to produce ...
+%% the baseline protocols
+
+%% Looking at the datasheet wee can kind of get an idea of the true ocv.
