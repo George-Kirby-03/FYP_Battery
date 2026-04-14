@@ -1,0 +1,161 @@
+function sim_results = odeSOC(sim_handler,charge_protocol)
+%ODESOC Summary of this function goes here
+%   Detailed explanation goes here
+%   Set such that if the terminal rises above the max (SoC(1)), CV will
+%   occur until the next soc has been reached
+arguments (Input)
+    sim_handler struct
+    charge_protocol struct
+end
+% 
+% charge_protocol.charge_segments = [0,20,40,60,80,100];
+% charge_protocol.charge_currents = [];
+% charge_protocol.CV_cutoff = ;
+% charge_protocol.discharge_segments = [100 0];
+% charge_protocol.discharge_currents = ;
+% charge_protocol.discharge_charge_rest = ;
+% charge_protocol.ambient_temp = ;
+
+
+if ~isfield(charge_protocol,'discharge_segments') || (isempty(charge_protocol.discharge_segments))
+    fprintf("No discharge segment specified, will only charge\n")
+    no_discharge = 1;
+elseif isfield(charge_protocol,'discharge_currents') && ((length(charge_protocol.discharge_segments)-1) == length(charge_protocol.discharge_currents))
+    segments = length(charge_protocol.discharge_segments) - 1;
+    for k = 1:segments
+        if charge_protocol.discharge_segments(k) <= charge_protocol.discharge_segments(k+1)
+            error("Incorrect Discharge Protocol Given, needs monotonic decrease SoC")
+        end
+    end
+    no_discharge = 0;
+else
+    error("Incorrect discharge Protocol Given, check currents and segment lengths")
+end
+
+
+if ~isfield(charge_protocol,'charge_segments') || (isempty(charge_protocol.charge_segments))
+    fprintf("No charge segment specified, will only discharge\n")
+    no_charge = 1;
+elseif isfield(charge_protocol,'charge_currents') && ((length(charge_protocol.charge_segments)-1) == length(charge_protocol.charge_currents))
+    segments = length(charge_protocol.charge_segments) - 1;
+    for k = 1:segments
+        if charge_protocol.charge_segments(k) >= charge_protocol.charge_segments(k+1)
+            error("Incorrect Charge Protocol Given, needs monotonic increase SoC")
+        end
+    end
+    if ~no_discharge
+        if charge_protocol.discharge_segments(end) ~= charge_protocol.charge_segments(1)
+            error("Discharge end SoC is different to Charge start SoC")
+        end
+    end
+    no_charge = 0;
+else
+    error("Incorrect Charge Protocol Given, check currents and segment lengths")
+end
+
+if ~isfield(charge_protocol,'CV_cutoff') || (charge_protocol.CV_cutoff == 0)
+    fprintf("No / 0 CV_cutoff current set, using default 50mA")
+    charge_protocol.CV_cutoff = 0.05;
+end
+
+if ~isfield(charge_protocol,'ambient_temp') || (charge_protocol.ambient_temp == 0)
+    fprintf("No / 0 ambient temperature set, using default 24 deg")
+    charge_protocol.ambient_temp = 24;
+end
+
+if ~isfield(charge_protocol,'discharge_charge_rest') || (charge_protocol.discharge_charge_rest == 0)
+    fprintf("No / 0 discharge to charge rest time set, using 0 seconds")
+    charge_protocol.discharge_charge_rest = 0;
+end
+
+%Joining the Discharge and Charge profiles
+
+
+if no_discharge == 0 && no_charge == 1
+    total_socs = charge_protocol.discharge_segments * 0.01;
+    total_currents = charge_protocol.discharge_currents;
+elseif no_discharge == 0 && no_charge == 0
+    if (charge_protocol.discharge_charge_rest ~= 0)
+        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments] * 0.01;
+        total_currents = [charge_protocol.discharge_currents, 0, charge_protocol.charge_currents];
+    else
+        total_socs = [charge_protocol.discharge_segments, charge_protocol.charge_segments(2:end)] * 0.01;
+        total_currents = [charge_protocol.discharge_currents, charge_protocol.charge_currents];
+    end
+elseif no_discharge == 1 && no_charge == 0
+    total_socs = charge_protocol.charge_segments * 0.01;
+    total_currents = charge_protocol.charge_currents;
+else
+    error("No charge or discharge given")
+end
+
+if no_discharge == 1 && strcmp(charge_protocol.capacity_selection,'Discharge')
+    error("Discharge capacity set as relative SoC, but no discharge sequence given")
+end
+
+segments = length(total_socs);
+
+stage_init_conditions.soc = total_socs(1);
+stage_init_conditions.Vpol = 0;
+stage_init_conditions.T = charge_protocol.ambient_temp;
+
+stage_start_time = 0;
+soc_discharged = 0;
+soc_end_discharge = 0;
+num_dis_segs = length(charge_protocol.discharge_segments) - 1;
+has_rest = (charge_protocol.discharge_charge_rest ~= 0);
+charge_start_k = num_dis_segs + has_rest + 1;
+
+for k = 1:(segments-1)
+    fprintf("Stage %d start....\n", k)
+   
+    target_soc = total_socs(k+1);
+    % If discharged mode is chosen, the charging SoC amounts are realtive
+    % to the discharged capacity, not the total battery capacity
+    if strcmp(charge_protocol.capacity_selection,'Discharged') && (k >= charge_start_k)
+        if k == charge_start_k
+            soc_end_discharge = stage_init_conditions.soc;
+            soc_discharged = total_socs(1) - soc_end_discharge; 
+        end
+        %Next charge cycles SoC requests need to be mapped to relate to
+        %Discharge Q, logic here is old delta becomes new delta = old delta
+        %* discharge SoC  . then is added on from the last discharge SoC
+        %point, this way, if last SoC is say 30 and so is inital SoC, they
+        %will both be true regardless if discharge is not fully 0 for
+        %example
+        target_soc = soc_end_discharge + (total_socs(k+1) * soc_discharged);
+    end
+
+    soc_delta = target_soc - stage_init_conditions.soc;
+    current = total_currents(k)*sign(soc_delta);
+    [seg_time{k}, seg_states{k}, I{k}] = CCCV_Simulate(sim_handler,soc_delta, ...
+        current,stage_init_conditions,charge_protocol);
+
+
+    stage_init_conditions.soc = seg_states{k}(end,1);
+    stage_init_conditions.Vpol = seg_states{k}(end,2);
+    stage_init_conditions.T = seg_states{k}(end,3);
+    seg_time{k} = seg_time{k} + stage_start_time;
+
+    if k>1
+        if seg_time{k}(1) == seg_time{k-1}(end)
+            seg_time{k} = seg_time{k}(2:end);
+            seg_states{k} = seg_states{k}(2:end,:);
+            I{k} = I{k}(2:end);
+        end
+    end
+
+    stage_start_time = seg_time{k}(end);
+
+    fprintf("   Stage %d done! \n",k)
+end
+
+
+sim_results.time = vertcat(seg_time{:});
+sim_results.states = vertcat(seg_states{:});
+sim_results.I = vertcat(I{:});
+
+V_out = sim_handler.ocv_curve(sim_results.states(:,1)) + ... 
+        (sim_handler.current_sol.R0).*(sim_results.I) + sim_results.states(:,2);
+
+sim_results.V = V_out;

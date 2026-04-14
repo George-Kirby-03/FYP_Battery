@@ -1,0 +1,60 @@
+function avg_sim_handle = sim_average(sim_handler,window,direction)
+%SIM_AVERAGE Summary of this function goes here
+%   Detailed explanation goes here
+arguments (Input)
+    sim_handler (1,:) cell
+    window double
+    direction string = 'End'
+end
+
+k = numel(sim_handler);
+ends = 0;
+idx = 0;
+Ah_proc = [];
+Cap_proc = [];
+Sum_r = [];
+
+for i = k:-1:1 
+    if isfield(sim_handler{i}, "current_sol")
+        idx = idx + 1;
+        Ah_proc(idx) = max(sim_handler{i}.original_data.Ah) * 3600;
+        Cap_proc(idx) = sim_handler{i}.current_sol.Q;
+        Sum_r(idx) = sim_handler{i}.current_sol.R0 + sim_handler{i}.current_sol.R1;
+        R0(idx) = sim_handler{i}.current_sol.R0;
+        R1(idx) = sim_handler{i}.current_sol.R1;
+        C(idx) = sim_handler{i}.current_sol.C;
+        Cp(idx) = sim_handler{i}.current_sol.Cp;
+        h(idx) = sim_handler{i}.current_sol.h;
+        ends = ends + 1;
+        if ends == window
+            break   
+        end
+    end
+end
+
+Q_avg = mean(Cap_proc);
+TP_avg = mean(Ah_proc);
+R0_avg = mean(R0);
+R1_avg = mean(R1);
+C_avg = mean(C);
+Cp_avg = mean(Cp);
+h_avg = mean(h);
+
+avg_sim_handle = sim_handler{idx};
+avg_sim_handle.current_sol.Q = Q_avg;
+avg_sim_handle.current_sol.C = C_avg;
+avg_sim_handle.current_sol.R0 = R0_avg;
+avg_sim_handle.current_sol.R1 = R1_avg;
+avg_sim_handle.current_sol.R_total = R1_avg + R0_avg;
+avg_sim_handle.current_sol.TP = TP_avg;
+avg_sim_handle.current_sol.Cp = Cp_avg;
+avg_sim_handle.current_sol.h = h_avg;
+
+append = sprintf('AVERAGED; WINDOW: %d DIRECTION: %s',window,direction);
+if isfield(avg_sim_handle,'notes')
+    avg_sim_handle.notes = [avg_sim_handle.notes, append];
+else
+    avg_sim_handle.notes = append;
+end
+
+end
