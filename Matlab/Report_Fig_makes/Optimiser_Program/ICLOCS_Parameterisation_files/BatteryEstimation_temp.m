@@ -209,12 +209,12 @@ guess.parameters=[problem.data.poly.xe, problem.data.poly.dynams];
 problem.states.x0=[];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[0.88, -0.01, -2]; 
-problem.states.x0u=[0.99, 0.01 2]; 
+problem.states.x0l=[0.88, -0.1, -2]; 
+problem.states.x0u=[0.99, 0.1 2]; 
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0, -0.8 -0.5];
-problem.states.xu= [1.05, 0.8 20];
+problem.states.xl=[0, -1 -0.5];
+problem.states.xu= [1.05, 1 20];
 
 % State error bounds
 problem.states.xErrorTol_local=[1e-6 1e-6 1e-6];

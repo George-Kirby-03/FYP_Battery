@@ -1,0 +1,30 @@
+figure()
+t = tiledlayout('flow');
+
+% Team 1
+nexttile
+plot(sim_handler.states_sol.T,sim_handler.states_sol.Pol+sim_handler.ocv_curve(sim_handler.states_sol.SoC))
+hold on
+plot(sim_handler.original_data.ts,sim_handler.original_data.volts)
+title('Team 1 Strikes')
+
+% Team 2
+nexttile
+plot(sim_handler.states_sol.T,sim_handler.states_sol.Temp)
+hold on
+plot(sim_handler.original_data.ts,sim_handler.original_data.tp)
+title('Team 2 Strikes')
+
+% Team 3
+%nexttile([1 2]);
+nexttile
+soc = linspace(0,1,100);
+plot(sim_handler.states_sol.T,sim_handler.states_sol.SoC)
+
+nexttile
+soc = linspace(0,1,100);
+plot(sim_handler.states_sol.T,sim_handler.states_sol.SoC)
+
+
+% Add layout title
+title(t,'April Bowling League Data')

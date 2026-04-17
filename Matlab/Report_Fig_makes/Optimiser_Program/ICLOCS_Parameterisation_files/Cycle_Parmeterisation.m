@@ -47,6 +47,12 @@ else
     sim_handler.ocv_curve = @(x1) polymodel(temp,0,x1,1);
 end
 
+sim_handler.states_sol.T=solution.T;
+sim_handler.states_sol.SoC=speval(solution,'X',1,sim_handler.states_sol.T);
+sim_handler.states_sol.Pol=speval(solution,'X',2,sim_handler.states_sol.T);
+sim_handler.states_sol.Temp=speval(solution,'X',3,sim_handler.states_sol.T);
+sim_handler.states_sol.Current=problem.data.InputCurrent(sim_handler.states_sol.T);
+
 
 
 end

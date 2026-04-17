@@ -28,16 +28,16 @@ addpath(genpath('Misc_functions'))
 
 load("MOLI_cycle_4.mat")
 % 
-settings.nodes = 350;
+settings.nodes = 230;
 settings.iterations = 200; 
 settings.polycount = 12;
 settings.v_lim = 4.12;
 settings.v_low = 3;
 
 dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.05,'Cp',150,'h',1);
-upper_dynamics  = struct('Q',3.6*3600,'C',5500,'R0',0.075,'R1',0.07,'Cp',250,'h',5);
+upper_dynamics  = struct('Q',3.6*3600,'C',5500,'R0',0.075,'R1',0.05,'Cp',160,'h',5);
 lower_dynamics  = struct('Q',0.5*3600,'C',60,'R0',0.01,'R1',0.01,'Cp',20,'h',0.05);
-enforce.temp_strength = 0.01;
+enforce.temp_strength = 0;
 
 % V = V(idx);
 % I = I(idx);
@@ -68,17 +68,9 @@ plot([1 2 3 4],strikes(:,2),'-o')
 title('Team 2 Strikes')
 
 % Team 3
-nexttile([1 2]);
-bar([1 2 3 4],scores)
-legend('Team 1','Team 2','Team 3','Location','northwest')
-
-% Configure ticks and axis labels
-xticks([1 2 3 4])
-xlabel('Game')
-ylabel('Score')
-
-% Add layout title
-title(t,'April Bowling League Data')
+nexttile
+plot([1 2 3 4],strikes(:,3),'-o')
+title('Team 3 Strikes')
 
 %    tmp = Greyest_Parameterisation(tmp);
 
