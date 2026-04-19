@@ -36,8 +36,9 @@ settings.v_low = 3;
 
 dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.05,'Cp',150,'h',1);
 upper_dynamics  = struct('Q',3.6*3600,'C',5500,'R0',0.075,'R1',0.07,'Cp',250,'h',5);
-lower_dynamics  = struct('Q',0.5*3600,'C',60,'R0',0.01,'R1',0.01,'Cp',20,'h',0.05);
-enforce.temp_strength = 0.01;
+lower_dynamics  = struct('Q',0.5*3600,'C',60,'R0',0.001,'R1',0.001,'Cp',20,'h',0.05);
+enforce.temp_strength = 0.02;
+enforce.v_lim_strength = 0.01;
 
 % V = V(idx);
 % I = I(idx);

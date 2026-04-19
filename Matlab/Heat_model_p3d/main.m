@@ -8,10 +8,10 @@ tp = Cycle10.Temp1;
 u1 = Cycle10.Amps;
 y = Cycle10.Volts;
 rho = 1820; % kg/m^3
-specificHeat = 1548; % J/(kg-K)
-hCoeff = 158; % W/(m^2-K)
-cx = 30.4;
-cy = 0.2;
+specificHeat = 2200; % J/(kg-K)
+hCoeff = 26; % W/(m^2-K)
+cx = 30;
+cy = 0.7;
 T_amb = tp(1);
 load("Geom.mat")
 
@@ -23,7 +23,7 @@ figure;
 pdegplot(model,EdgeLabels="on"); 
 axis([-.1 1.1 -.1 1.1]);
 title("Geomtry With edge labels")
-w = (u1.^2).*0.07;
+w = (u1.^2).*(0.075 + 0.045);
 q = w/(1.8e-5); %Volumetric heat generation
 
 q_lut = @(t) interp1(tt, q, t, 'linear', 'extrap');
@@ -52,20 +52,11 @@ model.SolverOptions.AbsoluteTolerance = 1.0e-4;
 
 R = solvepde(model,tlist);
 u = R.NodalSolution;
-% figure; 
-% plot(tlist,u(1,:)); 
-% grid on
-% title(["Temperature Along the Top Edge of " ...
-%        "the Plate as a Function of Time"])
-% xlabel("Time, seconds")
-% ylabel("Temperature, degrees-Kelvin")
 
 figure;
-pdeplot(model,XYData=u(:,end),Contour="on",ColorMap="jet");
-title(sprintf(['Temperature In The Plate,' ...
-               'Transient Solution( %d seconds)\n'],tlist(1,end)));
-xlabel("X-coordinate, meters")
-ylabel("Y-coordinate, meters")
+pdeplot(model,XYData=u(:,53),Contour="on",ColorMap="jet");
+xlabel("X-coordinate (m)","Interpreter","latex","FontSize",13)
+ylabel("Y-coordinate (m)","Interpreter","latex","FontSize",13)
 axis equal;
 
 figure;
