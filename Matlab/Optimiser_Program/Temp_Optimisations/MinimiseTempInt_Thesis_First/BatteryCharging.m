@@ -35,9 +35,9 @@ guess.mp.time=[0 50 100 300 600];
 % Parameters bounds. pl=< p <=pu
 %G.K adding parmeters which is T_Max by definining as shown in All_phases
 %file
-problem.mp.parameters.pl=[zeros(1,pr+oblem.mp.data.N_phases) 0];
-problem.mp.parameters.pu=[10*15*ones(1,problem.mp.data.N_phases) 50];
-guess.mp.parameters=[zeros(1,problem.mp.data.N_phases) 30];
+problem.mp.parameters.pl=[zeros(1,problem.mp.data.N_phases) ];
+problem.mp.parameters.pu=[10*15*ones(1,problem.mp.data.N_phases) ];
+guess.mp.parameters=[zeros(1,problem.mp.data.N_phases)];
 
 % Bounds for linkage boundary constraints bll =< bclink(x0,xf,u0,uf,p,t0,tf,vdat) =< blu
 problem.mp.constraints.bll.linear=[zeros(1,(problem.mp.data.N_phases-1)*3)];
@@ -52,15 +52,15 @@ problem.mp.constraints.blTol.nonlinear=[];
 problem.mp.linkfunctions=@bclink;
 
 % Store the necessary problem parameters used in the functions
-problem.mp.data.Q=5.36e03;
-problem.mp.data.R0=0.0734;
-problem.mp.data.R1=0.0177;
-problem.mp.data.C1=817;
+problem.mp.data.Q=5.5e03;
+problem.mp.data.R0=0.075;
+problem.mp.data.R1=0.045;
+problem.mp.data.C1=800;
 problem.mp.data.Vmax=Vmax;
 problem.mp.data.Vmin=Vmin;
 problem.mp.data.batt_m=1;
-problem.mp.data.batt_Cp=75;
-problem.mp.data.batt_h=0.11;
+problem.mp.data.batt_Cp=103;
+problem.mp.data.batt_h=0.128;
 problem.mp.data.TempAmb=24;
 problem.mp.data.batt_A=1;
 problem.mp.data.ocvpoly=ocv_curve_2;
@@ -75,7 +75,7 @@ x0ul{4}=[0.6 0 0;0.6 0.35 Temp_Max];
 xful{1}=x0ul{2};
 xful{2}=x0ul{3};
 xful{3}=x0ul{4};
-xful{4}=[0.8 0 27.5;0.8 0.35 28];
+xful{4}=[0.8 0 27.4;0.8 0.35 Temp_Max];
 
 % Configure 2 free SOC boundary
 % x0ul{1}=[0 0 15;0 0 15];
