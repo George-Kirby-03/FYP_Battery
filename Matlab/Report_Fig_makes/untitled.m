@@ -1,6 +1,6 @@
 load moli_for_fyp.mat
 figure()
-t = tiledlayout('flow');
+t = tiledlayout('TileSpacing','tight', 'Padding','tight');
 
 f_size = 18;
 l_size = 13;
@@ -30,35 +30,25 @@ grid on
 ax = gca;
 ax.FontSize = 12;
 xlabel("Time ($s$)",'interpreter','latex')
-% Team 3
-%nexttile([1 2]);
 nexttile
-yyaxis left
 plot(sim_handler.states_sol.T,sim_handler.states_sol.SoC)
 ylim([0 1])
-ylabel("State of Charge",'interpreter','latex')
+ylabel("SoC (\%)",'interpreter','latex')
 ax = gca;
 ax.FontSize = 12;
+title('\textbf{State Of Charge}', ...
+       'interpreter','latex','fontsize',f_size)
+ax = gca;
+ax.FontSize = 12;
+xlabel("Time ($s$)",'interpreter','latex')
+grid on
 
-hold on
-yyaxis right
+nexttile
 plot(sim_handler.original_data.ts,sim_handler.original_data.amps)
-ylim([-3 1.5])
-ylabel("Current ($I$)",'interpreter','latex')
 title('\textbf{Current Throughput}', ...
        'interpreter','latex','fontsize',f_size)
 ax = gca;
 ax.FontSize = 12;
-xlabel("Time ($s$)",'interpreter','latex')
-grid on
-
-nexttile
-soc = linspace(0,1,100);
-plot(sim_handler.states_sol.T,sim_handler.states_sol.Pol)
-title('\textbf{Polarising Component ($V$)}', ...
-       'interpreter','latex','fontsize',f_size)
-ax = gca;
-ax.FontSize = 12;
 grid on
 xlabel("Time ($s$)",'interpreter','latex')
-ylabel("$V$","Interpreter","latex")
+ylabel("Current ($I$)",'interpreter','latex')
