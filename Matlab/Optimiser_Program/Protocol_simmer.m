@@ -6,25 +6,26 @@
 
 %For Protocol 3 Minimising temp intergral
 
-load MinTempInt-a.mat
+%load MinTempInt-a.mat
+load baseline27-800.mat
 load better_ocv.mat
 avg_sim_handle_b1 = sim_average(sim_handler,20,'Start');
-%avg_sim_handle_b1 = ocv_fun_injection(avg_sim_handle_b1,ocv_curve_3);
-%avg_sim_handle_b1.current_sol.Q = 5.5e03;
+avg_sim_handle_b1 = ocv_fun_injection(avg_sim_handle_b1,ocv_curve_3);
+avg_sim_handle_b1.current_sol.Q = 5.5e03;
 avg_sim_handle_b1.current_sol.C = 800;
 avg_sim_handle_b1.current_sol.R0 = 0.075;
 avg_sim_handle_b1.current_sol.R1 = 0.045;
 avg_sim_handle_b1.current_sol.Cp = 100.8;
 avg_sim_handle_b1.current_sol.h = 0.128;
-load MinTempInt-a.mat
+%load MinTempInt-a.mat
 % avg_sim_handle_b2 = sim_average(sim_handler,5,'Start');
 
 %avg_sim_handle_b1 = ocv_fun_injection(avg_sim_handle_b1,ocv_curve_2);
 
 charge_protocol.capacity_selection = 'Discharge'; % or 'Absolute'
 charge_protocol.charge_segments = [0 20 40 60 80 100]; %Specify as many segments as needed
-charge_protocol.charge_currents = [1.3 1.45 1.75 1.53 0.5] * 1.5; %Specify current per segment in c
-charge_protocol.CV_cutoff = 1.5/20; %Segment CV stage (if met) will stop once current falls to this limit
+charge_protocol.charge_currents = [1.73 1.73 1.6 1.39 0.5] * 1.5; %Specify current per segment in c
+charge_protocol.CV_cutoff = 0.019; %Segment CV stage (if met) will stop once current falls to this limit
 charge_protocol.discharge_segments = [100 0]; %Specify as many segments as needed
 charge_protocol.discharge_currents = [2.5]*1.5; %Specify current per segment in c here
 charge_protocol.discharge_charge_rest = 60*30; %If set, there will be a rest period between charge and discharge ...
@@ -46,12 +47,33 @@ sim_results = odeSOC(avg_sim_handle_b1,charge_protocol);
 % sim_results.V = V_out;
 %Compare simulated and actual labs
 %Find where the discharge starts
-idx = find(sim_handler{1}.original_data.amps<0,1,'first');
+idx = find(sim_handler{5}.original_data.amps<0,1,'first');
 figure()
 % plot(sim_results.time,sim_results.V);
 hold on
 % %plot(sim_results_b2.time,sim_results_b2.V);
-plot(sim_results.time,sim_results.I,sim_results.time,sim_results.V);
+plot(sim_results.time,sim_results.V);
 plot(sim_handler{1}.original_data.ts(idx:end) - sim_handler{1}.original_data.ts(idx),sim_handler{1}.original_data.volts(idx:end));
+%plot(sim_handler{1}.original_data.ts(idx:end) - sim_handler{1}.original_data.ts(idx),sim_handler{1}.original_data.amps(idx:end));
 % plot(avg_sim_handle_b1.original_data.ts(idx:end) - avg_sim_handle_b1.original_data.ts(idx),avg_sim_handle_b1.original_data.amps(idx:end))
+
+
+
+figure
+plot(sim_results.time,sim_results.V);
+hold on
+plot(sim_handler{1}.original_data.ts(idx:end) - sim_handler{1}.original_data.ts(idx),sim_handler{1}.original_data.volts(idx:end));
+set(gcf, "Theme", "light");
+xlim([3167 6443])
+ylim([3.221 3.658])
+grid on
+legend(["Simulation", "Lab"], "Position", [0.7383 0.8503 0.0936, 0.0566])
+xlabel("Time $(S)$", "Interpreter", "latex", "FontSize", 13)
+ylabel("Volts $(V)$", "Interpreter", "latex", "FontSize", 13)
+Simulation = findobj(gcf,"DisplayName","Simulation")
+Simulation.LineStyle = "-."
+Simulation.LineWidth = 2
+Lab = findobj(gcf,"DisplayName","Lab")
+Lab.LineStyle = "-"
+Lab.LineWidth = 2
 
