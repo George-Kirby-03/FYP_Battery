@@ -68,7 +68,6 @@ ambient_temp = charge_protocol.ambient_temp;
 
         cv_cutoff_sim_idx = find(x_cv(:,4) > 0.001, 1, 'first');
         
-        % (Assuming you implemented the directional check from the previous fix)
         if SoC_delta > 0
             SoC_end_sim_idx = find(x_cv(:,1) >= SoC_final, 1, 'first');
         else
@@ -96,8 +95,8 @@ ambient_temp = charge_protocol.ambient_temp;
             end
             
         else
-            % Neither triggered! The maximum time (Tf_lim) ran out.
-            % We will use the entire simulated array.
+            % if neither triggered, The maximum time (Tf_lim) ran out.
+            % will use the entire simulated array.
             end_idx = length(t_cv);
             fprintf("Warning: CV stage hit maximum time limit before SoC or Cutoff.\n")
         end

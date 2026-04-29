@@ -368,31 +368,27 @@ plot(sim_results.time,sim_results.states(:,1),'LineWidth',3);
 plot(GK_RS15_02_baseline_0000_028_1_.TestTime(idx_lab1:end) - GK_RS15_02_baseline_0000_028_1_.TestTime(idx_lab1),GK_RS15_02_baseline_0000_028_1_.Volts(idx_lab1:end),'LineWidth',3);
 load baseline28-800.mat
 plot(GK_RS15_01_baseline_0000_027_3_.TestTime(idx_lab2:end) - GK_RS15_01_baseline_0000_027_3_.TestTime(idx_lab2),GK_RS15_01_baseline_0000_027_3_.Volts(idx_lab2:end),'LineWidth',3);
-legend(["Simulation", "Batt B", "Batt A"], "Interpreter", "latex", "FontSize", 13, "Position", [0.7383 0.8503 0.0936, 0.0566])
 set(gcf, "Theme", "light");
 xlim([3167 6443])
 ylim([3.221 3.658])
-xi = xline(1, '-', 'Next Cycle Start - Discharge Start','Interpreter','latex','FontSize',13);
-xi.LineWidth = 1.5;
-xi.Color = [0 0 0];
 xs = xline(1452, '-', 'Discharge End - Rest Start','Interpreter','latex','FontSize',13);
 xs.LineWidth = 1.5;
 xs.Color = [0 0 0];
 x3 = xline(3215, '--', 'Rest End - Charge Start','Interpreter','latex','FontSize',13);
 x3.LineWidth = 1.5;
 x3.Color = [0 0 0];
-xf = xline(6549, '-', 'Charge End','Interpreter','latex','FontSize',13);
-xf.LineWidth = 1.5;
-xf.Color = [0 0 0];
-xf = xline(8596, '-', 'Cycle End - Next Cycle Start','Interpreter','latex','FontSize',13);
+xf = xline(6549, '-', 'Cyle end','Interpreter','latex','FontSize',13);
 xf.LineWidth = 1.5;
 xf.Color = [0 0 0];
 % Optional label positioning tweaks
 xs.LabelHorizontalAlignment = 'right';
+xe.LabelHorizontalAlignment = 'right';
+x1.LabelHorizontalAlignment = 'right';
+x2.LabelHorizontalAlignment = 'right';
 x3.LabelHorizontalAlignment = 'right';
 xf.LabelHorizontalAlignment = 'right';
 grid on
-
+legend(["Simulation", "Batt B", "Batt A"], "Interpreter", "latex", "FontSize", 13, "Position", [0.7383 0.8503 0.0936, 0.0566])
 xlabel("Time $(S)$", "Interpreter", "latex", "FontSize", 13)
 ylabel("Volts $(V)$", "Interpreter", "latex", "FontSize", 13)
 
@@ -421,6 +417,9 @@ xf.LineWidth = 1.5;
 xf.Color = [0 0 0];
 % Optional label positioning tweaks
 xs.LabelHorizontalAlignment = 'right';
+xe.LabelHorizontalAlignment = 'right';
+x1.LabelHorizontalAlignment = 'right';
+x2.LabelHorizontalAlignment = 'right';
 x3.LabelHorizontalAlignment = 'right';
 xf.LabelHorizontalAlignment = 'right';
 grid on
