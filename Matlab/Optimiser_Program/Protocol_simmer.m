@@ -310,8 +310,8 @@ avg_sim_handle_b1.current_sol.Q = 5.57e03;
 avg_sim_handle_b1.current_sol.C = 800;
 avg_sim_handle_b1.current_sol.R0 = 0.075;
 avg_sim_handle_b1.current_sol.R1 = 0.045;
-avg_sim_handle_b1.current_sol.Cp = 95;
-avg_sim_handle_b1.current_sol.h = 0.127;
+avg_sim_handle_b1.current_sol.Cp = 75;
+avg_sim_handle_b1.current_sol.h = 0.12;
 %load MinTempInt-a.mat
 % avg_sim_handle_b2 = sim_average(sim_handler,5,'Start');
 load baseline27-800.mat
@@ -402,21 +402,29 @@ plot(sim_results.time, sim_results.states(:,3));
 hold on
 
 load baseline27-800.mat
-plot(sim_handler{1}.original_data.ts(idx:end) - sim_handler{1}.original_data.ts(idx),  sim_handler{1}.original_data.tp(idx:end) + 25);
-
+figure
+plot(sim_results.time,sim_results.states(:,3),'LineWidth',3);
+hold on
+plot(GK_RS15_02_baseline_0000_028_1_.TestTime(idx_lab1:end) - GK_RS15_02_baseline_0000_028_1_.TestTime(idx_lab1),GK_RS15_02_baseline_0000_028_1_.Temp1(idx_lab1:end),'LineWidth',3);
 load baseline28-800.mat
-plot(sim_handler{1}.original_data.ts(idx:end) - sim_handler{1}.original_data.ts(idx),  sim_handler{1}.original_data.tp(idx:end) + 25);
-plot(sim_handler{1}.original_data.ts(idx:end) - sim_handler{1}.original_data.ts(idx),  sim_handler{1}.original_data.amps(idx:end));
+plot(GK_RS15_01_baseline_0000_027_3_.TestTime(idx_lab2:end) - GK_RS15_01_baseline_0000_027_3_.TestTime(idx_lab2),GK_RS15_01_baseline_0000_027_3_.Temp1(idx_lab2:end),'LineWidth',3);
+
 set(gcf, "Theme", "light");
 xlim([3167 6443])
 ylim([24 30])
-xs = xline(3210, '-', 'Charge start','Interpreter','latex','FontSize',13);
+xi = xline(1, '-', 'Next Cycle Start - Discharge Start','Interpreter','latex','FontSize',13);
+xi.LineWidth = 1.5;
+xi.Color = [0 0 0];
+xs = xline(1452, '-', 'Discharge End - Rest Start','Interpreter','latex','FontSize',13);
 xs.LineWidth = 1.5;
 xs.Color = [0 0 0];
-x3 = xline(1424, '--', 'Discharge end','Interpreter','latex','FontSize',13);
+x3 = xline(3215, '--', 'Rest End - Charge Start','Interpreter','latex','FontSize',13);
 x3.LineWidth = 1.5;
 x3.Color = [0 0 0];
-xf = xline(6510, '-', '100\% SoC','Interpreter','latex','FontSize',13);
+xf = xline(6549, '-', 'Charge End','Interpreter','latex','FontSize',13);
+xf.LineWidth = 1.5;
+xf.Color = [0 0 0];
+xf = xline(8596, '-', 'Cycle End - Next Cycle Start','Interpreter','latex','FontSize',13);
 xf.LineWidth = 1.5;
 xf.Color = [0 0 0];
 % Optional label positioning tweaks
