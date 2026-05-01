@@ -1,0 +1,16 @@
+function dx = US_dynamics(t, y, param, current_fun)
+R0 = param.r0;
+R1 = param.r1;
+C = param.c;
+Q = param.q;
+v_ulim = param.vu;
+v_llim = param.vl;
+current = current_fun(t);
+ocv_curve = param.ocv;
+dx3 = 0;
+
+dx1 = current./Q;
+dx2 = -y(2)./(R1.*C) + current./C;
+
+dx = [dx1; dx2; dx3;];
+end
