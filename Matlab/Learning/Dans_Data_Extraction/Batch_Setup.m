@@ -94,7 +94,7 @@ for i = 1:size
     if ~found
         % no suitable files left
         if i == 1
-            batch = 0;        % your original behaviour
+            batch = 0;        
         else
             batch = batch(1:i-1);
         end

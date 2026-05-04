@@ -14,3 +14,5 @@ dx2 = -y(2)./(R1.*C) + current./C;
 
 dx = [dx1; dx2; dx3;];
 end
+
+
