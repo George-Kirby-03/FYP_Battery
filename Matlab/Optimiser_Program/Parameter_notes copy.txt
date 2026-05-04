@@ -1,0 +1,54 @@
+C - 1.5A
+
+Protocol 1 (Paings):
+Original (for both batteries):
+Q: 5.5e03  C: 800  R0: 0.075  R1:  0.045  H:  0.128   Cp: 102.9  %(was slighlty tweaked as mentioned)
+C1: 2  C2: 1.8 C3: 1.65 C4: 0.9
+Mat file -> Paings_A_1_200.mat (from GK_RS15_04_proc1_0000 - 026)
+Mat file -> Paings_B_1_200.mat (from GK_RS15_03_proc1_0000 - 025)
+
+200th (for battery A): (GK_RS15_04_proc1_0000 - 026.csv file)
+Q: 5.45e03  C: 794  R0: 0.0687  R1:  0.0186  H:  0.1023   Cp: 81.6
+C1: 1.86  C2: 1.89  C3: 1.66  C4: 1.24
+Mat file -> Paings_A_200_400.mat  (latest file: GK_RS15_04_proc5_0000 - 026)
+
+200th (for battery B): (GK_RS15_03_proc1_0000 - 025.csv file)
+Q: 5.48e03  C: 733  R0: 0.0728  R1:  0.015  H:  0.12   Cp: 91.6236
+C1: 1.56  C2: 1.78  C3: 1.7 C4: 1.5
+Mat file -> Paings_B_200_400.mat (latest file: GK_RS15_03_proc4_0000 - 025)
+
+
+Protocol 2 (Minimising max_temp) :
+Original (for both batteries):
+Q: 5.51e03  C: 800  R0: 0.075  R1:  0.045  H:  0.1274  Cp: 100.8
+C1: 2  C2: 1.4 C3: 1.35  C4: 1.35
+Mat file -> Min_Max_A_1_200.mat
+Mat file -> Min_Max_B_1_200.mat
+
+200th (for battery A): (GK_RS15_05_proc2_0000 - 029.csv file)
+Q: 5.37e03  C: 807  R0: 0.0719  R1:  0.0219  H:  0.14   Cp: 86
+C1: 2 C2: 1.48 C3: 1.33  C4: 1.62
+Mat file -> Min_Max_A_200_400.mat
+
+200th (for battery B): (GK_RS15_06_proc2_0000 - 030.csv file)
+Q: 5.36e03  C: 812  R0: 0.0734  R1:  0.0177  H:  0.111   Cp: 75
+C1: 2.39 C2: 1.42 C3: 1.42  C4: 1.42
+Mat file -> Min_Max_B_200_400.mat
+
+
+Protocol 3 (Minimising temp intergral):
+Original (for both batteries):
+Q: 5.55e03  C: 800  R0: 0.075  R1:  0.045  H:  0.128  Cp: 100.8
+C1:  1.3  C2: 1.45  C3: 1.75  C4:  1.53
+Mat file -> Min_Intg_A_1_200.mat
+Mat file -> Min_Intg_B_1_200.mat
+
+200th (for battery A): (GK_RS15_07_proc3_0000 - 031.csv file)
+Q: 5.38e03  C: 798  R0: 0.07  R1:  0.0219  H:  0.108   Cp: 74
+C1: 1.85 C2: 1.75 C3: 1.59 C4: 1.3
+Mat file -> Min_Intg_A_200_400.mat
+
+200th (for battery B): (GK_RS15_08_proc3_0000 - 032.csv file)
+Q: 5.35e03  C: 802  R0: 0.0736  R1:  0.0167  H:  0.0853   Cp: 63
+C1: 2.27  C2: 2 C3: 1.6 C4: 1.04
+Mat file -> Min_Intg_B_200_400.mat
