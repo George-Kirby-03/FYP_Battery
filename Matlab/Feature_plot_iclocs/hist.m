@@ -85,3 +85,55 @@ legend('Averaged Overpotential', 'Maximum Overpotential',"FontWeight","bold")
 ylabel('Voltage (V)');
 title("\textbf{Overpotentials During Charging}", "Interpreter", "latex", "FontSize", 20);
 grid on;
+
+
+%%
+figure()
+
+t = tiledlayout(2,2);
+
+
+nexttile
+y_temp = [avg_temp_baseline-24 max(features.baseline.x3)-24 ; 
+    avg_temp_minimisetemp-24 max(features.minimisetemp.x3)-24 ; 
+    avg_temp_minimisetempmax-24 max(features.minimisetempmax.x3)-24;
+    avg_temp_minimisepang-24 max(features.minimisepang.x3)-24];
+
+bar(x,y_temp)
+legend('Averaged Temperature', 'Maximum Temperature',"FontWeight","bold")
+ylabel('Temperature Rise (°C)');
+title("\textbf{Temperature Rise During Charging}", "Interpreter", "latex", "FontSize", 14);
+grid on
+
+
+nexttile
+y_over = [avg_over_potential_baseline max(over_potential_baseline) ; 
+    avg_over_potential_minimisetemp max(over_potential_minimisetemp) ; 
+    avg_over_potential_minimisetempmax max(over_potential_minimisetempmax);
+    avg_over_potential_minimisepang max(over_potential_minimisepang)];
+
+bar(x,y_over)
+legend('Averaged Overpotential', 'Maximum Overpotential',"FontWeight","bold")
+ylabel('Voltage (V)');
+title("\textbf{Overpotentials During Charging}", "Interpreter", "latex", "FontSize", 14);
+grid on
+
+nexttile([1 2]) % span across both columns
+hold on
+
+histogram(features.minimisetemp.x3,12,'Normalization','probability')
+histogram(features.minimisetempmax.x3,12,'Normalization','probability')
+histogram(features.baseline.x3,18,'Normalization','probability')
+histogram(features.minimisepang.x3,18,'Normalization','probability')
+
+grid on
+xlabel("\textbf{Temperature bins (From ambient 24$^{\circ}$)}", ...
+    "Interpreter", "latex", "FontSize", 14)
+
+legend(["Minimised Temperature", "Minimised Max Temperature", ...
+        "Baseline", "Minimise Qloss Paing"],"FontWeight","bold")
+
+title("\textbf{Histogram / Temperature binned density plots}", ...
+    "Interpreter", "latex", "FontSize", 16)
+
+hold off
