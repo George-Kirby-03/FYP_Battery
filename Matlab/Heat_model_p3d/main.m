@@ -1,15 +1,15 @@
 load("../RS_Battery_Lab_Analysis/RS_Baseline_og_attia_normalised.mat")
 Cycle10 = GK_RS_baseline_028(GK_RS_baseline_028.Cyc_ == 10 | GK_RS_baseline_028.Cyc_ == 11 ,:);
 % Select the rows from (end - 599) up to the end
-Cycle10 = Cycle10(end-800:end,:);
+Cycle10 = Cycle10(end-785:end,:);
 %plot(Cycle10.TestTime,Cycle10.Volts,Cycle10.TestTime,Cycle10.Amps./2 + 3)
 tt = Cycle10.TestTime - Cycle10.TestTime(1);
 tp = Cycle10.Temp1;
 u1 = Cycle10.Amps;
 y = Cycle10.Volts;
 rho = 1820; % kg/m^3
-specificHeat = 2200; % J/(kg-K)
-hCoeff = 26; % W/(m^2-K)
+specificHeat = 2300; % J/(kg-K)
+hCoeff = 29; % W/(m^2-K)
 cx = 30;
 cy = 0.7;
 T_amb = tp(1);
@@ -54,7 +54,8 @@ R = solvepde(model,tlist);
 u = R.NodalSolution;
 
 figure;
-pdeplot(model,XYData=u(:,53),Contour="on",ColorMap="jet");
+pdeplot(model,XYData=u(:,48),Contour="on",ColorMap="jet");
+set(gcf, 'color', 'none');  
 xlabel("X-coordinate (m)","Interpreter","latex","FontSize",13)
 ylabel("Y-coordinate (m)","Interpreter","latex","FontSize",13)
 axis equal;
@@ -64,17 +65,16 @@ Tmax = max(u, [], 1);   % max over nodes, for each time
 Tmin = min(u, [], 1);   % min over nodes, for each time
 
 figure;
-plot(tlist, Tmax, 'r', 'LineWidth', 2); hold on
+plot(tlist, Tmax, 'r', 'LineWidth', 2);
+hold on
 plot(tlist, Tmin, 'b', 'LineWidth', 2);
 plot(tlist, interp1(tt,tp,tlist), 'g', 'LineWidth', 2);
-plot(tlist, 20+ v_lut(tlist), 'LineWidth', 2);
-plot(tlist, 24 + interp1(tt,u1.^2,tlist), 'LineWidth', 2);
+% plot(tlist, 20+ v_lut(tlist), 'LineWidth', 2);
+% plot(tlist, 24 + interp1(tt,u1.^2,tlist), 'LineWidth', 2);
 grid on
-xlabel('Time')
-ylabel('Tempe')
-legend('T_{max}', 'T_{min}', 'Location', 'best')
-title('Sim temps vs Time')
-
+xlabel('Time $(s)$')
+ylabel('$\Delta T$')
+legend('3D Sim $T_{max}$', '3D Sim $T_{min}$','Lab Measured','Interpreter','Latex')
 
 % figure;
 % step_time = 32668/60;
