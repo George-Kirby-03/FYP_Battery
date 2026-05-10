@@ -1,14 +1,14 @@
 close all;
 clear; clc;
-load RS_Params.mat
+load RS_Param_Retry.mat
 ocv = linspace(0,1,150);
-p.r1 = 0.07;
-p.r0 = 0.16- p.r1;
+p.r1 = 0.045;
+p.r0 = 0.075;
 
 %To see current limit in C till V cutoff (3.6V)
 % (3.6 - ocv(soc))/R_0+1)/1.5
 
-curve = ((3.6 - polyval(ocv_curve_2,ocv))/(p.r1+p.r0))/1.5;
+curve = ((3.65 - ocv_curve_2(ocv))/(p.r1+p.r0))/1.5;
 figure();
 plot(ocv,curve)
 xlim("auto")
