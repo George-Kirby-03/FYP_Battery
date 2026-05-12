@@ -28,7 +28,7 @@ addpath(genpath('Misc_functions'))
 
 load("MOLI_cycle_4.mat")
 % 
-settings.nodes = 350;
+settings.nodes = 250;
 settings.iterations = 200; 
 settings.polycount = 12;
 settings.v_lim = 4.12;
@@ -37,8 +37,8 @@ settings.v_low = 3;
 dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.05,'Cp',150,'h',1);
 upper_dynamics  = struct('Q',3.6*3600,'C',5500,'R0',0.075,'R1',0.07,'Cp',250,'h',5);
 lower_dynamics  = struct('Q',0.5*3600,'C',60,'R0',0.001,'R1',0.001,'Cp',20,'h',0.05);
-enforce.temp_strength = 0.02;
-enforce.v_lim_strength = 0.01;
+enforce.temp_strength = 0.97;
+enforce.v_lim_strength = 0.001;
 
 % V = V(idx);
 % I = I(idx);
@@ -52,13 +52,86 @@ cycle.tp = tp;
 %cycle.Ah = Ah{i};
 
 sim_handler = Cycle_Parmeterisation(cycle,dynamics,upper_dynamics,lower_dynamics,settings,enforce,[]);
+figure
+plot(sim_handler.states_sol.T,sim_handler.states_sol.Pol+sim_handler.ocv_curve(sim_handler.states_sol.SoC))
+hold on
+plot(sim_handler.original_data.ts,sim_handler.original_data.volts)
 
+figure()
+plot(sim_handler.states_sol.T,sim_handler.states_sol.Temp)
+hold on
+plot(sim_handler.original_data.ts,sim_handler.original_data.tp)
+
+sim_handler = Greyest_Parameterisation(sim_handler);
+
+save MOLI_cycle_4_greyest.mat sim_handler
+% Team 1
+figure
+plot(sim_handler.states_sol.T,sim_handler.states_sol.Pol+sim_handler.ocv_curve(sim_handler.states_sol.SoC))
+hold on
+plot(sim_handler.original_data.ts,sim_handler.original_data.volts)
+
+
+figure()
+plot(sim_handler.states_sol.T,sim_handler.states_sol.Temp)
+hold on
+plot(sim_handler.original_data.ts,sim_handler.original_data.tp)
+
+
+%%
+%% Function to extract a cycle from CSV, note that this expects the form from MACCOR, if not, extract yourself
+
+%[V,I,T,Ts] = get_cycle("fhsjfs.csv");
+
+%Wrapper for the ICLOC's code
+%parameters = get_parameters(V,I,T,Ts,'own_ocv','start_conditions','end_conditions');
+
+
+% 3 structs, one is settings to set voltage lims, polylength and end/start conditions, other is
+% estimates on parameters and the last is a struct to specify what
+% parameters to fix or find
+
+
+addpath(genpath('ICLOCS_Parameterisation_files'))
+addpath(genpath('Greyest_Parameterisation_files'))
+addpath(genpath('ICLOCS_Optimisation_files'))
+addpath(genpath('ODE_Simulations'))
+addpath(genpath('Misc_functions'))
+
+load("Baseline_B_1_1000.mat")
+sim_handler = sim_handler{3};
+% 
+settings.nodes = 350;
+settings.iterations = 200; 
+settings.polycount = 14;
+settings.v_lim = 3.65;
+settings.v_low = 2.5;
+
+dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.05,'Cp',150,'h',1);
+upper_dynamics  = struct('Q',3.6*3600,'C',5500,'R0',0.075,'R1',0.07,'Cp',250,'h',5);
+lower_dynamics  = struct('Q',0.5*3600,'C',60,'R0',0.001,'R1',0.001,'Cp',20,'h',0.05);
+enforce.temp_strength = 0.0001;
+enforce.v_lim_strength = 0.001;
+
+% V = V(idx);
+% I = I(idx);
+% Ts = Ts(idx);
+% T = T(idx);
+% Ah = Ah(idx);
+cycle.volts = sim_handler.original_data.volts;
+cycle.amps = sim_handler.original_data.amps;
+cycle.ts = sim_handler.original_data.ts;
+cycle.tp = sim_handler.original_data.tp;
+%cycle.Ah = Ah{i};
+
+sim_handler = Cycle_Parmeterisation(cycle,dynamics,upper_dynamics,lower_dynamics,settings,enforce,[]);
+%%
 figure()
 t = tiledlayout('flow');
 
 % Team 1
 nexttile
-plot(sim_handler.states_sol.T,sim_handler.states_sol.Pol+sim_handler.ocv_curve(sim_handler.states_sol.SoC))
+plot(sim_handler.states_sol.T,sim_handler.states_sol.Pol+sim_handler.ocv_curve(sim_handler.states_sol.SoC)+sim_handler.current_sol.R0*sim_handler.states_sol.Current)
 hold on
 plot(sim_handler.original_data.ts,sim_handler.original_data.volts)
 title('Team 1 Strikes')
@@ -80,6 +153,7 @@ ylabel('Score')
 
 % Add layout title
 title(t,'April Bowling League Data')
+%%
 
 %    tmp = Greyest_Parameterisation(tmp);
 

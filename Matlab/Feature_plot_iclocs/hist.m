@@ -14,7 +14,7 @@ histogram(features.minimisepang.x3,18,'Normalization','probability')
 title("Density functions of temperature rises")
 grid on
 xlabel("\textbf{Temperature bins (From ambient 24$^{\circ}$)}",  "Interpreter", "latex", "FontSize", 15)
-legend(["Minimised Temperature", "Minimised Max Temperature", "Baseline", "Minimise Qloss Paing"],"FontWeight","bold")
+legend(["Min Temp", "Min Max Temp", "Baseline", "Min Qloss"],"FontWeight","bold")
 title("\textbf{Histogram / Temperature binned density plots}", "Interpreter", "latex", "FontSize", 20)
 
 %%
@@ -62,7 +62,7 @@ over_potential_minimisepang = pol_minimisepang + u*R0;
 over_potential_integral = trapz(tt, over_potential_minimisepang);
 avg_over_potential_minimisepang = over_potential_integral / tt(end);
 
-x = ["Baseline"; "Minimise Temp"; "Minimise MaxTemp"; "Minimise Qloss Paing"];
+x = ["Baseline"; "Min Temp"; "Min Max Temp"; "Min Qloss"];
 figure()
 y = [avg_temp_baseline-24 max(features.baseline.x3)-24 ; 
     avg_temp_minimisetemp-24 max(features.minimisetemp.x3)-24 ; 
@@ -70,7 +70,7 @@ y = [avg_temp_baseline-24 max(features.baseline.x3)-24 ;
     avg_temp_minimisepang-24 max(features.minimisepang.x3)-24];
 bar(x,y)
 legend('Averaged Temperature', 'Maximum Temperature',"FontWeight","bold")
-ylabel('Temperature Rise (°C)');
+ylabel('Temperature Rise (\Delta T)','Interpreter','latex');
 title("\textbf{Temperature Rise During Charging}", "Interpreter", "latex", "FontSize", 20);
 grid on;
 hold off
@@ -91,7 +91,8 @@ grid on;
 figure()
 
 t = tiledlayout(2,2);
-
+t.TileSpacing = 'compact';
+t.Padding = 'compact';
 
 nexttile
 y_temp = [avg_temp_baseline-24 max(features.baseline.x3)-24 ; 
@@ -101,7 +102,7 @@ y_temp = [avg_temp_baseline-24 max(features.baseline.x3)-24 ;
 
 bar(x,y_temp)
 legend('Averaged Temperature', 'Maximum Temperature',"FontWeight","bold")
-ylabel('Temperature Rise (°C)');
+ylabel('Temperature Rise $(\Delta T)$','Interpreter','latex');
 title("\textbf{Temperature Rise During Charging}", "Interpreter", "latex", "FontSize", 14);
 grid on
 
@@ -114,7 +115,7 @@ y_over = [avg_over_potential_baseline max(over_potential_baseline) ;
 
 bar(x,y_over)
 legend('Averaged Overpotential', 'Maximum Overpotential',"FontWeight","bold")
-ylabel('Voltage (V)');
+ylabel('Voltage $(V)$','Interpreter','latex');
 title("\textbf{Overpotentials During Charging}", "Interpreter", "latex", "FontSize", 14);
 grid on
 
@@ -127,13 +128,13 @@ histogram(features.baseline.x3,18,'Normalization','probability')
 histogram(features.minimisepang.x3,18,'Normalization','probability')
 
 grid on
-xlabel("\textbf{Temperature bins (From ambient 24$^{\circ}$)}", ...
-    "Interpreter", "latex", "FontSize", 14)
+xlabel("Temperature bins (From ambient 24$^{\circ}$)", ...
+    "Interpreter", "latex", "FontSize", 13)
 
-legend(["Minimised Temperature", "Minimised Max Temperature", ...
-        "Baseline", "Minimise Qloss Paing"],"FontWeight","bold")
+legend(["Min Temp", "Min Max Temp", ...
+        "Baseline", "Min Qloss"],"FontWeight","bold")
 
 title("\textbf{Histogram / Temperature binned density plots}", ...
-    "Interpreter", "latex", "FontSize", 16)
+    "Interpreter", "latex", "FontSize", 14)
 
 hold off
