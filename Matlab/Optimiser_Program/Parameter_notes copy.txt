@@ -12,6 +12,7 @@ Q: 5.45e03  C: 794  R0: 0.0687  R1:  0.0186  H:  0.1023   Cp: 81.6
 C1: 1.86  C2: 1.89  C3: 1.66  C4: 1.24
 Mat file -> Paings_A_200_400.mat  (latest file: GK_RS15_04_proc5_0000 - 026)
 
+
 200th (for battery B): (GK_RS15_03_proc1_0000 - 025.csv file)
 Q: 5.48e03  C: 733  R0: 0.0728  R1:  0.015  H:  0.12   Cp: 91.6236
 C1: 1.56  C2: 1.78  C3: 1.7 C4: 1.5
@@ -28,7 +29,7 @@ Mat file -> Min_Max_B_1_200.mat (GK_RS15_06_proc2_0000 - 030.csv file)
 200th (for battery A): 
 Q: 5.37e03  C: 807  R0: 0.0719  R1:  0.0219  H:  0.14   Cp: 86
 C1: 2 C2: 1.48 C3: 1.33  C4: 1.62
-Mat file -> Min_Max_A_200_400.mat (latest file: GK_RS15_05_proc6_0000 - 029)
+Mat file -> Min_Max_A_200_400.mat (latest file: GK_RS15_05_proc6_0000 - 029) *HICCUP here
 
 200th (for battery B): 
 Q: 5.36e03  C: 812  R0: 0.0734  R1:  0.0177  H:  0.111   Cp: 75
@@ -55,3 +56,21 @@ Mat file -> Min_Intg_B_200_400.mat (GK_RS15_08_proc9_0000 - 032)
 
 
 All sim_handlers are currently 5 cycle ittereations appart
+
+(FOR Param sectio)
+Q: 5.3e03  C: 800  R0: 0.075  R1:  0.045  H:  0.13  Cp: 75
+MinMaxTemp : (A) 2.9851, 2.3529, 2.13194, 2.13194
+MinTempIntg : (A) 2.144, 2.3694, 2.6223, 2.3346
+Paing : (A) 2.145, 2.471, 2.502, 2.3346
+problem.mp.data.Q=5.3e03;
+problem.mp.data.R0=0.075;
+problem.mp.data.R1=0.045;
+problem.mp.data.C1=800;
+problem.mp.data.Vmax=Vmax;
+problem.mp.data.Vmin=Vmin;
+problem.mp.data.batt_m=1;
+problem.mp.data.batt_Cp=75;
+problem.mp.data.batt_h=0.13;
+problem.mp.data.TempAmb=24;
+problem.mp.data.batt_A=1;
+problem.mp.data.ocvpoly=ocv_curve_2;
