@@ -14,9 +14,8 @@ plot(ocv,curve)
 xlim("auto");
 ylim("auto");
 grid on
-title("\textbf{Permissable Charge Current Along Charge Profile}", "Interpreter", "latex", "FontSize", 17);
-xlabel("SoC", "FontSize", 15, "FontWeight", "bold");
-ylabel("Current (C)", "FontSize", 16, "FontWeight", "bold");
+xlabel("SoC", "FontSize", 14, "Interpreter", "latex");
+ylabel("Current (C)", "FontSize", 14, "Interpreter", "latex");
  
 ax = gca;
 chart = ax.Children(1);
@@ -27,7 +26,7 @@ datatip(chart,0.2013,1.648);
 hLine = findobj(gcf,"Type","line");
 hLine.LineWidth = 4;
 
-Norm_factor = 8/1.65;
+Norm_factor = 8/3;
 %%
 figure();
 
@@ -74,16 +73,15 @@ CC4_min_n = 0.2 ./ (t - CC4_min_n_sum);
 CC13_min_n = 0.6 ./ (t - (0.2./C_Norm_Upper(end)));
 
 figure; hold on; grid on;
-plot(t, CC13_min, 'LineWidth', 1.5)
-plot(t, CC4_min,  'LineWidth', 1.5)
+% plot(t, CC13_min, 'LineWidth', 1.5)
+% plot(t, CC4_min,  'LineWidth', 1.5)
 plot(t, CC13_min_n, 'LineWidth', 1.5)
 plot(t, CC4_min_n,  'LineWidth', 1.5)
 xlim([0.4 1.115])
 ylim([0.20 4])
-legend(["$\mathbf{CC}_{1:3,min}$", "$\mathbf{CC}_{4,min}$","$\mathbf{CC}_{1:3,min,norm}$", "$\mathbf{CC}_{4,min,norm}$" ], "FontSize", 15, "Interpreter", "latex", "LineWidth", 1, "Position", [0.7925 0.8296 0.0906, 0.0673])
-title("Attia to RS Parameter descisions", "FontSize", 18)
-xlabel("$t_{0-80\%} (hours)$", "Interpreter", "latex", "FontSize", 20)
-ylabel("$C$", "Interpreter", "latex", "FontSize", 19)
+legend(["$\textit{CC1-3}_{min}$", "$\textit{CC4}_{min}$" ], "FontSize", 12, "Interpreter", "latex", "LineWidth", 1, "Position", [0.7925 0.8296 0.0906, 0.0673])
+xlabel("$t_{0-80\%} (hours)$", "Interpreter", "latex", "FontSize", 14)
+ylabel("Current $(C)$","Interpreter", "latex", "FontSize", 14)
 xlim([0.436 1.151])
 ylim([-0.01 3.79])
 zlim([-1.000 1.000])
@@ -139,3 +137,72 @@ ZSurface = findobj(gcf, "DisplayName", "Z");
 datatip(ZSurface,0.3298,0.5061,4.141);
 
 
+%%
+figure
+hold on
+surf(X, T, Z)
+scatter3(0.425, 0.383, 0.2 ./ (0.425.*0.383 - 0.2*0.593), 80, 'r', 'filled')
+contour(X, T, Z, 'k', 'LineWidth', 0.8)
+shading interp
+
+% --- Updated Colorbar Section ---
+cb = colorbar;
+cb.Label.String = '- $\textit{CC4}$';
+cb.Label.Interpreter = 'latex';
+cb.Label.FontSize = 17; % Sized to match your other axes labels
+% --------------------------------
+
+xlabel('x')
+ylabel('t')
+zlabel('f(x,t)')
+grid on
+
+annotation("textarrow", [0.2826 0.3321], [0.5393 0.3929], "String", "Optimal balance scaling chosen", "FontSize", 11, "FontWeight", "bold")
+annotation("textarrow", [0.1521 0.127], [0.2976 0.2298], "String", "True Scaling", "FontSize", 12, "FontWeight", "bold")
+ 
+view([180.0 -90.0])
+grid on
+title("$CC_{4} $ After parameter adjustment", "Interpreter", "latex", "FontSize", 19, "LineWidth", 3.5);
+xlabel("Protocol Scale Factor $x$", "Interpreter", "latex", "FontSize", 17);
+ylabel("$t_{0-80\%}$", "Interpreter", "latex", "FontSize", 21);
+zlabel("f(x,t)");
+ 
+ZSurface = findobj(gcf, "DisplayName", "Z");
+datatip(ZSurface,0.3298,0.5061,4.141);
+
+%%
+figure
+hold on
+surf(X, T, Z)
+scatter3(0.425, 0.383, 0.2 ./ (0.425.*0.383 - 0.2*0.593), 80, 'r', 'filled')
+contour(X, T, Z, 'k', 'LineWidth', 0.8)
+shading interp
+
+% --- Updated Colorbar Section ---
+cb = colorbar;
+cb.Label.String = '$\textit{CC4}$';
+cb.Label.Interpreter = 'latex';
+cb.Label.FontSize = 12; 
+% --------------------------------
+
+% --- FIX: Set View and Force Y-Axis to the Left ---
+view([180.0 -90.0])
+ax = gca; % Get current axes
+ax.YAxisLocation = 'left';
+
+% --- FIX: Shrink the internal white borders ---
+ax.LooseInset = ax.TightInset; 
+
+grid on
+xlabel("Protocol Scale Factor $x$", "Interpreter", "latex", "FontSize", 13);
+ylabel("$t_{0-80\%}$", "Interpreter", "latex", "FontSize", 13);
+zlabel("f(x,t)");
+
+% Annotations
+% (Note: Because we removed the whitespace margin, these arrow coordinates 
+% might need a tiny tweak to point to the exact right spot again)
+annotation("textarrow", [0.2826 0.3321], [0.5393 0.3929], "String", "Optimal balance scaling chosen", "FontSize", 13, "FontWeight", "bold")
+annotation("textarrow", [0.1521 0.127], [0.2976 0.2298], "String", "True Scaling", "FontSize", 13, "FontWeight", "bold")
+ 
+ZSurface = findobj(gcf, "DisplayName", "Z");
+datatip(ZSurface, 0.3298, 0.5061, 4.141);

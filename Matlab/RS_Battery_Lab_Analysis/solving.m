@@ -11,9 +11,9 @@ load('RS_Params.mat')
 % p.c = 120;
 % p.r1 = 0.07;
 % p.r0 = 0.163 - p.r1;
-p.r1 = 0.07;
-p.r0 = 0.16- p.r1;
-p.c = 300;
+p.r1 = 0.045;
+p.r0 = 0.075;
+p.c = 800;
 p.q = 1.53*60*60;
 
 p.ocv = ocv_curve_2;
@@ -32,29 +32,29 @@ figure();
 count = 0;
 for i=1:length(Cl)
     for j=1:length(hrl)
-C = Cl(i); hr = hrl(j);
-tt = linspace(0,hr*60*60,150);
-current_cc_discharge = C*Curr*ones(150,1);
-current_lut = @(t) interp1(tt, current_cc_discharge, t, 'linear', 'extrap');
-[t_sim, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; 0; 0]);
-x1=y(:,1);x2=y(:,2);
-vlim_sim_idx = find(y(:,3) == 0, 1, 'last');   % Hack to find when voltage limit occurs exactly
-... this was needed, since the limit for stopping current in the dynamics was based off the terminal
-... voltage, caused effectivley a cv discharge, so once triggered, this state would begin integrating
-... so when state did not equal 0, deemed the cuttof point
-discharge_soc = y(vlim_sim_idx,1);
-socl(i,j) = discharge_soc;
-settle_time = 5*p.c.*p.r1;
-voltage_model = polyval(p.ocv,x1) + x2 + R0.*Curr*C;
-voltage_model_ccd = voltage_model(vlim_sim_idx);
-settle_voltage = -Curr*(p.r1 + p.r0) + voltage_model_ccd;
-hold on
-
-count = count + 1;
-fprintf(['For Discharge at %.1fC for %.2f hours: \n' ...
-    'Drainage SOC is %.2f%% \n' ...
-    'Settling time is %.2fs \n' ...
-    'Settling voltage is %.3fV \n'],C,hr,discharge_soc*100, settle_time, settle_voltage);
+        C = Cl(i); hr = hrl(j);
+        tt = linspace(0,hr*60*60,150);
+        current_cc_discharge = C*Curr*ones(150,1);
+        current_lut = @(t) interp1(tt, current_cc_discharge, t, 'linear', 'extrap');
+        [t_sim, y] = ode45(@(t, y) dynamics(t, y, p, current_lut), [0 tt(end)], [1; 0; 0]);
+        x1=y(:,1);x2=y(:,2);
+        vlim_sim_idx = find(y(:,3) == 0, 1, 'last');   % Hack to find when voltage limit occurs exactly
+        ... this was needed, since the limit for stopping current in the dynamics was based off the terminal
+        ... voltage, caused effectivley a cv discharge, so once triggered, this state would begin integrating
+        ... so when state did not equal 0, deemed the cuttof point
+        discharge_soc = y(vlim_sim_idx,1);
+        socl(i,j) = discharge_soc;
+        settle_time = 5*p.c.*p.r1;
+        voltage_model = polyval(p.ocv,x1) + x2 + R0.*Curr*C;
+        voltage_model_ccd = voltage_model(vlim_sim_idx);
+        settle_voltage = -Curr*(p.r1 + p.r0) + voltage_model_ccd;
+        hold on
+        
+        count = count + 1;
+        fprintf(['For Discharge at %.1fC for %.2f hours: \n' ...
+            'Drainage SOC is %.2f%% \n' ...
+            'Settling time is %.2fs \n' ...
+            'Settling voltage is %.3fV \n'],C,hr,discharge_soc*100, settle_time, settle_voltage);
     end
     plot(t_sim,voltage_model,t_sim,x1)
     count = count + 1;
@@ -144,6 +144,7 @@ cv_times = ones(length(Cl),1);
 tt = linspace(0,hr*60*60,150);
 
 for i=1:length(Cl)
+    C = Cl(i);
 [t_sim, y] = ode45(@(t, y) CV_dynamics(t, y, p), [0 tt(end)], [0.3; 0.2; 0]);
 x1=y(:,1);x2=y(:,2);
 socu_sim_idx = find(y(:,1) <= 0.985, 1, 'last');
