@@ -54,39 +54,121 @@ plot(Min_Intg_B_200_400_peaks)
 figure()
 hold on
 
-plot(Paings_B_200_400_peaks - Paings_B_200_400_peaks(1),'LineStyle','-.','LineWidth',2,'Color','blue')
-plot(Paings_A_200_400_peaks - Paings_A_200_400_peaks(1),'LineStyle','-','LineWidth',2,'Color','blue')
+plot(Paings_B_200_400_peaks - Paings_B_200_400_peaks(1),'LineStyle','-.','LineWidth',2,'Color','b')
+plot(Paings_A_200_400_peaks - Paings_A_200_400_peaks(1),'LineStyle','-','LineWidth',2,'Color','b')
 
-plot(Min_Max_A_200_400_peaks - Min_Max_A_200_400_peaks(1),'LineStyle','-.','LineWidth',2,'Color','red')
-plot(Min_Max_B_200_400_peaks - Min_Max_B_200_400_peaks(1),'LineStyle','-','LineWidth',2,'Color','red')
+plot(Min_Max_A_200_400_peaks - Min_Max_A_200_400_peaks(1),'LineStyle','-.','LineWidth',2,'Color','r')
+plot(Min_Max_B_200_400_peaks - Min_Max_B_200_400_peaks(1),'LineStyle','-','LineWidth',2,'Color','r')
 
-plot(Min_Intg_A_200_400_peaks - Min_Intg_A_200_400_peaks(1),'LineStyle','-.','LineWidth',2,'Color','green')
-plot(Min_Intg_B_200_400_peaks - Min_Intg_B_200_400_peaks(1),'LineStyle','-','LineWidth',2,'Color','red')
+plot(Min_Intg_A_200_400_peaks - Min_Intg_A_200_400_peaks(1),'LineStyle','-.','LineWidth',2,'Color','g')
+plot(Min_Intg_B_200_400_peaks - Min_Intg_B_200_400_peaks(1),'LineStyle','-','LineWidth',2,'Color','g')
 
-plot(Baseline_A_peaks - Baseline_A_peaks(1),'LineStyle','-.','LineWidth',2,'Color','red')
-plot(Baseline_B_peaks - Baseline_B_peaks(1),'LineStyle','-','LineWidth',2,'Color','red')
+plot(Baseline_A_peaks - Baseline_A_peaks(1),'LineStyle','-.','LineWidth',2,'Color','y')
+plot(Baseline_B_peaks - Baseline_B_peaks(1),'LineStyle','-','LineWidth',2,'Color','y')
 
-legend(["PaingA","PaingB","MinMaxA","MinMaxA","MinTA","MinTB","BaselineA","BaselineB"])
-yline(200,'Label','Re-optim')
-yline(250,'Label','Random stop here')
+legend(["PaingA","PaingB","MinMaxA","MinMaxA","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
+xline(200,'Label','Re-optimisation')
+xline(248,'Label','Lab Pause')
 grid on
+xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
+ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
+
+%%
+figure()
+hold on
+
+plot(Paings_B_200_400_peaks - Paings_B_200_400_peaks(50),'LineStyle','-.','LineWidth',2,'Color','b')
+plot(Paings_A_200_400_peaks - Paings_A_200_400_peaks(50),'LineStyle','-','LineWidth',2,'Color','b')
+
+plot(Min_Max_A_200_400_peaks - Min_Max_A_200_400_peaks(50),'LineStyle','-.','LineWidth',2,'Color','r')
+plot(Min_Max_B_200_400_peaks - Min_Max_B_200_400_peaks(50),'LineStyle','-','LineWidth',2,'Color','r')
+
+plot(Min_Intg_A_200_400_peaks - Min_Intg_A_200_400_peaks(50),'LineStyle','-.','LineWidth',2,'Color','g')
+plot(Min_Intg_B_200_400_peaks - Min_Intg_B_200_400_peaks(50),'LineStyle','-','LineWidth',2,'Color','g')
+
+plot(Baseline_A_peaks - Baseline_A_peaks(50),'LineStyle','-.','LineWidth',2,'Color','y')
+plot(Baseline_B_peaks - Baseline_B_peaks(50),'LineStyle','-','LineWidth',2,'Color','y')
+
+legend(["PaingA","PaingB","MinMaxA","MinMaxA","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
+xline(200,'Label','Re-optimisation')
+xline(248,'Label','Lab Pause')
+grid on
+xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
+ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
 
 
 
 
 %%
-k = 1;
+
+
+
+files = ["Baseline_A_1_1000.mat","Baseline_B_1_1000.mat","Paings_A_1_200.mat","Paings_B_1_200.mat", ...
+    "Min_Max_A_1_200.mat","Min_Max_B_1_200.mat","Min_Intg_A_1_200.mat","Min_Intg_B_1_200.mat", ...
+    "Paings_A_200_400_complete.mat","Paings_B_200_400_complete.mat","Min_Max_B_200_400_complete", ...
+    "Min_Intg_A_200_400_complete.mat","Min_Intg_B_200_400_complete.mat"];
+
+num_files = length(files);
+Ah_proc3  = cell(num_files, 1);
+Cap_proc3 = cell(num_files, 1);
+mCp       = cell(num_files, 1);
+hA        = cell(num_files, 1);
+cycle_3   = cell(num_files, 1);
+Sum_r3    = cell(num_files, 1);
+
+
+for j = 1:length(files)
+    load(files(j))
+    k=1;
 while true
-    if ~isfield(sim_handler{k},"current_sol")
+    if ~isfield(sim_handler{k},"current_sol") || sim_handler{k}.current_sol.R1 == 0
         break
     end
-   Ah_proc3(k) = max(sim_handler{k}.original_data.Ah)*3600;
-   Cap_proc3(k) = sim_handler{k}.current_sol.Q;
-   cycle_3(k) = k*5;
-   Sum_r3(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
+   Ah_proc{j}(k) = max(sim_handler{k}.original_data.Ah)*3600;
+   Cap_proc{j}(k) = sim_handler{k}.current_sol.Q;
+   mCp{j}(k) = sim_handler{k}.current_sol.Cp;
+   hA{j}(k) = sim_handler{k}.current_sol.h;
+   cycle_count{j}(k) = k*5;
+   Sum_r{j}(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
    k = k+1;
 end
+end
+%%
 
+
+figure()
+hold on
+
+plot(cycle_count{1},Sum_r{1},'LineStyle','-.','LineWidth',2,'Color','b')
+plot(cycle_count{2},Sum_r{2},'LineStyle','-','LineWidth',2,'Color','b')
+
+plot([cycle_count{3},cycle_count{9}],[Sum_r{3},Sum_r{9}],'LineStyle','-.','LineWidth',2,'Color','r')
+plot([cycle_count{4},cycle_count{9}],[Sum_r{3},Sum_r{10}],'LineStyle','-','LineWidth',2,'Color','r')
+
+plot(cycle_count{5},Sum_r{5},'LineStyle','-.','LineWidth',2,'Color','g')
+plot([cycle_count{4},cycle_count{9}],[Sum_r{3},Sum_r{10}],'LineStyle','-','LineWidth',2,'Color','g')
+
+plot(Baseline_A_peaks - Baseline_A_peaks(50),'LineStyle','-.','LineWidth',2,'Color','y')
+plot(Baseline_B_peaks - Baseline_B_peaks(50),'LineStyle','-','LineWidth',2,'Color','y')
+
+legend(["PaingA","PaingB","MinMaxA","MinMaxA","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
+xline(200,'Label','Re-optimisation')
+xline(248,'Label','Lab Pause')
+grid on
+xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
+ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
+
+
+
+
+
+
+
+
+
+
+
+%%
 load paings1-200.mat
 k = 1;
 while true
@@ -99,8 +181,8 @@ while true
     Sum_r2(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
     k = k+1;
 end
-% 
-% load paings1-200.mat
+
+load paings1-200.mat
 % k = 1;
 % while true
 %     if ~isfield(sim_handler{k},"current_sol")
