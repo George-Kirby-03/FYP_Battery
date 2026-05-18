@@ -1,21 +1,24 @@
-Paings_B_200_400 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_03_proc4_0000 - 025 (2).csv");
-Paings_A_200_400 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_04_proc5_0000 - 026 (2).csv");
-Min_Max_A_200_400 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_05_proc6_0000 - 029 (2).csv");
-Min_Max_B_200_400 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_06_proc7_0000 - 030 (2).csv");
-Min_Intg_A_200_400 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_07_proc8_0000 - 031 (1).csv");
-Min_Intg_B_200_400 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_08_proc9_0000 - 032 (1).csv");
+Paings_B_200_400 = readtable("GK_RS15_03_proc4_0000 - 025 (2).csv");
+Paings_A_200_400 = readtable("GK_RS15_04_proc5_0000 - 026 (2).csv");
+Min_Max_A_200_400 = readtable("GK_RS15_05_proc6_0000 - 029 (2).csv");
+Min_Max_B_200_400 = readtable("GK_RS15_06_proc7_0000 - 030 (2).csv");
+Min_Intg_A_200_400 = readtable("GK_RS15_07_proc8_0000 - 031 (1).csv");
+Min_Intg_B_200_400 = readtable("GK_RS15_08_proc9_0000 - 032 (1).csv");
 
-Paings_B_1_200 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_03_proc1_0000 - 025 (3).csv");
-Paings_A_1_200 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_04_proc1_0000 - 026 (2).csv");
-Min_Max_A_1_200 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_05_proc2_0000 - 029 (3).csv");
-Min_Max_B_1_200 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_06_proc2_0000 - 030 (2).csv");
-Min_Intg_A_1_200 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_07_proc3_0000 - 031 (5).csv");
-Min_Intg_B_1_200 = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_08_proc3_0000 - 032 (4).csv");
+Paings_B_1_200 = readtable("GK_RS15_03_proc1_0000 - 025 (3).csv");
+Paings_A_1_200 = readtable("GK_RS15_04_proc1_0000 - 026 (2).csv");
+Min_Max_A_1_200 = readtable("GK_RS15_05_proc2_0000 - 029 (3).csv");
+Min_Max_B_1_200 = readtable("GK_RS15_06_proc2_0000 - 030 (2).csv");
+Min_Intg_A_1_200 = readtable("GK_RS15_07_proc3_0000 - 031 (5).csv");
+Min_Intg_B_1_200 = readtable("GK_RS15_08_proc3_0000 - 032 (4).csv");
 
-Baseline_A = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_01_baseline_0000 - 027 (4).csv");
-Baseline_B = readtable("C:\Users\jekir\GitHub\FYP_Battery\Matlab\Optimiser_Program\GK_RS15_02_baseline_0000 - 028 (2).csv");
+Baseline_A = readtable("GK_RS15_01_baseline_0000 - 027 (4).csv");
+Baseline_B = readtable("GK_RS15_02_baseline_0000 - 028 (2).csv");
 
 Paings_B_200_400_peaks = findpeaks(Paings_B_200_400.Amp_hr);
+sig = abs(Paings_B_200_400.Amp_hr);
+res = cumtrapz(Paings_B_200_400.TestTime, sig);
+plot(res,Paings_B_200_400_peaks)
 Paings_A_200_400_peaks =  findpeaks(Paings_A_200_400.Amp_hr);
 Min_Max_A_200_400_peaks = findpeaks(Min_Max_A_200_400.Amp_hr);
 Min_Max_B_200_400_peaks =  findpeaks(Min_Max_B_200_400.Amp_hr);
