@@ -50,6 +50,69 @@ plot(Min_Max_B_200_400_peaks)
 plot(Min_Intg_A_200_400_peaks)
 plot(Min_Intg_B_200_400_peaks)
 
+
+cycles_1 = 50:200;
+p = polyfit(cycles_1, Paings_B_200_400_peaks(50:200), 1);
+average_1_grad(1) = p(1);
+
+p = polyfit(cycles_1, Paings_A_200_400_peaks(50:200), 1);
+average_1_grad(2) = p(1);
+
+p = polyfit(cycles_1, Min_Max_A_200_400_peaks(50:200), 1);
+average_1_grad(3) = p(1);
+
+p = polyfit(cycles_1, Min_Max_B_200_400_peaks(50:200), 1);
+average_1_grad(4) = p(1);
+
+p = polyfit(cycles_1, Min_Intg_A_200_400_peaks(50:200), 1);
+average_1_grad(5) = p(1);
+
+p = polyfit(cycles_1, Min_Intg_B_200_400_peaks(50:200), 1);
+average_1_grad(6) = p(1);
+
+cycles_2 = 1:(length(Paings_B_200_400_peaks)-249);
+p = polyfit(cycles_2, Paings_B_200_400_peaks(250:end), 1);
+average_2_grad(1) = p(1);
+
+cycles_2 = 1:(length(Paings_A_200_400_peaks)-249);
+p = polyfit(cycles_2, Paings_A_200_400_peaks(250:end), 1);
+average_2_grad(2) = p(1);
+
+cycles_2 = 1:(length(Min_Max_A_200_400_peaks)-249);
+p = polyfit(cycles_2, Min_Max_A_200_400_peaks(250:end), 1);
+average_2_grad(3) = p(1);
+
+cycles_2 = 1:(length(Min_Max_B_200_400_peaks)-249);
+p = polyfit(cycles_2, Min_Max_B_200_400_peaks(250:end), 1);
+average_2_grad(4) = p(1);
+
+cycles_2 = 1:(length(Min_Intg_A_200_400_peaks)-249);
+p = polyfit(cycles_2, Min_Intg_A_200_400_peaks(250:end), 1);
+average_2_grad(5) = p(1);
+
+cycles_2 = 1:(length(Min_Intg_B_200_400_peaks)-249);
+p = polyfit(cycles_2, Min_Intg_B_200_400_peaks(250:end), 1);
+average_2_grad(6) = p(1);
+
+
+
+figure
+y = [avg_over_potential_baseline max(over_potential_baseline) ; 
+    avg_over_potential_minimisetemp max(over_potential_minimisetemp) ; 
+    avg_over_potential_minimisetempmax max(over_potential_minimisetempmax)
+    avg_over_potential_minimisepang max(over_potential_minimisepang)];
+bar(x,y)
+ax = gca;
+ax.XAxis.FontSize = 15;
+ax.YAxis.FontSize = 15;
+set(gca, 'xticklabel', x, 'TickLabelInterpreter', 'latex');
+lb = legend('\textbf{Averaged}', '\textbf{Maximum}',"FontWeight","bold");
+set(lb, 'Interpreter', 'latex','FontSize', 12);
+title('\textbf{Overpotential Voltage}', ...
+       'interpreter','latex','fontsize',f_size)
+
+
+
 % 
 % figure()
 % hold on
@@ -96,12 +159,7 @@ grid on
 xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
 ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
 
-cycles = 60:200;
 
-p = polyfit(cycles, Paings_B_200_400_peaks(60:200), 1);
-
-average_gradient = p(1);
-fprintf('The average rate of capacity change is %f mAh per cycle\n', average_gradient);
 
 %%
 
@@ -113,12 +171,12 @@ files = ["Baseline_A_1_1000.mat","Baseline_B_1_1000.mat","Paings_A_1_200.mat","P
     "Min_Intg_A_200_400_complete.mat","Min_Intg_B_200_400_complete.mat"];
 
 num_files = length(files);
-Ah_proc3  = cell(num_files, 1);
-Cap_proc3 = cell(num_files, 1);
+Ah_proc  = cell(num_files, 1);
+Cap_proc = cell(num_files, 1);
 mCp       = cell(num_files, 1);
 hA        = cell(num_files, 1);
-cycle_3   = cell(num_files, 1);
-Sum_r3    = cell(num_files, 1);
+cycle_count   = cell(num_files, 1);
+Sum_r    = cell(num_files, 1);
 
 
 for j = 1:length(files)
@@ -136,6 +194,7 @@ while true
    Sum_r{j}(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
    k = k+1;
 end
+    
 end
 %%
 

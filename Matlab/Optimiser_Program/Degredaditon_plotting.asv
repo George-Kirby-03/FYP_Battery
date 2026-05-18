@@ -50,6 +50,56 @@ plot(Min_Max_B_200_400_peaks)
 plot(Min_Intg_A_200_400_peaks)
 plot(Min_Intg_B_200_400_peaks)
 
+
+cycles_1 = 50:200;
+p = polyfit(cycles_1, Paings_B_200_400_peaks(50:200), 1);
+average_1_grad(1) = p(1);
+
+p = polyfit(cycles_1, Paings_A_200_400_peaks(50:200), 1);
+average_1_grad(2) = p(1);
+
+p = polyfit(cycles_1, Min_Max_A_200_400_peaks(50:200), 1);
+average_1_grad(3) = p(1);
+
+p = polyfit(cycles_1, Min_Max_B_200_400_peaks(50:200), 1);
+average_1_grad(4) = p(1);
+
+p = polyfit(cycles_1, Min_Intg_A_200_400_peaks(50:200), 1);
+average_1_grad(5) = p(1);
+
+p = polyfit(cycles_1, Min_Intg_B_200_400_peaks(50:200), 1);
+average_1_grad(6) = p(1);
+
+cycles_2 = 1:(length(Paings_B_200_400_peaks)-249);
+p = polyfit(cycles_2, Paings_B_200_400_peaks(250:end), 1);
+average_2_grad(1) = p(1);
+
+cycles_2 = 1:(length(Paings_A_200_400_peaks)-250);
+p = polyfit(cycles_2, Paings_A_200_400_peaks(250:end), 1);
+average_2_grad(2) = p(1);
+
+cycles_2 = 1:(length(Min_Max_A_200_400_peaks)-250);
+p = polyfit(cycles_2, Min_Max_A_200_400_peaks(250:end), 1);
+average_2_grad(3) = p(1);
+
+cycles_2 = 1:(length(Min_Max_B_200_400_peaks)-250);
+p = polyfit(cycles_2, Min_Max_B_200_400_peaks(250:end), 1);
+average_2_grad(4) = p(1);
+
+cycles_2 = 1:(length(Min_Intg_A_200_400_peaks)-250);
+p = polyfit(cycles_2, Min_Intg_A_200_400_peaks(250:end), 1);
+average_2_grad(5) = p(1);
+
+cycles_2 = 1:(length(Min_Intg_B_200_400_peaks)-250);
+p = polyfit(cycles_2, Min_Intg_B_200_400_peaks(250:end), 1);
+average_2_grad(6) = p(1);
+
+
+
+
+
+
+
 % 
 % figure()
 % hold on
@@ -77,8 +127,8 @@ plot(Min_Intg_B_200_400_peaks)
 figure()
 hold on
 
-plot(Paings_B_200_400_peaks - Paings_B_200_400_peaks(50),'LineStyle','-.','LineWidth',2,'Color','b')
-plot(Paings_A_200_400_peaks - Paings_A_200_400_peaks(50),'LineStyle','-','LineWidth',2,'Color','b')
+plot(Paings_A_200_400_peaks - Paings_A_200_400_peaks(50),'LineStyle','-.','LineWidth',2,'Color','b')
+plot(Paings_B_200_400_peaks - Paings_B_200_400_peaks(50),'LineStyle','-','LineWidth',2,'Color','b')
 
 plot(Min_Max_A_200_400_peaks - Min_Max_A_200_400_peaks(50),'LineStyle','-.','LineWidth',2,'Color','r')
 plot(Min_Max_B_200_400_peaks - Min_Max_B_200_400_peaks(50),'LineStyle','-','LineWidth',2,'Color','r')
@@ -89,13 +139,12 @@ plot(Min_Intg_B_200_400_peaks - Min_Intg_B_200_400_peaks(50),'LineStyle','-','Li
 plot(Baseline_A_peaks - Baseline_A_peaks(50),'LineStyle','-.','LineWidth',2,'Color','y')
 plot(Baseline_B_peaks - Baseline_B_peaks(50),'LineStyle','-','LineWidth',2,'Color','y')
 
-legend(["Paing A","Paing B","MinMaxA","MinMaxB","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
+legend(["QLossA","QLossB","MinMaxTA","MinMaxTB","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
 xline(200,'Label','Re-optimisation',"FontSize",13,'Interpreter','latex')
 xline(248,'Label','Lab Pause',"FontSize",13,'Interpreter','latex')
 grid on
 xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
 ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
-
 
 
 
@@ -109,12 +158,12 @@ files = ["Baseline_A_1_1000.mat","Baseline_B_1_1000.mat","Paings_A_1_200.mat","P
     "Min_Intg_A_200_400_complete.mat","Min_Intg_B_200_400_complete.mat"];
 
 num_files = length(files);
-Ah_proc3  = cell(num_files, 1);
-Cap_proc3 = cell(num_files, 1);
+Ah_proc  = cell(num_files, 1);
+Cap_proc = cell(num_files, 1);
 mCp       = cell(num_files, 1);
 hA        = cell(num_files, 1);
-cycle_3   = cell(num_files, 1);
-Sum_r3    = cell(num_files, 1);
+cycle_count   = cell(num_files, 1);
+Sum_r    = cell(num_files, 1);
 
 
 for j = 1:length(files)
@@ -132,6 +181,7 @@ while true
    Sum_r{j}(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
    k = k+1;
 end
+    
 end
 %%
 
@@ -180,7 +230,6 @@ plot([cycle_count{6},cycle_count{6}(end)+ cycle_count{11}],movmean([Sum_r{6},Sum
 plot([cycle_count{7},cycle_count{7}(end) + cycle_count{12}],movmean([Sum_r{7},Sum_r{12}],3),'LineStyle','-.','LineWidth',2,'Color','y')
 plot([cycle_count{8},cycle_count{8}(end) + cycle_count{13}],movmean([Sum_r{8},Sum_r{13}],3),'-','LineWidth',2,'Color','y')
 
-legend(["PaingA","PaingB","MinMaxTA","MinMaxTA","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
 xline(200,'Label','Re-optimisation',"FontSize",13,'Interpreter','latex')
 xline(248,'Label','Lab Pause',"FontSize",13,'Interpreter','latex')
 grid on
@@ -188,133 +237,107 @@ xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
 ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
 xlim([6 451])
 ylim([0.0857 0.1057])
-legend(["Baseline A", "Baseline B", "QLoss A", "QLoss B", "MinMaxT A", "MinMaxT B","MinT A", "MinT B"], "FontSize", 11, "Interpreter", "latex", "Position", [0.8078 0.6363 0.0869, 0.2816])
-MinTB = findobj(gcf,"DisplayName","MinT B")
-MinTB.LineWidth = 3
-MinTA = findobj(gcf,"DisplayName","MinT A")
-MinTA.LineWidth = 3
-QLossA = findobj(gcf,"DisplayName","QLoss A")
-QLossA.LineWidth = 3
-QLossB = findobj(gcf,"DisplayName","QLoss B")
-QLossB.LineWidth = 3
-MinMaxB = findobj(gcf,"DisplayName","MinMax B")
-MinMaxB.LineWidth = 3
-MinMaxA = findobj(gcf,"DisplayName","MinMax A")
-MinMaxA.LineWidth = 3
-BaselineB = findobj(gcf,"DisplayName","Baseline B")
-BaselineB.LineWidth = 3
-BaselineA = findobj(gcf,"DisplayName","Baseline A")
-BaselineA.LineWidth = 3
-hLegend = findobj(gcf,"Type","legend")
-data2 = findobj(gcf,"DisplayName","data2")
-data2.FontSize = 13
-data2.Interpreter = "latex"
-data2.LineStyle = ":"
-data1 = findobj(gcf,"DisplayName","data1")
-data1.Interpreter = "latex"
-data1.FontSize = 13
+legend(["BaselineA", "BaselineB", "QLossA", "QLossB", "MinMaxTA", "MinMaxTB","MinTA", "MinTB"], "FontSize", 11, "Interpreter", "latex", "Position", [0.8078 0.6363 0.0869, 0.2816])
 
 
 
 
 
 
-
-
-%%
-load paings1-200.mat
-k = 1;
-while true
-    if ~isfield(sim_handler{k},"current_sol")
-        break
-    end
-    Ah_proc2(k) = max(sim_handler{k}.original_data.Ah)*3600;
-    Cap_proc2(k) = sim_handler{k}.current_sol.Q;
-    cycle_2(k) = k*5;
-    Sum_r2(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
-    k = k+1;
-end
-
-load paings1-200.mat
+% %%
+% load paings1-200.mat
 % k = 1;
 % while true
 %     if ~isfield(sim_handler{k},"current_sol")
 %         break
 %     end
-%     Ah_proc1(k) = max(sim_handler{k}.original_data.Ah)*3600;
-%     Cap_proc1(k) = sim_handler{k}.current_sol.Q;
-%     cycle_1(k) = k*5;
-%     Sum_r1(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
+%     Ah_proc2(k) = max(sim_handler{k}.original_data.Ah)*3600;
+%     Cap_proc2(k) = sim_handler{k}.current_sol.Q;
+%     cycle_2(k) = k*5;
+%     Sum_r2(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
 %     k = k+1;
 % end
 % 
-% load baseline1-800.mat
-% k = 1;
-% while true
-%     if ~isfield(sim_handler{k},"current_sol")
-%         break
-%     end
-%     Ah_b(k) = max(sim_handler{k}.original_data.Ah)*3600;
-%     Cap_b(k) = sim_handler{k}.current_sol.Q;
-%     Sum_rb(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
-%     cycle_b(k) = k*10;
-%     k = k+1;
-% end
-window = 10; 
-%Cap_proc1_f  = movmean(Cap_proc1,  window);
-Cap_proc2_f  = movmean(Cap_proc2,  window);
- Cap_proc3_f = movmean(Cap_proc3, window);
-% Cap_b_f = movmean(Cap_b, window);
-
-
-figure()
-hold on
-% plot(cycle_b,Ah_b)
+% load paings1-200.mat
+% % k = 1;
+% % while true
+% %     if ~isfield(sim_handler{k},"current_sol")
+% %         break
+% %     end
+% %     Ah_proc1(k) = max(sim_handler{k}.original_data.Ah)*3600;
+% %     Cap_proc1(k) = sim_handler{k}.current_sol.Q;
+% %     cycle_1(k) = k*5;
+% %     Sum_r1(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
+% %     k = k+1;
+% % end
+% % 
+% % load baseline1-800.mat
+% % k = 1;
+% % while true
+% %     if ~isfield(sim_handler{k},"current_sol")
+% %         break
+% %     end
+% %     Ah_b(k) = max(sim_handler{k}.original_data.Ah)*3600;
+% %     Cap_b(k) = sim_handler{k}.current_sol.Q;
+% %     Sum_rb(k) = sim_handler{k}.current_sol.R0 + sim_handler{k}.current_sol.R1;
+% %     cycle_b(k) = k*10;
+% %     k = k+1;
+% % end
+% window = 10; 
+% %Cap_proc1_f  = movmean(Cap_proc1,  window);
+% Cap_proc2_f  = movmean(Cap_proc2,  window);
+%  Cap_proc3_f = movmean(Cap_proc3, window);
+% % Cap_b_f = movmean(Cap_b, window);
+% 
+% 
+% figure()
+% hold on
+% % plot(cycle_b,Ah_b)
+% % plot(cycle_3,Ah_proc3)
+% plot(cycle_2,Ah_proc2)
 % plot(cycle_3,Ah_proc3)
-plot(cycle_2,Ah_proc2)
-plot(cycle_3,Ah_proc3)
-plot(cycle_2,Cap_proc2_f)
-plot(cycle_3,Cap_proc3_f)
-legend("B1","B2","B1_Q","B2_Q")
-% figure()
-% hold on
-% plot(cycle_b,Ah_b - max(Ah_b))
-% plot(cycle_3,Ah_proc3 - max(Ah_proc3))
-% plot(cycle_2,Ah_proc2 - max(Ah_proc2))
-% plot(cycle_1,Ah_proc1 - max(Ah_proc1))
-% 
-% figure()
-% hold on
-% plot(cycle_b,Ah_b/Ah_b(1))
-% plot(cycle_3,Ah_proc3/Ah_proc3(1))
-% plot(cycle_2,Ah_proc2/Ah_proc2(1))
-% plot(cycle_1,Ah_proc1/Ah_proc1(1))
-% 
-% 
-% figure()
-% hold on
-% plot(cycle_b,Cap_b_f/max(Cap_b_f))
-% plot(cycle_3,Cap_proc3_f/max(Cap_proc3_f))
-% plot(cycle_2,Cap_proc2_f/max(Cap_proc2_f))
-% plot(cycle_1,Cap_proc1_f/max(Cap_proc1_f))
-% 
-% figure()
-% hold on
-% plot(cycle_b,Ah_b/max(Ah_b))
-% plot(cycle_3,Ah_proc3/max(Ah_proc3))
-% plot(cycle_2,Ah_proc2/max(Ah_proc2))
-% plot(cycle_1,Ah_proc1/max(Ah_proc1))
-% 
-% figure()
-% hold on
-% plot(cycle_b,Sum_rb/max(Sum_rb))
-% plot(cycle_3,Sum_r3/max(Sum_r3))
-% plot(cycle_2,Sum_r2/max(Sum_r2))
-% plot(cycle_1,Sum_r1/max(Sum_r1))
-% 
-% figure()
-% hold on
-% plot(cycle_b,Sum_rb)
-% plot(cycle_3,Sum_r3)
-% plot(cycle_2,Sum_r2)
-% plot(cycle_1,Sum_r1)
+% plot(cycle_2,Cap_proc2_f)
+% plot(cycle_3,Cap_proc3_f)
+% legend("B1","B2","B1_Q","B2_Q")
+% % figure()
+% % hold on
+% % plot(cycle_b,Ah_b - max(Ah_b))
+% % plot(cycle_3,Ah_proc3 - max(Ah_proc3))
+% % plot(cycle_2,Ah_proc2 - max(Ah_proc2))
+% % plot(cycle_1,Ah_proc1 - max(Ah_proc1))
+% % 
+% % figure()
+% % hold on
+% % plot(cycle_b,Ah_b/Ah_b(1))
+% % plot(cycle_3,Ah_proc3/Ah_proc3(1))
+% % plot(cycle_2,Ah_proc2/Ah_proc2(1))
+% % plot(cycle_1,Ah_proc1/Ah_proc1(1))
+% % 
+% % 
+% % figure()
+% % hold on
+% % plot(cycle_b,Cap_b_f/max(Cap_b_f))
+% % plot(cycle_3,Cap_proc3_f/max(Cap_proc3_f))
+% % plot(cycle_2,Cap_proc2_f/max(Cap_proc2_f))
+% % plot(cycle_1,Cap_proc1_f/max(Cap_proc1_f))
+% % 
+% % figure()
+% % hold on
+% % plot(cycle_b,Ah_b/max(Ah_b))
+% % plot(cycle_3,Ah_proc3/max(Ah_proc3))
+% % plot(cycle_2,Ah_proc2/max(Ah_proc2))
+% % plot(cycle_1,Ah_proc1/max(Ah_proc1))
+% % 
+% % figure()
+% % hold on
+% % plot(cycle_b,Sum_rb/max(Sum_rb))
+% % plot(cycle_3,Sum_r3/max(Sum_r3))
+% % plot(cycle_2,Sum_r2/max(Sum_r2))
+% % plot(cycle_1,Sum_r1/max(Sum_r1))
+% % 
+% % figure()
+% % hold on
+% % plot(cycle_b,Sum_rb)
+% % plot(cycle_3,Sum_r3)
+% % plot(cycle_2,Sum_r2)
+% % plot(cycle_1,Sum_r1)
