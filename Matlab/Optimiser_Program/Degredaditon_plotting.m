@@ -15,22 +15,19 @@ Min_Intg_B_1_200 = readtable("GK_RS15_08_proc3_0000 - 032 (4).csv");
 Baseline_A = readtable("GK_RS15_01_baseline_0000 - 027 (4).csv");
 Baseline_B = readtable("GK_RS15_02_baseline_0000 - 028 (2).csv");
 
-Paings_B_200_400_peaks = findpeaks(Paings_B_200_400.Amp_hr);
-sig = abs(Paings_B_200_400.Amp_hr);
-res = cumtrapz(Paings_B_200_400.TestTime, sig);
-plot(res,Paings_B_200_400_peaks)
-Paings_A_200_400_peaks =  findpeaks(Paings_A_200_400.Amp_hr);
-Min_Max_A_200_400_peaks = findpeaks(Min_Max_A_200_400.Amp_hr);
-Min_Max_B_200_400_peaks =  findpeaks(Min_Max_B_200_400.Amp_hr);
-Min_Intg_A_200_400_peaks = findpeaks(Min_Intg_A_200_400.Amp_hr);
-Min_Intg_B_200_400_peaks =  findpeaks(Min_Intg_B_200_400.Amp_hr);
 
-Paings_B_1_200_peaks = findpeaks(Paings_B_1_200.Amp_hr);
-Paings_A_1_200_peaks =  findpeaks(Paings_A_1_200.Amp_hr);
-Min_Max_A_1_200_peaks = findpeaks(Min_Max_A_1_200.Amp_hr);
-Min_Max_B_1_200_peaks =  findpeaks(Min_Max_B_1_200.Amp_hr);
-Min_Intg_A_1_200_peaks = findpeaks(Min_Intg_A_1_200.Amp_hr);
-Min_Intg_B_1_200_peaks =  findpeaks(Min_Intg_B_1_200.Amp_hr);
+[Paings_A_200_400_peaks, Paings_A_200_400_peaks_index] =  findpeaks(Paings_A_200_400.Amp_hr);
+[Min_Max_A_200_400_peaks, Min_Max_A_200_400_peaks_index] = findpeaks(Min_Max_A_200_400.Amp_hr);
+[Min_Max_B_200_400_peaks, Min_Max_B_200_400_peaks_index] =  findpeaks(Min_Max_B_200_400.Amp_hr);
+[Min_Intg_A_200_400_peaks, Min_Intg_A_200_400_peaks_index] = findpeaks(Min_Intg_A_200_400.Amp_hr);
+[Min_Intg_B_200_400_peaks, Min_Intg_B_200_400_peaks_index] =  findpeaks(Min_Intg_B_200_400.Amp_hr);
+
+[Paings_B_1_200_peaks, Paings_B_1_200_peaks_index] = findpeaks(Paings_B_1_200.Amp_hr);
+[Paings_A_1_200_peaks, Paings_A_1_200_peaks_index] =  findpeaks(Paings_A_1_200.Amp_hr);
+[Min_Max_A_1_200_peaks, Min_Max_A_1_200_index] = findpeaks(Min_Max_A_1_200.Amp_hr);
+[Min_Max_B_1_200_peaks, Min_Max_B_1_200_peaks_index] =  findpeaks(Min_Max_B_1_200.Amp_hr);
+[Min_Intg_A_1_200_peaks, Min_Intg_A_1_200_peaks_index] = findpeaks(Min_Intg_A_1_200.Amp_hr);
+[Min_Intg_B_1_200_peaks, Min_Intg_B_1_200_peaks_index] =  findpeaks(Min_Intg_B_1_200.Amp_hr);
 
 Paings_B_200_400_peaks = [Paings_B_1_200_peaks(2:2:end); Paings_B_200_400_peaks(2:2:end)];
 Paings_A_200_400_peaks =  [Paings_A_1_200_peaks(2:2:end); Paings_A_200_400_peaks(2:2:end)];
@@ -96,25 +93,25 @@ average_2_grad(5) = p(1);
 cycles_2 = 1:(length(Min_Intg_B_200_400_peaks)-249);
 p = polyfit(cycles_2, Min_Intg_B_200_400_peaks(250:end), 1);
 average_2_grad(6) = p(1);
-
-
-
-figure
-y = [avg_over_potential_baseline max(over_potential_baseline) ; 
-    avg_over_potential_minimisetemp max(over_potential_minimisetemp) ; 
-    avg_over_potential_minimisetempmax max(over_potential_minimisetempmax)
-    avg_over_potential_minimisepang max(over_potential_minimisepang)];
-bar(x,y)
-ax = gca;
-ax.XAxis.FontSize = 15;
-ax.YAxis.FontSize = 15;
-set(gca, 'xticklabel', x, 'TickLabelInterpreter', 'latex');
-lb = legend('\textbf{Averaged}', '\textbf{Maximum}',"FontWeight","bold");
-set(lb, 'Interpreter', 'latex','FontSize', 12);
-title('\textbf{Overpotential Voltage}', ...
-       'interpreter','latex','fontsize',f_size)
-
-
+% 
+% 
+% 
+% figure
+% y = [avg_over_potential_baseline max(over_potential_baseline) ; 
+%     avg_over_potential_minimisetemp max(over_potential_minimisetemp) ; 
+%     avg_over_potential_minimisetempmax max(over_potential_minimisetempmax)
+%     avg_over_potential_minimisepang max(over_potential_minimisepang)];
+% bar(x,y)
+% ax = gca;
+% ax.XAxis.FontSize = 15;
+% ax.YAxis.FontSize = 15;
+% set(gca, 'xticklabel', x, 'TickLabelInterpreter', 'latex');
+% lb = legend('\textbf{Averaged}', '\textbf{Maximum}',"FontWeight","bold");
+% set(lb, 'Interpreter', 'latex','FontSize', 12);
+% title('\textbf{Overpotential Voltage}', ...
+%        'interpreter','latex','fontsize',f_size)
+% 
+% 
 
 % 
 % figure()
@@ -161,8 +158,145 @@ xline(248,'Label','Lab Pause',"FontSize",13,'Interpreter','latex')
 grid on
 xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
 ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
+%%
+[Paings_A_200_400_peaks, Paings_A_200_400_peaks_index] =  findpeaks(Paings_A_200_400.Amp_hr);
+[Min_Max_A_200_400_peaks, Min_Max_A_200_400_peaks_index] = findpeaks(Min_Max_A_200_400.Amp_hr);
+[Min_Max_B_200_400_peaks, Min_Max_B_200_400_peaks_index] =  findpeaks(Min_Max_B_200_400.Amp_hr);
+[Min_Intg_A_200_400_peaks, Min_Intg_A_200_400_peaks_index] = findpeaks(Min_Intg_A_200_400.Amp_hr);
+[Min_Intg_B_200_400_peaks, Min_Intg_B_200_400_peaks_index] =  findpeaks(Min_Intg_B_200_400.Amp_hr);
+
+[Paings_B_1_200_peaks, Paings_B_1_200_peaks_index] = findpeaks(Paings_B_1_200.Amp_hr);
+[Paings_A_1_200_peaks, Paings_A_1_200_peaks_index] =  findpeaks(Paings_A_1_200.Amp_hr);
+[Min_Max_A_1_200_peaks, Min_Max_A_1_200_peaks_index] = findpeaks(Min_Max_A_1_200.Amp_hr);
+[Min_Max_B_1_200_peaks, Min_Max_B_1_200_peaks_index] =  findpeaks(Min_Max_B_1_200.Amp_hr);
+[Min_Intg_A_1_200_peaks, Min_Intg_A_1_200_peaks_index] = findpeaks(Min_Intg_A_1_200.Amp_hr);
+[Min_Intg_B_1_200_peaks, Min_Intg_B_1_200_peaks_index] =  findpeaks(Min_Intg_B_1_200.Amp_hr);
+
+Paings_A_1_400_peaks_index = [Paings_B_1_200_peaks_index(2:2:end); Paings_B_200_400_peaks_index(2:2:end)];
+Paings_B_1_400_peaks_index =  [Paings_A_1_200_peaks_index(2:2:end); Paings_A_200_400_peaks_index(2:2:end)];
+Min_Max_A_1_400_peaks_index = [Min_Max_A_1_200_peaks_index(2:2:end); Min_Max_A_200_400_peaks_index(2:2:end)];
+Min_Max_B_1_400_peaks_index =  [Min_Max_B_1_200_peaks_index(2:2:end); Min_Max_B_200_400_peaks_index(2:2:end)];
+Min_Intg_A_1_400_peaks_index = [Min_Intg_A_1_200_peaks_index(2:2:end); Min_Intg_A_200_400_peaks_index(2:2:end)];
+Min_Intg_B_1_400_peaks_index =  [Min_Intg_B_1_200_peaks_index(2:2:end); Min_Intg_B_200_400_peaks_index(2:2:end)];
+
+[Baseline_A_peaks, Baseline_A_peaks_index] =  findpeaks(Baseline_A.Amp_hr);
+[Baseline_B_peaks, Baseline_B_peaks_index] =  findpeaks(Baseline_B.Amp_hr);
+Baseline_A_peaks =  Baseline_A_peaks(2:2:end);
+Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
+Baseline_A_peaks_index =  Baseline_A_peaks_index(2:2:end);
+Baseline_B_peaks_index =  Baseline_B_peaks_index(2:2:end);
 
 
+ % [Paings_B_200_400_peaks, locs] = findpeaks(Paings_B_200_400.Amp_hr);
+
+sig = abs([Paings_A_200_400.Amp_hr,Paings_A_1_200.Amp_hr]);
+res = cumtrapz(Paings_B_200_400.TestTime, sig);
+throughput_peaks = res(locs);
+
+figure
+plot(throughput_peaks, Paings_B_200_400_peaks)
+xlabel('Throughput Capacity (Ah)')
+ylabel('Peak Capacity (Ah)')
+grid on
+%%
+
+%% 1. Find all peaks for Concatenated Data
+[Paings_A_200_400_peaks, Paings_A_200_400_peaks_index] = findpeaks(Paings_A_200_400.Amp_hr);
+[Paings_B_200_400_peaks, Paings_B_200_400_peaks_index] = findpeaks(Paings_B_200_400.Amp_hr);
+[Min_Max_A_200_400_peaks, Min_Max_A_200_400_peaks_index] = findpeaks(Min_Max_A_200_400.Amp_hr);
+[Min_Max_B_200_400_peaks, Min_Max_B_200_400_peaks_index] = findpeaks(Min_Max_B_200_400.Amp_hr);
+[Min_Intg_A_200_400_peaks, Min_Intg_A_200_400_peaks_index] = findpeaks(Min_Intg_A_200_400.Amp_hr);
+[Min_Intg_B_200_400_peaks, Min_Intg_B_200_400_peaks_index] = findpeaks(Min_Intg_B_200_400.Amp_hr);
+
+[Paings_A_1_200_peaks, Paings_A_1_200_peaks_index] = findpeaks(Paings_A_1_200.Amp_hr);
+[Paings_B_1_200_peaks, Paings_B_1_200_peaks_index] = findpeaks(Paings_B_1_200.Amp_hr);
+[Min_Max_A_1_200_peaks, Min_Max_A_1_200_peaks_index] = findpeaks(Min_Max_A_1_200.Amp_hr);
+[Min_Max_B_1_200_peaks, Min_Max_B_1_200_peaks_index] = findpeaks(Min_Max_B_1_200.Amp_hr);
+[Min_Intg_A_1_200_peaks, Min_Intg_A_1_200_peaks_index] = findpeaks(Min_Intg_A_1_200.Amp_hr);
+[Min_Intg_B_1_200_peaks, Min_Intg_B_1_200_peaks_index] = findpeaks(Min_Intg_B_1_200.Amp_hr);
+
+
+[Baseline_A_peaks, Baseline_A_peaks_index] = findpeaks(Baseline_A.Amp_hr);
+[Baseline_B_peaks, Baseline_B_peaks_index] = findpeaks(Baseline_B.Amp_hr);
+
+Baseline_A_peaks_index = Baseline_A_peaks_index(2:2:end);
+Baseline_B_peaks_index = Baseline_B_peaks_index(2:2:end);
+
+
+figure;
+hold on;
+grid on;
+
+[x1, y1] = plot_concat_throughput(Paings_A_1_200, Paings_A_200_400, Paings_A_1_200_peaks_index, Paings_A_200_400_peaks_index);
+[x2, y2] = plot_concat_throughput(Paings_B_1_200, Paings_B_200_400, Paings_B_1_200_peaks_index, Paings_B_200_400_peaks_index);
+[x3, y3] = plot_concat_throughput(Min_Max_A_1_200, Min_Max_A_200_400, Min_Max_A_1_200_peaks_index, Min_Max_A_200_400_peaks_index);
+[x4, y4] = plot_concat_throughput(Min_Max_B_1_200, Min_Max_B_200_400, Min_Max_B_1_200_peaks_index, Min_Max_B_200_400_peaks_index);
+[x5, y5] = plot_concat_throughput(Min_Intg_A_1_200, Min_Intg_A_200_400, Min_Intg_A_1_200_peaks_index, Min_Intg_A_200_400_peaks_index);
+[x6, y6] = plot_concat_throughput(Min_Intg_B_1_200, Min_Intg_B_200_400, Min_Intg_B_1_200_peaks_index, Min_Intg_B_200_400_peaks_index);
+
+
+
+
+[x7, y7] = plot_single_throughput(Baseline_A, Baseline_A_peaks_index);
+[x8, y8] = plot_single_throughput(Baseline_B, Baseline_B_peaks_index);
+
+hold on
+
+plot(x1, y1 - y1(60),'LineStyle','-.','LineWidth',2,'Color',[0.52, 0.09, 0.82])
+plot(x2, y2 - y2(60),'LineStyle','-','LineWidth',2,'Color',[0.52, 0.09, 0.82])
+
+plot(x3, y3 - y3(60),'LineStyle','-.','LineWidth',2,'Color',[0.87, 0.33, 0.00])
+plot(x4, y4 - y4(60),'LineStyle','-','LineWidth',2,'Color',[0.87, 0.33, 0.00])
+
+plot(x5, y5 - y5(60),'LineStyle','-.','LineWidth',2,'Color',[0.23, 0.67, 0.20])
+plot(x6, y6 - y6(60),'LineStyle','-','LineWidth',2,'Color',[0.23, 0.67, 0.20])
+
+plot(x7, y7 - y7(60),'LineStyle','-.','LineWidth',2,'Color',[0.07, 0.44, 0.75])
+plot(x8, y8 - y8(60),'LineStyle','-','LineWidth',2,'Color',[0.07, 0.44, 0.75])
+
+legend(["QLossA","QLossB","MinMaxTA","MinMaxTB","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
+xline(1032390,'Label','Re-optimisation',"FontSize",13,'Interpreter','latex')
+xline(1241550,'Label','Lab Pause',"FontSize",13,'Interpreter','latex')
+grid on
+xlabel("Throughput Capacity $(Ah)$","FontSize",13,'Interpreter','latex')
+ylabel("Capacity loss per cycle $(Ah)$","FontSize",13,'Interpreter','latex')
+
+
+
+function [x,y] = plot_concat_throughput(data_1_200, data_200_400, idx1, idx2)
+    % Concatenate signals 
+    sig_concat = [data_1_200.Amp_hr(:); data_200_400.Amp_hr(:)];
+
+    % Handle TestTime concatenation
+    t1 = data_1_200.TestTime(:);
+    t2 = data_200_400.TestTime(:);
+    if t2(1) <= t1(end)
+        t2 = t2 + t1(end);
+    end
+    time_concat = [t1; t2];
+
+    % Calculate index offset
+    offset = length(data_1_200.Amp_hr);
+    idx_concat = [idx1(2:2:end); idx2(2:2:end) + offset];
+
+    throughput_res = cumtrapz(time_concat, abs(sig_concat));
+    throughput_peaks = throughput_res(idx_concat);
+    peak_vals = sig_concat(idx_concat);
+    x = throughput_peaks;
+    y = peak_vals;
+   
+end
+
+function [x,y] = plot_single_throughput(data, idx)
+  
+    sig = data.Amp_hr(:);
+    time = data.TestTime(:);
+    throughput_res = cumtrapz(time, abs(sig));
+    throughput_peaks = throughput_res(idx);
+    peak_vals = sig(idx);
+    x = throughput_peaks;
+    y = peak_vals;
+end
 
 %%
 
