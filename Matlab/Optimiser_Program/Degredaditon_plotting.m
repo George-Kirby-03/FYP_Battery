@@ -17,6 +17,7 @@ Baseline_B = readtable("GK_RS15_02_baseline_0000 - 028 (2).csv");
 
 
 [Paings_A_200_400_peaks, Paings_A_200_400_peaks_index] =  findpeaks(Paings_A_200_400.Amp_hr);
+[Paings_B_200_400_peaks, Paings_B_200_400_peaks_index] = findpeaks(Paings_B_200_400.Amp_hr);
 [Min_Max_A_200_400_peaks, Min_Max_A_200_400_peaks_index] = findpeaks(Min_Max_A_200_400.Amp_hr);
 [Min_Max_B_200_400_peaks, Min_Max_B_200_400_peaks_index] =  findpeaks(Min_Max_B_200_400.Amp_hr);
 [Min_Intg_A_200_400_peaks, Min_Intg_A_200_400_peaks_index] = findpeaks(Min_Intg_A_200_400.Amp_hr);
@@ -158,46 +159,46 @@ xline(248,'Label','Lab Pause',"FontSize",13,'Interpreter','latex')
 grid on
 xlabel("Cycle Count","FontSize",13,'Interpreter','latex')
 ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
-%%
-[Paings_A_200_400_peaks, Paings_A_200_400_peaks_index] =  findpeaks(Paings_A_200_400.Amp_hr);
-[Min_Max_A_200_400_peaks, Min_Max_A_200_400_peaks_index] = findpeaks(Min_Max_A_200_400.Amp_hr);
-[Min_Max_B_200_400_peaks, Min_Max_B_200_400_peaks_index] =  findpeaks(Min_Max_B_200_400.Amp_hr);
-[Min_Intg_A_200_400_peaks, Min_Intg_A_200_400_peaks_index] = findpeaks(Min_Intg_A_200_400.Amp_hr);
-[Min_Intg_B_200_400_peaks, Min_Intg_B_200_400_peaks_index] =  findpeaks(Min_Intg_B_200_400.Amp_hr);
-
-[Paings_B_1_200_peaks, Paings_B_1_200_peaks_index] = findpeaks(Paings_B_1_200.Amp_hr);
-[Paings_A_1_200_peaks, Paings_A_1_200_peaks_index] =  findpeaks(Paings_A_1_200.Amp_hr);
-[Min_Max_A_1_200_peaks, Min_Max_A_1_200_peaks_index] = findpeaks(Min_Max_A_1_200.Amp_hr);
-[Min_Max_B_1_200_peaks, Min_Max_B_1_200_peaks_index] =  findpeaks(Min_Max_B_1_200.Amp_hr);
-[Min_Intg_A_1_200_peaks, Min_Intg_A_1_200_peaks_index] = findpeaks(Min_Intg_A_1_200.Amp_hr);
-[Min_Intg_B_1_200_peaks, Min_Intg_B_1_200_peaks_index] =  findpeaks(Min_Intg_B_1_200.Amp_hr);
-
-Paings_A_1_400_peaks_index = [Paings_B_1_200_peaks_index(2:2:end); Paings_B_200_400_peaks_index(2:2:end)];
-Paings_B_1_400_peaks_index =  [Paings_A_1_200_peaks_index(2:2:end); Paings_A_200_400_peaks_index(2:2:end)];
-Min_Max_A_1_400_peaks_index = [Min_Max_A_1_200_peaks_index(2:2:end); Min_Max_A_200_400_peaks_index(2:2:end)];
-Min_Max_B_1_400_peaks_index =  [Min_Max_B_1_200_peaks_index(2:2:end); Min_Max_B_200_400_peaks_index(2:2:end)];
-Min_Intg_A_1_400_peaks_index = [Min_Intg_A_1_200_peaks_index(2:2:end); Min_Intg_A_200_400_peaks_index(2:2:end)];
-Min_Intg_B_1_400_peaks_index =  [Min_Intg_B_1_200_peaks_index(2:2:end); Min_Intg_B_200_400_peaks_index(2:2:end)];
-
-[Baseline_A_peaks, Baseline_A_peaks_index] =  findpeaks(Baseline_A.Amp_hr);
-[Baseline_B_peaks, Baseline_B_peaks_index] =  findpeaks(Baseline_B.Amp_hr);
-Baseline_A_peaks =  Baseline_A_peaks(2:2:end);
-Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
-Baseline_A_peaks_index =  Baseline_A_peaks_index(2:2:end);
-Baseline_B_peaks_index =  Baseline_B_peaks_index(2:2:end);
-
-
- % [Paings_B_200_400_peaks, locs] = findpeaks(Paings_B_200_400.Amp_hr);
-
-sig = abs([Paings_A_200_400.Amp_hr,Paings_A_1_200.Amp_hr]);
-res = cumtrapz(Paings_B_200_400.TestTime, sig);
-throughput_peaks = res(locs);
-
-figure
-plot(throughput_peaks, Paings_B_200_400_peaks)
-xlabel('Throughput Capacity (Ah)')
-ylabel('Peak Capacity (Ah)')
-grid on
+% %%
+% [Paings_A_200_400_peaks, Paings_A_200_400_peaks_index] =  findpeaks(Paings_A_200_400.Amp_hr);
+% [Min_Max_A_200_400_peaks, Min_Max_A_200_400_peaks_index] = findpeaks(Min_Max_A_200_400.Amp_hr);
+% [Min_Max_B_200_400_peaks, Min_Max_B_200_400_peaks_index] =  findpeaks(Min_Max_B_200_400.Amp_hr);
+% [Min_Intg_A_200_400_peaks, Min_Intg_A_200_400_peaks_index] = findpeaks(Min_Intg_A_200_400.Amp_hr);
+% [Min_Intg_B_200_400_peaks, Min_Intg_B_200_400_peaks_index] =  findpeaks(Min_Intg_B_200_400.Amp_hr);
+% 
+% [Paings_B_1_200_peaks, Paings_B_1_200_peaks_index] = findpeaks(Paings_B_1_200.Amp_hr);
+% [Paings_A_1_200_peaks, Paings_A_1_200_peaks_index] =  findpeaks(Paings_A_1_200.Amp_hr);
+% [Min_Max_A_1_200_peaks, Min_Max_A_1_200_peaks_index] = findpeaks(Min_Max_A_1_200.Amp_hr);
+% [Min_Max_B_1_200_peaks, Min_Max_B_1_200_peaks_index] =  findpeaks(Min_Max_B_1_200.Amp_hr);
+% [Min_Intg_A_1_200_peaks, Min_Intg_A_1_200_peaks_index] = findpeaks(Min_Intg_A_1_200.Amp_hr);
+% [Min_Intg_B_1_200_peaks, Min_Intg_B_1_200_peaks_index] =  findpeaks(Min_Intg_B_1_200.Amp_hr);
+% 
+% Paings_A_1_400_peaks_index = [Paings_B_1_200_peaks_index(2:2:end); Paings_B_200_400_peaks_index(2:2:end)];
+% Paings_B_1_400_peaks_index =  [Paings_A_1_200_peaks_index(2:2:end); Paings_A_200_400_peaks_index(2:2:end)];
+% Min_Max_A_1_400_peaks_index = [Min_Max_A_1_200_peaks_index(2:2:end); Min_Max_A_200_400_peaks_index(2:2:end)];
+% Min_Max_B_1_400_peaks_index =  [Min_Max_B_1_200_peaks_index(2:2:end); Min_Max_B_200_400_peaks_index(2:2:end)];
+% Min_Intg_A_1_400_peaks_index = [Min_Intg_A_1_200_peaks_index(2:2:end); Min_Intg_A_200_400_peaks_index(2:2:end)];
+% Min_Intg_B_1_400_peaks_index =  [Min_Intg_B_1_200_peaks_index(2:2:end); Min_Intg_B_200_400_peaks_index(2:2:end)];
+% 
+% [Baseline_A_peaks, Baseline_A_peaks_index] =  findpeaks(Baseline_A.Amp_hr);
+% [Baseline_B_peaks, Baseline_B_peaks_index] =  findpeaks(Baseline_B.Amp_hr);
+% Baseline_A_peaks =  Baseline_A_peaks(2:2:end);
+% Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
+% Baseline_A_peaks_index =  Baseline_A_peaks_index(2:2:end);
+% Baseline_B_peaks_index =  Baseline_B_peaks_index(2:2:end);
+% 
+% 
+%  % [Paings_B_200_400_peaks, locs] = findpeaks(Paings_B_200_400.Amp_hr);
+% 
+% sig = abs([Paings_A_200_400.Amp_hr,Paings_A_1_200.Amp_hr]);
+% res = cumtrapz(Paings_B_200_400.TestTime, sig);
+% throughput_peaks = res(locs);
+% 
+% figure
+% plot(throughput_peaks, Paings_B_200_400_peaks)
+% xlabel('Throughput Capacity (Ah)')
+% ylabel('Peak Capacity (Ah)')
+% grid on
 %%
 
 %% 1. Find all peaks for Concatenated Data
@@ -261,8 +262,106 @@ grid on
 xlabel("Throughput Capacity $(Ah)$","FontSize",13,'Interpreter','latex')
 ylabel("Capacity loss per cycle $(Ah)$","FontSize",13,'Interpreter','latex')
 
+%% Calculate Gradients for Capacity vs. Throughput Capacity
+
+% Preallocate arrays to store the gradients
+throughput_grad_60_200 = zeros(1, 8); 
+throughput_grad_250_end = zeros(1, 8);
 
 
+p = polyfit(x1(60:200), y1(60:200), 1);
+throughput_grad_60_200(1) = p(1); % QLossA
+
+p = polyfit(x2(60:200), y2(60:200), 1);
+throughput_grad_60_200(2) = p(1); % QLossB
+
+p = polyfit(x3(60:200), y3(60:200), 1);
+throughput_grad_60_200(3) = p(1); % MinMaxTA
+
+p = polyfit(x4(60:200), y4(60:200), 1);
+throughput_grad_60_200(4) = p(1); % MinMaxTB
+
+p = polyfit(x5(60:200), y5(60:200), 1);
+throughput_grad_60_200(5) = p(1); % MinTA
+
+p = polyfit(x6(60:200), y6(60:200), 1);
+throughput_grad_60_200(6) = p(1); % MinTB
+
+if length(x7) >= 200
+    p = polyfit(x7(60:200), y7(60:200), 1);
+    throughput_grad_60_200(7) = p(1); % BaselineA
+else
+    disp('Baseline A did not reach 200 cycles.');
+end
+
+if length(x8) >= 200
+    p = polyfit(x8(60:200), y8(60:200), 1);
+    throughput_grad_60_200(8) = p(1); % BaselineB
+else
+    disp('Baseline B did not reach 200 cycles.');
+end
+
+p = polyfit(x1(250:end), y1(250:end), 1);
+throughput_grad_250_end(1) = p(1); % QLossA
+
+p = polyfit(x2(250:end), y2(250:end), 1);
+throughput_grad_250_end(2) = p(1); % QLossB
+
+p = polyfit(x3(250:end), y3(250:end), 1);
+throughput_grad_250_end(3) = p(1); % MinMaxTA
+
+p = polyfit(x4(250:end), y4(250:end), 1);
+throughput_grad_250_end(4) = p(1); % MinMaxTB
+
+p = polyfit(x5(250:end), y5(250:end), 1);
+throughput_grad_250_end(5) = p(1); % MinTA
+
+p = polyfit(x6(250:end), y6(250:end), 1);
+throughput_grad_250_end(6) = p(1); % MinTB
+if length(x7) >= 250
+    p = polyfit(x7(250:end), y7(250:end), 1);
+    throughput_grad_250_end(7) = p(1); % BaselineA
+else
+    disp('Baseline A did not reach 250 cycles.');
+end
+
+if length(x8) >= 250
+    p = polyfit(x8(250:end), y8(250:end), 1);
+    throughput_grad_250_end(8) = p(1); % BaselineB
+else
+    disp('Baseline B did not reach 250 cycles.');
+end
+
+
+% Combine the data into an 8x2 matrix for grouped plotting
+% Using (:) ensures they are treated as column vectors
+grad_data = [throughput_grad_60_200(:), throughput_grad_250_end(:)];
+
+% Labels for the x-axis
+x_labels = {'QLossA', 'QLossB', 'MinMaxTA', 'MinMaxTB', 'MinTA', 'MinTB', 'BaselineA', 'BaselineB'};
+
+figure;
+hold on;
+grid on;
+
+% Create grouped bar chart
+b = bar(grad_data, 'grouped');
+
+% Set the colors as requested (Blue for 60-200, Red for 250-End)
+b(1).FaceColor = 'b';
+b(2).FaceColor = 'r';
+
+ax = gca;
+ax.XAxis.FontSize = 13;
+ax.YAxis.FontSize = 13;
+set(gca, 'XTick', 1:8, 'XTickLabel', x_labels, 'TickLabelInterpreter', 'latex');
+
+
+lb = legend('First Batch', 'Re-optimised Batch', 'Location', 'best');
+set(lb, 'Interpreter', 'latex', 'FontSize', 12);
+
+ylabel('Degradation Gradient $(Cyle Ah/Ah)$', 'FontSize', 13, 'Interpreter', 'latex');
+%title('\textbf{Capacity Degradation Rate vs. Throughput}', 'Interpreter', 'latex', 'FontSize', 15);
 function [x,y] = plot_concat_throughput(data_1_200, data_200_400, idx1, idx2)
     % Concatenate signals 
     sig_concat = [data_1_200.Amp_hr(:); data_200_400.Amp_hr(:)];
