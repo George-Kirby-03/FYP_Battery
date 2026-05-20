@@ -42,14 +42,14 @@ Baseline_B_peaks =  findpeaks(Baseline_B.Amp_hr);
 Baseline_A_peaks =  Baseline_A_peaks(2:2:end);
 Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
 
-figure()
-hold on
-plot(Paings_B_200_400_peaks)
-plot(Paings_A_200_400_peaks)
-plot(Min_Max_A_200_400_peaks)
-plot(Min_Max_B_200_400_peaks)
-plot(Min_Intg_A_200_400_peaks)
-plot(Min_Intg_B_200_400_peaks)
+% figure()
+% hold on
+% plot(Paings_B_200_400_peaks)
+% plot(Paings_A_200_400_peaks)
+% plot(Min_Max_A_200_400_peaks)
+% plot(Min_Max_B_200_400_peaks)
+% plot(Min_Intg_A_200_400_peaks)
+% plot(Min_Intg_B_200_400_peaks)
 
 
 cycles_1 = 50:200;
@@ -334,8 +334,8 @@ end
 
 
 % Combine the data into an 8x2 matrix for grouped plotting
-% Using (:) ensures they are treated as column vectors
 grad_data = [throughput_grad_60_200(:), throughput_grad_250_end(:)];
+grad_ratios = throughput_grad_250_end(:)./throughput_grad_60_200(:);
 
 % Labels for the x-axis
 x_labels = {'QLossA', 'QLossB', 'MinMaxTA', 'MinMaxTB', 'MinTA', 'MinTB', 'BaselineA', 'BaselineB'};
@@ -346,8 +346,6 @@ grid on;
 
 % Create grouped bar chart
 b = bar(grad_data, 'grouped');
-
-% Set the colors as requested (Blue for 60-200, Red for 250-End)
 b(1).FaceColor = 'b';
 b(2).FaceColor = 'r';
 
