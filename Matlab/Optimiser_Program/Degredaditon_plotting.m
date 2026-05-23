@@ -44,15 +44,24 @@ Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
 
 figure()
 hold on
+<<<<<<< HEAD
 plot(Paings_B_200_400_peaks)
 plot(Paings_A_200_400_peaks)
+=======
+plot(Paings_A_200_400_peaks)
+plot(Paings_B_200_400_peaks)
+>>>>>>> c0a67e6dcb565223d42491e5db2ae416b948cdf7
 plot(Min_Max_A_200_400_peaks)
 plot(Min_Max_B_200_400_peaks)
 plot(Min_Intg_A_200_400_peaks)
 plot(Min_Intg_B_200_400_peaks)
 plot(Baseline_A_peaks)
 plot(Baseline_B_peaks)
+<<<<<<< HEAD
 legend(["PA","PB","MA","MB","mia",'miab','BA','Bb'])
+=======
+legend(["QLossA","QLossB","MinMaxTA","MinMaxTB","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
+>>>>>>> c0a67e6dcb565223d42491e5db2ae416b948cdf7
 
 cycles_1 = 50:200;
 p = polyfit(cycles_1, Paings_B_200_400_peaks(50:200), 1);
@@ -303,32 +312,32 @@ else
     disp('Baseline B did not reach 200 cycles.');
 end
 
-p = polyfit(x1(250:end), y1(250:end), 1);
+p = polyfit(x1(300:end), y1(300:end), 1);
 throughput_grad_250_end(1) = p(1); % QLossA
 
-p = polyfit(x2(250:end), y2(250:end), 1);
+p = polyfit(x2(310:end), y2(310:end), 1);
 throughput_grad_250_end(2) = p(1); % QLossB
 
-p = polyfit(x3(250:end), y3(250:end), 1);
+p = polyfit(x3(310:end), y3(310:end), 1);
 throughput_grad_250_end(3) = p(1); % MinMaxTA
 
-p = polyfit(x4(250:end), y4(250:end), 1);
+p = polyfit(x4(310:end), y4(310:end), 1);
 throughput_grad_250_end(4) = p(1); % MinMaxTB
 
-p = polyfit(x5(250:end), y5(250:end), 1);
+p = polyfit(x5(310:end), y5(310:end), 1);
 throughput_grad_250_end(5) = p(1); % MinTA
 
-p = polyfit(x6(250:end), y6(250:end), 1);
+p = polyfit(x6(310:end), y6(310:end), 1);
 throughput_grad_250_end(6) = p(1); % MinTB
 if length(x7) >= 250
-    p = polyfit(x7(250:end), y7(250:end), 1);
+    p = polyfit(x7(310:end), y7(310:end), 1);
     throughput_grad_250_end(7) = p(1); % BaselineA
 else
     disp('Baseline A did not reach 250 cycles.');
 end
 
 if length(x8) >= 250
-    p = polyfit(x8(250:end), y8(250:end), 1);
+    p = polyfit(x8(310:end), y8(310:end), 1);
     throughput_grad_250_end(8) = p(1); % BaselineB
 else
     disp('Baseline B did not reach 250 cycles.');
@@ -396,7 +405,37 @@ function [x,y] = plot_single_throughput(data, idx)
     x = throughput_peaks;
     y = peak_vals;
 end
+% 1. Define the original index mapping:
+% 1=QLossA, 2=QLossB, 3=MinMaxTA, 4=MinMaxTB, 5=MinTA, 6=MinTB, 7=BaselineA, 8=BaselineB
 
+% 2. Specify your new desired order :
+new_order = [2, 1, 5, 4, 6, 8, 3, 7]; 
+
+% 3. Reorder the data matrix and the labels
+reordered_grad_data = grad_data(new_order, :);
+reordered_labels = x_labels(new_order);
+
+% 4. Plot the new figure
+figure;
+hold on;
+grid on;
+
+% Create grouped bar chart with reordered data
+b = bar(reordered_grad_data, 'grouped');
+b(1).FaceColor = 'b';
+b(2).FaceColor = 'r';
+
+ax = gca;
+ax.XAxis.FontSize = 13;
+ax.YAxis.FontSize = 13;
+
+% Dynamically set XTick based on the length of new_order
+set(gca, 'XTick', 1:length(new_order), 'XTickLabel', reordered_labels, 'TickLabelInterpreter', 'latex');
+
+% Re-apply legend and labels
+lb = legend('First Batch', 'Re-optimised Batch', 'Location', 'best');
+set(lb, 'Interpreter', 'latex', 'FontSize', 12);
+ylabel('Degradation Gradient $(Cyle Ah/Ah)$', 'FontSize', 13, 'Interpreter', 'latex');
 %%
 
 

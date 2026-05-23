@@ -1,0 +1,67 @@
+%% Adding the required functions and tools to the path
+addpath(genpath('ICLOCS_Parameterisation_files'))
+addpath(genpath('Greyest_Parameterisation_files'))
+addpath(genpath('Misc_functions'))
+
+%Load in optional pre-extracted Voc (Open Cirvuit Voltage) curve if
+%parameterising here
+load RS_LiPo_extracted.mat 
+
+%Automatically extract and seperate V,I,T ect data from a single MACCOR
+%file into cells per cycle
+[V,I,T,Ah,Ts] = get_cycle(".\GK_RS15_07_proc3_0000 - 031 (2).csv",1);
+sim_handler = cell(1, size(V,2)-1);
+
+%% Settings struct, if missing parameters exist, defaults are applied
+% Nodes: Number of discritisation points in the final transcribed problem
+settings.nodes = 230;
+% Itterations: Number of Solver itterations before solution is returned
+settings.iterations = 200; 
+% Polycount: If OCV curve is parameterised, provide how many polynomial coefficents to use
+settings.polycount = 14;
+% V_lim: If not 0, apply a target fully charged (Voc(1)) curve point
+settings.v_lim = 3.65;
+% V_low: If not 0, force the empty (Voc(0)) curve point
+settings.v_low = 2.5;
+% Range: Tolerance alowed on V_low
+%settings.range = 0.05;
+
+%% Dynamics struct, provde inital guesses for any parameters to be solved for
+dynamics  = struct('Q',1.53*3600,'C',800,'R0',0.075,'R1',0.045,'Cp',160,'h',1);
+
+%% Upper and lower dynamics, provide limits 
+lower_dynamics_default = struct('Q',1.0*3600,'C',200,'R0',0.01,'R1',0.01,'Cp',30,'h',0.01);
+upper_dynamics_default = struct('Q',1.9*3600,'C',1000,'R0',0.1,'R1',0.1,'Cp',300,'h',10);
+
+%% Enforce struct,
+%  If electrical or thermal parameters are already known, setting to value
+%  other than 0 will force that value
+% V_lim_strength, temp_strength: Change how weighted they are in the final
+% cost function
+enforce_default = struct('Q',0,'C',0,'R0',0,'R1',0,'Cp',0,'h',0,'v_lim_strength',0.03,'temp_strength',0.001);
+
+%% Example here is solving every 5th cycle obtained by get_cycle
+idx = find(mod(1:size(V,2)-1, 5) == 0);
+V = V(idx);
+I = I(idx);
+Ts = Ts(idx);
+T = T(idx);
+Ah = Ah(idx);
+
+% Parfor used to speed up comutation
+parfor (i = 1:length(idx),32)
+    cycle = [];
+    cycle.volts = V{i};
+    cycle.amps = I{i};
+    cycle.ts = Ts{i} - Ts{i}(1);
+    cycle.tp = T{i} - T{i}(1);
+    cycle.Ah = Ah{i};
+    
+    % Struct is solved electrically by ICLOCS
+    tmp = Cycle_Parmeterisation(cycle,dynamics,settings,enforce,[]);
+    % Then the same struct is solved for thermally with greyest 
+    tmp = Greyest_Parameterisation(tmp);
+
+    sim_handler{i} = tmp;
+end
+save Min_temp_intg07-200.mat sim_handler
