@@ -42,14 +42,14 @@ Baseline_B_peaks =  findpeaks(Baseline_B.Amp_hr);
 Baseline_A_peaks =  Baseline_A_peaks(2:2:end);
 Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
 
-figure()
-hold on
-plot(Paings_B_200_400_peaks)
-plot(Paings_A_200_400_peaks)
-plot(Min_Max_A_200_400_peaks)
-plot(Min_Max_B_200_400_peaks)
-plot(Min_Intg_A_200_400_peaks)
-plot(Min_Intg_B_200_400_peaks)
+% figure()
+% hold on
+% plot(Paings_B_200_400_peaks)
+% plot(Paings_A_200_400_peaks)
+% plot(Min_Max_A_200_400_peaks)
+% plot(Min_Max_B_200_400_peaks)
+% plot(Min_Intg_A_200_400_peaks)
+% plot(Min_Intg_B_200_400_peaks)
 
 
 cycles_1 = 50:200;
@@ -287,7 +287,6 @@ throughput_grad_60_200(5) = p(1); % MinTA
 p = polyfit(x6(60:200), y6(60:200), 1);
 throughput_grad_60_200(6) = p(1); % MinTB
 
-% Safety checks for Baselines in case they failed before 200 cycles
 if length(x7) >= 200
     p = polyfit(x7(60:200), y7(60:200), 1);
     throughput_grad_60_200(7) = p(1); % BaselineA
@@ -302,41 +301,41 @@ else
     disp('Baseline B did not reach 200 cycles.');
 end
 
-p = polyfit(x1(250:end), y1(250:end), 1);
+p = polyfit(x1(250:end), y1(300:end), 1);
 throughput_grad_250_end(1) = p(1); % QLossA
 
-p = polyfit(x2(250:end), y2(250:end), 1);
+p = polyfit(x2(250:end), y2(300:end), 1);
 throughput_grad_250_end(2) = p(1); % QLossB
 
-p = polyfit(x3(250:end), y3(250:end), 1);
+p = polyfit(x3(250:end), y3(300:end), 1);
 throughput_grad_250_end(3) = p(1); % MinMaxTA
 
-p = polyfit(x4(250:end), y4(250:end), 1);
+p = polyfit(x4(250:end), y4(300:end), 1);
 throughput_grad_250_end(4) = p(1); % MinMaxTB
 
-p = polyfit(x5(250:end), y5(250:end), 1);
+p = polyfit(x5(250:end), y5(300:end), 1);
 throughput_grad_250_end(5) = p(1); % MinTA
 
-p = polyfit(x6(250:end), y6(250:end), 1);
+p = polyfit(x6(250:end), y6(300:end), 1);
 throughput_grad_250_end(6) = p(1); % MinTB
 if length(x7) >= 250
-    p = polyfit(x7(250:end), y7(250:end), 1);
+    p = polyfit(x7(250:end), y7(300:end), 1);
     throughput_grad_250_end(7) = p(1); % BaselineA
 else
     disp('Baseline A did not reach 250 cycles.');
 end
 
 if length(x8) >= 250
-    p = polyfit(x8(250:end), y8(250:end), 1);
+    p = polyfit(x8(250:end), y8(300:end), 1);
     throughput_grad_250_end(8) = p(1); % BaselineB
 else
     disp('Baseline B did not reach 250 cycles.');
 end
-%% Plot Gradients as a Grouped Bar Chart
+
 
 % Combine the data into an 8x2 matrix for grouped plotting
-% Using (:) ensures they are treated as column vectors
 grad_data = [throughput_grad_60_200(:), throughput_grad_250_end(:)];
+grad_ratios = throughput_grad_250_end(:)./throughput_grad_60_200(:);
 
 % Labels for the x-axis
 x_labels = {'QLossA', 'QLossB', 'MinMaxTA', 'MinMaxTB', 'MinTA', 'MinTB', 'BaselineA', 'BaselineB'};
@@ -347,24 +346,20 @@ grid on;
 
 % Create grouped bar chart
 b = bar(grad_data, 'grouped');
-
-% Set the colors as requested (Blue for 60-200, Red for 250-End)
 b(1).FaceColor = 'b';
 b(2).FaceColor = 'r';
 
-% Format the axes and labels
 ax = gca;
 ax.XAxis.FontSize = 13;
 ax.YAxis.FontSize = 13;
 set(gca, 'XTick', 1:8, 'XTickLabel', x_labels, 'TickLabelInterpreter', 'latex');
 
-% Add legend
-lb = legend('\textbf{Cycles 60--200}', '\textbf{Cycles 250--End}', 'Location', 'best');
+
+lb = legend('First Batch', 'Re-optimised Batch', 'Location', 'best');
 set(lb, 'Interpreter', 'latex', 'FontSize', 12);
 
-% Add axis labels
-ylabel('Degradation Gradient $(Ah / Ah)$', 'FontSize', 13, 'Interpreter', 'latex');
-title('\textbf{Capacity Degradation Rate vs. Throughput}', 'Interpreter', 'latex', 'FontSize', 15);
+ylabel('Degradation Gradient $(Cyle Ah/Ah)$', 'FontSize', 13, 'Interpreter', 'latex');
+%title('\textbf{Capacity Degradation Rate vs. Throughput}', 'Interpreter', 'latex', 'FontSize', 15);
 function [x,y] = plot_concat_throughput(data_1_200, data_200_400, idx1, idx2)
     % Concatenate signals 
     sig_concat = [data_1_200.Amp_hr(:); data_200_400.Amp_hr(:)];

@@ -62,49 +62,61 @@ parfor (i = 1:length(idx),32)
     sim_handler{i} = tmp;
 end
 save Min_temp_intg07-200.mat sim_handler
-% %Alternativley loading presimulated cycles here
-% %load baseline1-800.mat
-% 
-% %Optionally an averaging on the battery parameters (accept ocv curve) can
-% %be made (will keep a single instace of the original data if needed for
-% %comparison)
-% 
-% avg_sim_handle = sim_average(sim_handler,5,'End');
-% 
-% 
-% %% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
-% %% If they are different, it may be wise to optimised against the hot internals rather than use the 0D lumped Cp & H produced
-% %% From above
-% 
-% %optional
-% %Full_thermal_simulation(sim_handler);
-% 
-% 
-% %% Code to produce graphs to help make charge discharge descisions based from the framework used in Attias paper, 
-% 
-% 
-% 
-% %% For this projects setting, the duration of 0-100% SoC charge has been determined and documented in the thesis, raw values
-% %% are used here but can be obtained from the graphs produced above too 
-% 
-% 
-% 
-% %% The optimised protocols can now be produced, below calcuates the optimal stages for minimising Max Temp, minimising Temp state,
-% %% minimising Paings Cost Function, and hopefully, one from AI / use to predict life cycle 
-% 112599
-% sim_handler = ocv_fun_injection(sim_handler,ocv_curve_2);
-% 
-% %Optimiser settings to configure
-% optim_settings.Tmax=80;
-% optim_settings.Tamb=20;
-% optim_settings.tf=1860;
-% 
-% %Paings_model = Optimum_Generator(sim_handler,'Paings'); (Not made yet)
-% sim_handler = Optimum_Generator(sim_handler,optim_settings,'Min_Maxtemp');
-% main_BatteryCharging(sim_handler)
-% %Min_temp = Optimum_Generator(sim_handler,'Min_Temp'); (Not made yet)
-% 
-% 
+%Alternativley loading presimulated cycles here
+%load baseline1-800.mat
+
+%Optionally an averaging on the battery parameters (accept ocv curve) can
+%be made (will keep a single instace of the original data if needed for
+%comparison)
+
+avg_sim_handle = sim_average(sim_handler,5,'End');
+
+
+%% Second stage is to optionally show the 3d thermal model, to ensure that the internals and externals arent too different
+%% If they are different, it may be wise to optimised against the hot internals rather than use the 0D lumped Cp & H produced
+%% From above
+
+%optional
+%Full_thermal_simulation(sim_handler);
+
+
+%% Code to produce graphs to help make charge discharge descisions based from the framework used in Attias paper, 
+
+
+
+%% For this projects setting, the duration of 0-100% SoC charge has been determined and documented in the thesis, raw values
+%% are used here but can be obtained from the graphs produced above too 
+
+
+
+%% The optimised protocols can now be produced, below calcuates the optimal stages for minimising Max Temp, minimising Temp state,
+%% minimising Paings Cost Function, and hopefully, one from AI / use to predict life cycle 
+
+%% Adding the required functions and tools to the path
+addpath(genpath('ICLOCS_Parameterisation_files'))
+addpath(genpath('Greyest_Parameterisation_files'))
+addpath(genpath('ICLOCS_Optimisation_files'))
+addpath(genpath('ODE_Simulations'))
+addpath(genpath('Misc_functions'))
+
+%Loadining in the struct which has already been parameterised
+load Min_temp_intg07-200.mat
+sim_handler = ocv_fun_injection(sim_handler,ocv_curve_2);
+
+%% Settings struct, used to apply constraints to the charging
+% Tmax: Maximum temperature the battery can reach
+optim_settings.Tmax=80;
+% Tamb: Ambient temperature used to produce true battery temperature plots
+optim_settings.Tamb=20;
+% tf: Time constraint for when 0-80% SoC must be complete
+optim_settings.tf=1860;
+% -- Futher settings have not been able to be implamented in the project
+% time -- 
+
+%% Run the generator, models include 'Paings'/'Min_Maxtemp'/'Min_Temp'
+sim_handler = Optimum_Generator(sim_handler,optim_settings,'Min_Maxtemp');
+
+
 
 %% ODE Simulations of the protocols
 
