@@ -25,7 +25,7 @@ Baseline_B = readtable("GK_RS15_02_baseline_0000 - 028 (2).csv");
 
 [Paings_B_1_200_peaks, Paings_B_1_200_peaks_index] = findpeaks(Paings_B_1_200.Amp_hr);
 [Paings_A_1_200_peaks, Paings_A_1_200_peaks_index] =  findpeaks(Paings_A_1_200.Amp_hr);
-[Min_Max_A_1_200_peaks, Min_Max_A_1_200_index] = findpeaks(Min_Max_A_1_200.Amp_hr);
+[Min_Max_A_1_200_peaks, Min_Max_A_1_200_peaks_index] = findpeaks(Min_Max_A_1_200.Amp_hr);
 [Min_Max_B_1_200_peaks, Min_Max_B_1_200_peaks_index] =  findpeaks(Min_Max_B_1_200.Amp_hr);
 [Min_Intg_A_1_200_peaks, Min_Intg_A_1_200_peaks_index] = findpeaks(Min_Intg_A_1_200.Amp_hr);
 [Min_Intg_B_1_200_peaks, Min_Intg_B_1_200_peaks_index] =  findpeaks(Min_Intg_B_1_200.Amp_hr);
@@ -42,15 +42,17 @@ Baseline_B_peaks =  findpeaks(Baseline_B.Amp_hr);
 Baseline_A_peaks =  Baseline_A_peaks(2:2:end);
 Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
 
-% figure()
-% hold on
-% plot(Paings_B_200_400_peaks)
-% plot(Paings_A_200_400_peaks)
-% plot(Min_Max_A_200_400_peaks)
-% plot(Min_Max_B_200_400_peaks)
-% plot(Min_Intg_A_200_400_peaks)
-% plot(Min_Intg_B_200_400_peaks)
-
+figure()
+hold on
+plot(Paings_B_200_400_peaks)
+plot(Paings_A_200_400_peaks)
+plot(Min_Max_A_200_400_peaks)
+plot(Min_Max_B_200_400_peaks)
+plot(Min_Intg_A_200_400_peaks)
+plot(Min_Intg_B_200_400_peaks)
+plot(Baseline_A_peaks)
+plot(Baseline_B_peaks)
+legend(["PA","PB","MA","MB","mia",'miab','BA','Bb'])
 
 cycles_1 = 50:200;
 p = polyfit(cycles_1, Paings_B_200_400_peaks(50:200), 1);
