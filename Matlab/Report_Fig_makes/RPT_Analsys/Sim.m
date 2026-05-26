@@ -32,7 +32,20 @@ end
 %%
 figure();
 hold on
+grid on
+yyaxis left
+plot(T1.TestTime,T1.Amps)
+ylabel('Current $(I)$','Interpreter','latex','FontSize',13)
 
+% 2. Plot on the right Y-axis
+yyaxis right
+plot(T1.TestTime,T1.Volts)
+ylabel('Terminal Voltage $(V)$','Interpreter','latex','FontSize',13)
+
+xlabel('Time $(s)$','Interpreter','latex','FontSize',13)
+
+
+%%
 start_idx = pulseStart(2)-1980;
 start_volt = T1.Volts(start_idx);
 end_offset = 3000;

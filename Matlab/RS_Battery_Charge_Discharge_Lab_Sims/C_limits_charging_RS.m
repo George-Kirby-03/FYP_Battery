@@ -2,8 +2,8 @@ close all;
 clear; clc;
 load RS_Param_Retry.mat
 ocv = linspace(0,1,150);
-p.r1 = 0.045;
-p.r0 = 0.075;
+p.r1 = 0.025;
+p.r0 = 0.065;
 
 %To see current limit in C till V cutoff (3.6V)
 % (3.6 - ocv(soc))/R_0+1)/1.5
