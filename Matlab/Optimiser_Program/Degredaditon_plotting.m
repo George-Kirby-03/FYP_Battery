@@ -212,7 +212,7 @@ ylabel("Capacity loss $(Ah)$","FontSize",13,'Interpreter','latex')
 % grid on
 %%
 
-%% 1. Find all peaks for Concatenated Data
+%% 
 [Paings_A_200_400_peaks, Paings_A_200_400_peaks_index] = findpeaks(Paings_A_200_400.Amp_hr);
 [Paings_B_200_400_peaks, Paings_B_200_400_peaks_index] = findpeaks(Paings_B_200_400.Amp_hr);
 [Min_Max_A_200_400_peaks, Min_Max_A_200_400_peaks_index] = findpeaks(Min_Max_A_200_400.Amp_hr);
@@ -273,12 +273,9 @@ grid on
 xlabel("Throughput Capacity $(Ah)$","FontSize",13,'Interpreter','latex')
 ylabel("Capacity loss per cycle $(Ah)$","FontSize",13,'Interpreter','latex')
 
-%% Calculate Gradients for Capacity vs. Throughput Capacity
-
-% Preallocate arrays to store the gradients
+%% Grads for Capacity v Throughput Capacity
 throughput_grad_60_200 = zeros(1, 8); 
 throughput_grad_250_end = zeros(1, 8);
-
 
 p = polyfit(x1(60:200), y1(60:200), 1);
 throughput_grad_60_200(1) = p(1); % QLossA
@@ -298,19 +295,11 @@ throughput_grad_60_200(5) = p(1); % MinTA
 p = polyfit(x6(60:200), y6(60:200), 1);
 throughput_grad_60_200(6) = p(1); % MinTB
 
-if length(x7) >= 200
-    p = polyfit(x7(60:200), y7(60:200), 1);
-    throughput_grad_60_200(7) = p(1); % BaselineA
-else
-    disp('Baseline A did not reach 200 cycles.');
-end
+p = polyfit(x7(60:200), y7(60:200), 1);
+throughput_grad_60_200(7) = p(1); % BaselineA
 
-if length(x8) >= 200
-    p = polyfit(x8(60:200), y8(60:200), 1);
-    throughput_grad_60_200(8) = p(1); % BaselineB
-else
-    disp('Baseline B did not reach 200 cycles.');
-end
+p = polyfit(x8(60:200), y8(60:200), 1);
+throughput_grad_60_200(8) = p(1); % BaselineB
 
 p = polyfit(x1(300:end), y1(300:end), 1);
 throughput_grad_250_end(1) = p(1); % QLossA
@@ -329,33 +318,23 @@ throughput_grad_250_end(5) = p(1); % MinTA
 
 p = polyfit(x6(310:end), y6(310:end), 1);
 throughput_grad_250_end(6) = p(1); % MinTB
-if length(x7) >= 250
-    p = polyfit(x7(310:end), y7(310:end), 1);
-    throughput_grad_250_end(7) = p(1); % BaselineA
-else
-    disp('Baseline A did not reach 250 cycles.');
-end
 
-if length(x8) >= 250
-    p = polyfit(x8(310:end), y8(310:end), 1);
-    throughput_grad_250_end(8) = p(1); % BaselineB
-else
-    disp('Baseline B did not reach 250 cycles.');
-end
+p = polyfit(x7(310:end), y7(310:end), 1);
+throughput_grad_250_end(7) = p(1); % BaselineA
+
+p = polyfit(x8(310:end), y8(310:end), 1);
+throughput_grad_250_end(8) = p(1); % BaselineB
 
 
-% Combine the data into an 8x2 matrix for grouped plotting
 grad_data = [throughput_grad_60_200(:), throughput_grad_250_end(:)];
 grad_ratios = throughput_grad_250_end(:)./throughput_grad_60_200(:);
 
-% Labels for the x-axis
 x_labels = {'QLossA', 'QLossB', 'MinMaxTA', 'MinMaxTB', 'MinTA', 'MinTB', 'BaselineA', 'BaselineB'};
 
 figure;
 hold on;
 grid on;
 
-% Create grouped bar chart
 b = bar(grad_data, 'grouped');
 b(1).FaceColor = 'b';
 b(2).FaceColor = 'r';
@@ -372,10 +351,9 @@ set(lb, 'Interpreter', 'latex', 'FontSize', 12);
 ylabel('Degradation Gradient $(Cyle Ah/Ah)$', 'FontSize', 13, 'Interpreter', 'latex');
 %title('\textbf{Capacity Degradation Rate vs. Throughput}', 'Interpreter', 'latex', 'FontSize', 15);
 function [x,y] = plot_concat_throughput(data_1_200, data_200_400, idx1, idx2)
-    % Concatenate signals 
+    % Concating signals
     sig_concat = [data_1_200.Amp_hr(:); data_200_400.Amp_hr(:)];
 
-    % Handle TestTime concatenation
     t1 = data_1_200.TestTime(:);
     t2 = data_200_400.TestTime(:);
     if t2(1) <= t1(end)
@@ -383,7 +361,6 @@ function [x,y] = plot_concat_throughput(data_1_200, data_200_400, idx1, idx2)
     end
     time_concat = [t1; t2];
 
-    % Calculate index offset
     offset = length(data_1_200.Amp_hr);
     idx_concat = [idx1(2:2:end); idx2(2:2:end) + offset];
 
@@ -405,22 +382,16 @@ function [x,y] = plot_single_throughput(data, idx)
     x = throughput_peaks;
     y = peak_vals;
 end
-% 1. Define the original index mapping:
-% 1=QLossA, 2=QLossB, 3=MinMaxTA, 4=MinMaxTB, 5=MinTA, 6=MinTB, 7=BaselineA, 8=BaselineB
 
-% 2. Specify your new desired order :
 new_order = [2, 1, 5, 4, 6, 8, 3, 7]; 
-
-% 3. Reorder the data matrix and the labels
 reordered_grad_data = grad_data(new_order, :);
 reordered_labels = x_labels(new_order);
 
-% 4. Plot the new figure
+
 figure;
 hold on;
 grid on;
 
-% Create grouped bar chart with reordered data
 b = bar(reordered_grad_data, 'grouped');
 b(1).FaceColor = 'b';
 b(2).FaceColor = 'r';
@@ -429,10 +400,8 @@ ax = gca;
 ax.XAxis.FontSize = 13;
 ax.YAxis.FontSize = 13;
 
-% Dynamically set XTick based on the length of new_order
 set(gca, 'XTick', 1:length(new_order), 'XTickLabel', reordered_labels, 'TickLabelInterpreter', 'latex');
 
-% Re-apply legend and labels
 lb = legend('First Batch', 'Re-optimised Batch', 'Location', 'best');
 set(lb, 'Interpreter', 'latex', 'FontSize', 12);
 ylabel('Degradation Gradient $(Cyle Ah/Ah)$', 'FontSize', 13, 'Interpreter', 'latex');
