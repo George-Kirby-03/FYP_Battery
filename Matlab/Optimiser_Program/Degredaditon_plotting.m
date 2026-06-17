@@ -44,24 +44,23 @@ Baseline_B_peaks =  Baseline_B_peaks(2:2:end);
 
 figure()
 hold on
-<<<<<<< HEAD
 plot(Paings_B_200_400_peaks)
 plot(Paings_A_200_400_peaks)
-=======
+
 plot(Paings_A_200_400_peaks)
 plot(Paings_B_200_400_peaks)
->>>>>>> c0a67e6dcb565223d42491e5db2ae416b948cdf7
+
 plot(Min_Max_A_200_400_peaks)
 plot(Min_Max_B_200_400_peaks)
 plot(Min_Intg_A_200_400_peaks)
 plot(Min_Intg_B_200_400_peaks)
 plot(Baseline_A_peaks)
 plot(Baseline_B_peaks)
-<<<<<<< HEAD
+
 legend(["PA","PB","MA","MB","mia",'miab','BA','Bb'])
-=======
+
 legend(["QLossA","QLossB","MinMaxTA","MinMaxTB","MinTA","MinTB","BaselineA","BaselineB"],'Interpreter','latex')
->>>>>>> c0a67e6dcb565223d42491e5db2ae416b948cdf7
+
 
 cycles_1 = 50:200;
 p = polyfit(cycles_1, Paings_B_200_400_peaks(50:200), 1);
@@ -319,14 +318,37 @@ throughput_grad_250_end(5) = p(1); % MinTA
 p = polyfit(x6(310:end), y6(310:end), 1);
 throughput_grad_250_end(6) = p(1); % MinTB
 
-p = polyfit(x7(310:end), y7(310:end), 1);
+p = polyfit(x7(310:400), y7(310:400), 1);
 throughput_grad_250_end(7) = p(1); % BaselineA
 
-p = polyfit(x8(310:end), y8(310:end), 1);
+p = polyfit(x8(310:400), y8(310:400), 1);
 throughput_grad_250_end(8) = p(1); % BaselineB
 
+throughput_grad_400_600 = throughput_grad_250_end;
 
-grad_data = [throughput_grad_60_200(:), throughput_grad_250_end(:)];
+p = polyfit(x7(401:600), y7(401:600), 1);
+throughput_grad_400_600(7) = p(1); % BaselineA
+
+p = polyfit(x8(401:600), y8(401:600), 1);
+throughput_grad_400_600(8) = p(1); % BaselineB
+
+throughput_grad_600_800 = throughput_grad_400_600;
+
+p = polyfit(x7(601:800), y7(601:800), 1);
+throughput_grad_600_800(7) = p(1); % BaselineA
+
+p = polyfit(x8(601:800), y8(601:800), 1);
+throughput_grad_600_800(8) = p(1); % BaselineB
+
+throughput_grad_800_1000 = throughput_grad_400_600;
+
+p = polyfit(x7(801:1000), y7(801:1000), 1);
+throughput_grad_800_1000(7) = p(1); % BaselineA
+
+p = polyfit(x8(801:1000), y8(801:1000), 1);
+throughput_grad_800_1000(8) = p(1); % BaselineB
+
+grad_data = [throughput_grad_60_200(:), throughput_grad_250_end(:), throughput_grad_400_600(:), throughput_grad_600_800(:), throughput_grad_800_1000(:)];
 grad_ratios = throughput_grad_250_end(:)./throughput_grad_60_200(:);
 
 x_labels = {'QLossA', 'QLossB', 'MinMaxTA', 'MinMaxTB', 'MinTA', 'MinTB', 'BaselineA', 'BaselineB'};
@@ -345,7 +367,7 @@ ax.YAxis.FontSize = 13;
 set(gca, 'XTick', 1:8, 'XTickLabel', x_labels, 'TickLabelInterpreter', 'latex');
 
 
-lb = legend('First Batch', 'Re-optimised Batch', 'Location', 'best');
+lb = legend('First Batch', 'Re-optimised Batch','400-600','600-800','800-1000', 'Location', 'best');
 set(lb, 'Interpreter', 'latex', 'FontSize', 12);
 
 ylabel('Degradation Gradient $(Cyle Ah/Ah)$', 'FontSize', 13, 'Interpreter', 'latex');
